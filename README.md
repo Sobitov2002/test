@@ -34,4 +34,7 @@ npm run build
 # ItechAcademy
 # ItechAcademy
 # ItechAcademy
+<<<<<<< HEAD
 # utech
+=======
+>>>>>>> fd1c996 (first commit)
