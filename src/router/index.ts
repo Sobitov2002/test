@@ -1,9 +1,10 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import About from '@/page/About.vue'
+import { createRouter, createWebHashHistory } from 'vue-router'
+import Teacher from '@/page/teacher/Teacher.vue'
 import Dashboard from '@/components/dashboard/Dashboard.vue'
+import Student from '@/page/student/Student.vue'
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHashHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
@@ -11,9 +12,14 @@ const router = createRouter({
       component: Dashboard,
     },
     {
-      path: '/about',
+      path: '/teacher',
       name: 'about',
-      component: About
+      component: Teacher
+    },
+    {
+      path: '/student',
+      name: 'student',
+      component: Student
     }
   
   ],

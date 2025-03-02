@@ -10,7 +10,7 @@ export const sidebarData = [
         `
     },
     {
-        path: '/about',
+        path: '/teacher',
         title: "O'qituvchilar",
         role: ['admin', 'teacher', 'student', 'general'],
         icon: `
@@ -19,7 +19,7 @@ export const sidebarData = [
         </svg> `
     },
     {
-        path: '/about',
+        path: '/student',
         title: "Guruhlar",
         role: ['admin', 'teacher', 'student', 'general'],
         icon: `
