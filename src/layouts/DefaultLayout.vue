@@ -1,16 +1,25 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router';
 import { useSidebarStore } from '@/stores/sidebarStore';
+import Saidbar from '@/components/Saidbar.vue';
+import Header from '@/components/header/Header.vue'
 const sidebarStore = useSidebarStore();
-import Saidbar from '@/components/Saidbar.vue'
-
 </script>
 <template>
-    <div class="antialiased  myBg ">
+    <div class="antialiased myBg">
         <Saidbar />
-      
+        <Header />
         <main class="p-5 max-sm:p-0 max-sm:pt-14 lg:ml-72 min-h-screen h-auto pt-20" @click="sidebarStore.closeSidebar">
             <RouterView />
         </main>
     </div>
 </template>
+
+<style scoped>
+.myBg {
+    background-image: url('https://ik.imagekit.io/vtroph5l9/Product/Background%20(1).png?updatedAt=1740908969368');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+</style>

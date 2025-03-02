@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { useSidebarStore } from '@/stores/sidebarStore';
-import { useRoute } from 'vue-router';
+import { useRoute , useRouter } from 'vue-router';
 import RouteName from './_components/RouterName.vue'
+
 const sidebarStore = useSidebarStore();
 const toggleSidebar = () => {
     sidebarStore.isOpen = !sidebarStore.isOpen;
@@ -9,9 +10,13 @@ const toggleSidebar = () => {
 
 // Hozirgi yo‘nalishni olish va ko‘rsatish
 const route = useRoute();
+const router = useRouter()
 const getRouteName = () => {
     return route.path === '/' ? 'Bosh Sahifa' : route.path.replace('/', '').replace(/-/g, ' ').toUpperCase();
 };
+const loginhandler = () =>{
+    router.push('/login')
+}
 </script>
 
 <template>
@@ -46,7 +51,7 @@ const getRouteName = () => {
             </div>
 
             <!-- Sign In -->
-            <div class="flex gap-2 cursor-pointer">
+            <div @click="loginhandler" class="flex gap-2 cursor-pointer">
                 <svg class="w-6 h-6 text-gray-800 dark:text-[#E2E8F04D]" xmlns="http://www.w3.org/2000/svg" width="24"
                     height="24" fill="currentColor" viewBox="0 0 24 24">
                     <path fill-rule="evenodd"
