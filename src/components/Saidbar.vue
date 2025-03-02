@@ -27,7 +27,8 @@ const getSvgIcon = (icon: string, isActive: boolean) => {
         <div style="background: linear-gradient(100.84deg, rgba(6, 11, 38, 0.94) 59.3%, rgba(26, 31, 55, 0) 100%);"
             class="overflow-y-auto rounded-[20px] my-scroll-0 py-5 px-3 h-full bg-white ">
             <!-- Logo section -->
-
+                <div>
+                </div>
 
             <!-- menu -->
             <ul class="space-y-2 pb-[140px]">
@@ -35,7 +36,10 @@ const getSvgIcon = (icon: string, isActive: boolean) => {
                     <li class="cursor-pointer flex items-center py-2 px-3 text-base font-medium border-spacing-0 rounded-lg group"
                         :class="[currentPage == index ? 'bg-opacity-100 text-white sideBar-menu' : 'bg-opacity-0  text-gray-700 rounded-lg dark:text-white hover:bg-opacity-15 dark:hover:bg-opacity-25']"
                         @click="changePage(index, item.path)">
-                        <span v-html="getSvgIcon(item.icon, currentPage === index)"></span>
+                        <div class="flex justify-center items-center bg-[#1A1F37]  w-[40px] h-[40px] rounded-[12px]"
+                            :class="{ 'bg-[#0075FF]': currentPage === index }">
+                            <span v-html="getSvgIcon(item.icon, currentPage === index)"></span>
+                        </div>
                         <span class="ml-3 py-[10px] text-[14px] leading-[14px] font-bold">{{ item.title }}</span>
                     </li>
                 </template>

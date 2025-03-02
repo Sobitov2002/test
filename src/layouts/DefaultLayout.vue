@@ -7,7 +7,7 @@ import Saidbar from '@/components/Saidbar.vue'
 <template>
     <div class="antialiased  myBg ">
         <Saidbar />
-        <main class="p-4 max-sm:p-0 max-sm:pt-14 lg:ml-64 min-h-screen h-auto pt-20" @click="sidebarStore.closeSidebar">
+        <main class="p-5 max-sm:p-0 max-sm:pt-14 lg:ml-72 min-h-screen h-auto pt-20" @click="sidebarStore.closeSidebar">
             <RouterView />
         </main>
     </div>
