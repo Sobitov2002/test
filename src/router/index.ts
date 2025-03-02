@@ -16,13 +16,11 @@ const router = createRouter({
       name: 'about',
       component: Teacher
     },
-    {
-      path: '/student',
-      name: 'student',
-      component: Student
-    }
+  
   
   ],
 })
 
+  
+ 
 export default router
