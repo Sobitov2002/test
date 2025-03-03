@@ -1,6 +1,6 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import Teacher from '@/page/teacher/Teacher.vue'
-import Dashboard from '@/components/dashboard/Dashboard.vue'
+import Dashboard from '@/page/dashboard/page.vue'
 import Student from '@/page/student/Student.vue'
 import AuthLayout from '../layouts/AuthLayout.vue'
 import DefaultLayout from '@/layouts/DefaultLayout.vue';
