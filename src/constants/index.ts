@@ -10,7 +10,7 @@ export const sidebarData = [
         `
     },
     {
-        path: '/teacher',
+        path: '/student',
         title: "O'qituvchilar",
         role: ['admin', 'teacher', 'student', 'general'],
         icon: `

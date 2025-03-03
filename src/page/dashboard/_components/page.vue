@@ -1,26 +1,43 @@
 <script setup lang="ts">
+;
 import { defineProps } from 'vue';
+interface Adminstratr {
+    total_students: number;
 
+}
 
 const props = defineProps({
-  studentCount: {
-    type: Number,
-    default: null
-  }
+    studentCount: {
+        type: Number,
+        default: null
+    },
+    getAllCourse: {
+        type: Number,
+        default: null
+    },
+    fetchAdminstratr: {
+        type: Object,  
+        default: () => ({ count: null }) 
+    },
+    adminstratr: {
+        type: Array as () => Adminstratr[], // Define it as an array of Adminstratr objects
+        default: () => []
+    }
 });
 
-console.log(props);
+console.log(props.adminstratr);
+
 
 </script>
 
 
 <template>
-    <div class="grid grid-cols-4 gap-4">
+    <div class="grid lg:grid-cols-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
         <div style="background: linear-gradient(126.97deg, rgba(6, 11, 38, 0.74) 28.26%, rgba(26, 31, 55, 0.5) 91.2%);"
             class="flex justify-between p-4 rounded-[20px]">
             <div>
                 <h1 class="text-[#A0AEC0]">Talabalar soni: </h1>
-                <p class="text-[20px] text-white font-bold">{{ props.studentCount }}</p>
+                <p class="text-[40px] text-white font-bold">{{ props.studentCount }}</p>
             </div>
             <div class="flex justify-center items-center">
                 <div class="bg-[#0075FF] p-[11px] rounded-[12px]">
@@ -39,7 +56,7 @@ console.log(props);
             class="flex justify-between p-4 rounded-[20px]">
             <div>
                 <h1 class="text-[#A0AEC0]">O'qituvchilar soni: </h1>
-                <p class="text-[20px] text-white font-bold">{{  }}</p>
+                <p class="text-[40px] text-white font-bold">{{ props.getAllCourse }}</p>
             </div>
             <div class="flex justify-center items-center">
                 <div class="bg-[#0075FF] p-[11px] rounded-[12px]">
@@ -57,8 +74,8 @@ console.log(props);
         <div style="background: linear-gradient(126.97deg, rgba(6, 11, 38, 0.74) 28.26%, rgba(26, 31, 55, 0.5) 91.2%);"
             class="flex justify-between p-4 rounded-[20px]">
             <div>
-                <h1 class="text-[#A0AEC0]">Talabalar soni: </h1>
-                <p class="text-[20px] text-white font-bold">$14</p>
+                <h1 class="text-[#A0AEC0]">Ustozlar soni: </h1>
+                <p class="text-[40px] text-white font-bold">{{ props.fetchAdminstratr.count }}</p>
             </div>
             <div class="flex justify-center items-center">
                 <div class="bg-[#0075FF] p-[11px] rounded-[12px]">
@@ -75,9 +92,16 @@ console.log(props);
         <div style="background: linear-gradient(126.97deg, rgba(6, 11, 38, 0.74) 28.26%, rgba(26, 31, 55, 0.5) 91.2%);"
             class="flex justify-between p-4 rounded-[20px]">
             <div>
-                <h1 class="text-[#A0AEC0]">Talabalar soni: </h1>
-                <p class="text-[20px] text-white font-bold">$14</p>
+                <h1 class="text-[#A0AEC0]">Qabullar soni: </h1>
+                <p v-if="props.adminstratr"
+                    class="text-[40px] text-white font-bold">
+                    {{ props.adminstratr.total_students }}
+                </p>
+                <p v-else class="text-[20px] text-white font-bold">
+                    Ma'lumot yo'q
+                </p>
             </div>
+
             <div class="flex justify-center items-center">
                 <div class="bg-[#0075FF] p-[11px] rounded-[12px]">
                     <svg class="w-[22px] h-[22px] text-gray-800 dark:text-white" aria-hidden="true"
