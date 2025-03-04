@@ -48,5 +48,29 @@ const courseGetAll = async ()  =>{
   }
 }
 
+const getCurrentYearMonth = () => {
+  return {
+    year: 2025,
+    month: 2
+  };
+};
 
-export { fetchStudentCount, fetchFullCourse , fetchAdminstrator , Adminstrator , courseGetAll  };
+const fetchPayment = async () => {
+  try {
+
+    const { year, month } = getCurrentYearMonth();
+
+    
+
+   const response = await api.get(`/payment/monthly_sum?year=${year}&month=${month}`);
+    console.log(response.data);
+    
+    return response.data;
+  } catch (error) {
+    console.error('To\'lov ma\'lumotlarini olishda xato:', error);
+  
+  }
+};
+
+
+export { fetchStudentCount, fetchFullCourse , fetchAdminstrator , Adminstrator , courseGetAll , fetchPayment  };

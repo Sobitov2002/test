@@ -22,7 +22,7 @@ onMounted(async () => {
         <h1 class="text-3xl font-semibold text-white mb-6">Studentlar Ro'yxati</h1>
         <ul class="space-y-6">
             <li v-for="(student, index) in fetchFulstudent" :key="index"
-                class=" rounded-lg p-4 shadow-md transition duration-300 ease-in-out transform hover:scale-105 hover:bg-slate-900/55">
+                class=" rounded-lg p-4 shadow-md hover:bg-slate-900/55">
                 <div class="flex justify-between items-center text-white">
                     <div>
                         <p class="text-sm text-gray-400">ID: {{ student.id }}</p>

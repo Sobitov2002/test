@@ -13,7 +13,8 @@ onMounted(async () => {
     try {
         const fetchedCourses = await courseGetAll();
         courses.value = fetchedCourses;
-
+        console.log(courses.value);
+        
 
     } catch (error) {
         console.log(error);
@@ -25,7 +26,7 @@ const modules = [Autoplay, Pagination, Navigation];
 const swiperRef = ref(null);
 
 const onSwiperInit = (swiper: any) => {
-    // Swiper initialization handler
+
 };
 </script>
 
@@ -41,16 +42,14 @@ const onSwiperInit = (swiper: any) => {
                     1024: { slidesPerView: 1, spaceBetween: 40 }
                 }" :modules="modules" class="mySwiper">
                 <swiper-slide v-for="(course, index) in courses" :key="index">
-                    <div class="flex items-center h-64 justify-between relative bg-cover bg-center rounded-[12px]"
-                        :style="course.image">
-                        <!-- Text Section -->
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 z-10 p-4">
-                            <div>
-                                <div>
-                                    <p class="text-white text-[30px] font-bold">{{ course.name }}</p>
-                                </div>
-                                
-                            </div>
+                    <div class="flex items-center h-64 justify-between relative rounded-[12px] overflow-hidden">
+                        <!-- Background Image -->
+                        <img :src="`/src/images/${course.image}`" alt="Course Image"
+                            class="absolute w-full h-full object-cover">
+
+                        <!-- Text Section (Rasm ustida joylashgan) -->
+                        <div class="relative z-10 p-4  w-full">
+                            <p class="text-white text-[30px] font-bold">{{ course.name }}</p>
                         </div>
                     </div>
                 </swiper-slide>

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
 import Statistic from './_components/page.vue';
+import PeymentDiagram from './_components/PeymentDiagram.vue'
 import CourseSlider from './_components/pagea.vue';
 import { fetchStudentCount, fetchFullCourse, fetchAdminstrator, Adminstrator, courseGetAll } from './servies';
 
@@ -36,9 +37,7 @@ onMounted(async () => {
         <div class="grid md:grid-cols-2 grid-cols-1 gap-10 mt-4 ">
             <CourseSlider :allCourse="allCourse" />
             <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
-                <CourseSlider :allCourse="allCourse" />
-                <CourseSlider :allCourse="allCourse" />
-
+                <PeymentDiagram class="rounded-[20px] p-2"  />
             </div>
         </div>
     </div>
