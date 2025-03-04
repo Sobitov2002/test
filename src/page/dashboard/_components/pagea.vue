@@ -3,38 +3,30 @@ import { Swiper, SwiperSlide } from 'swiper/vue';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { Autoplay, Pagination, Navigation } from 'swiper/modules';
-import { onMounted } from 'vue';
 import { courseGetAll } from '../servies';
 
-const courses = ref(); 
+const courses = ref([]);
+
 onMounted(async () => {
     try {
         const fetchedCourses = await courseGetAll();
         courses.value = fetchedCourses;
         console.log(courses.value);
-        
-
     } catch (error) {
-        console.log(error);
+        console.error("Xatolik:", error);
     }
 });
 
-
 const modules = [Autoplay, Pagination, Navigation];
-const swiperRef = ref(null);
-
-const onSwiperInit = (swiper: any) => {
-
-};
 </script>
 
 <template>
-    <div class="h-full p-[0px]">
-        <div style="background: linear-gradient(126.97deg, rgba(6, 11, 38, 0.74) 28.26%, rgba(26, 31, 55, 0.5) 91.2%);"
-            class="shadow-lg overflow-hidden rounded-[20px]">
-            <swiper ref="swiperRef" :onSwiper="onSwiperInit" :spaceBetween="10" :slidesPerView="2" :loop="true"
+    <div class="h-full p-0">
+        <div class="shadow-lg overflow-hidden rounded-[20px]"
+            style="background: linear-gradient(126.97deg, rgba(6, 11, 38, 0.74) 28.26%, rgba(26, 31, 55, 0.5) 91.2%);">
+            <swiper :spaceBetween="10" :slidesPerView="2" :loop="true"
                 :autoplay="{ delay: 2500, disableOnInteraction: false }" :breakpoints="{
                     400: { slidesPerView: 1, spaceBetween: 5 },
                     480: { slidesPerView: 2, spaceBetween: 10 },
@@ -42,12 +34,11 @@ const onSwiperInit = (swiper: any) => {
                     1024: { slidesPerView: 1, spaceBetween: 40 }
                 }" :modules="modules" class="mySwiper">
                 <swiper-slide v-for="(course, index) in courses" :key="index">
-                    <div class="flex items-center h-64 justify-between relative rounded-[12px] overflow-hidden">
-                        <!-- Background Image -->
-                      
-
-                        <!-- Text Section (Rasm ustida joylashgan) -->
-                        <div class="relative z-10 p-4  w-full">
+                    <div class="flex items-center h-[300px] justify-between relative rounded-[12px] overflow-hidden">
+                        <img class="absolute inset-0 w-full h-full object-cover"
+                            :src="'https://iteachsystem.uz/images/' + course.image" alt="Course Image">
+                        
+                        <div class="relative z-10 p-4 w-full ">
                             <p class="text-white text-[30px] font-bold">{{ course.name }}</p>
                         </div>
                     </div>
@@ -56,9 +47,3 @@ const onSwiperInit = (swiper: any) => {
         </div>
     </div>
 </template>
-
-<style scoped>
-.card {
-    cursor: pointer;
-}
-</style>
