@@ -19,6 +19,7 @@ onMounted(async () => {
     }
 });
 
+
 const modules = [Autoplay, Pagination, Navigation];
 </script>
 

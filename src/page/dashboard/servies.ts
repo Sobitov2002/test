@@ -60,11 +60,30 @@ const fetchPayment = async () => {
 
     const { year, month } = getCurrentYearMonth();
 
-    
+   const response = await api.get(`/payment/monthly_sum?year=${year}&month=${month}`);   
+    return response.data;
+  } catch (error) {
+    console.error('To\'lov ma\'lumotlarini olishda xato:', error);
+  
+  }
+};
 
-   const response = await api.get(`/payment/monthly_sum?year=${year}&month=${month}`);
-    console.log(response.data);
-    
+const fetchExpence = async ()  =>{
+  try {
+     const response = await api.get('/expense/get', { withCredentials: true});
+    return response.data;
+  } catch (error) {
+    console.error('Get course:', error);
+  }
+}
+
+
+const getMonthly = async () => {
+  try {
+
+    // const { year, month } = getCurrentYearMonth();
+
+   const response = await api.get(`/reception/get_monthly_statistics?year=${2025}&month=${3}`);
     return response.data;
   } catch (error) {
     console.error('To\'lov ma\'lumotlarini olishda xato:', error);
@@ -73,4 +92,5 @@ const fetchPayment = async () => {
 };
 
 
-export { fetchStudentCount, fetchFullCourse , fetchAdminstrator , Adminstrator , courseGetAll , fetchPayment  };
+
+export { fetchStudentCount, fetchFullCourse , fetchAdminstrator , Adminstrator , courseGetAll , fetchPayment , fetchExpence ,getMonthly };
