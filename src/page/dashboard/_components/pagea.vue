@@ -44,8 +44,7 @@ const onSwiperInit = (swiper: any) => {
                 <swiper-slide v-for="(course, index) in courses" :key="index">
                     <div class="flex items-center h-64 justify-between relative rounded-[12px] overflow-hidden">
                         <!-- Background Image -->
-                        <img :src="`/src/images/${course.image}`" alt="Course Image"
-                            class="absolute w-full h-full object-cover">
+                      
 
                         <!-- Text Section (Rasm ustida joylashgan) -->
                         <div class="relative z-10 p-4  w-full">
