@@ -5,26 +5,28 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
 import { fetchExpence } from '../servies';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
-
-const expence = ref([]); // Boshlang‘ich qiymatni bo‘sh massiv qilish
+interface expence  {
+    total_expense: number;
+}
+const expence = ref<expence[]>([]); 
 
 onMounted(async () => {
     try {
         const fetchedData = await fetchExpence();
         expence.value = fetchedData;
-        console.log("chiqim:", expence.value);
+        console.log("chiqim:", expence.value.total_expense);
     } catch (error) {
         console.error("Xatolik:", error);
     }
 });
 
-const maxValue = 1000000; 
+
 
 const percentValue = computed(() => {
     if (expence.value.length === 0) return 0; 
 
-    const usedAmount = expence.value[0]?.amount || 0; 
-    return Math.round((usedAmount / maxValue) * 100); 
+    const usedAmount = expence.value.total_expense; 
+    return Math.round((usedAmount)/1000); 
 });
 
 const chartData = computed(() => ({
@@ -68,7 +70,7 @@ const chartOptions = {
 
         <div class="flex bg-[#060B28BD] p-3  rounded-2xl justify-between px-4 ]">
             <span class="text-xs">0%</span>
-            <span class="text-2xl font-bold">{{ percentValue }}%</span>
+            <span class="text-2xl font-bold">{{ percentValue/10 }}%</span>
             <span class="text-xs">100%</span>
         </div>
     </div>

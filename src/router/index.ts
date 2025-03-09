@@ -1,12 +1,13 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
-import Teacher from '@/page/teacher/Teacher.vue'
+import Teacher from '@/page/teacher/Page.vue'
 import Dashboard from '@/page/dashboard/page.vue'
 import Student from '@/page/student/Page.vue'
 import AuthLayout from '../layouts/AuthLayout.vue'
 import DefaultLayout from '@/layouts/DefaultLayout.vue';
 import Login from '@/page/auth/Login.vue'
-
-
+import Profil from '@/page/profil/Page.vue'
+import AddUpdateTeacher from '@/page/teacher/_components/Add&UpdateTeacher.vue'
+import Peyment from '@/page/peyment/Page.vue'
 const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL),
   routes: [
@@ -24,15 +25,27 @@ const router = createRouter({
       meta: { layout: DefaultLayout }
     },
     {
+      path: '/teacher/add',
+      name: 'add-teacher',
+      component:AddUpdateTeacher, 
+      meta: { layout: DefaultLayout, requiresAuth: true }
+    },
+    {
     path: '/login',
     name: 'login',
     component: Login,
     meta: { layout: AuthLayout }
     },
     {
-    path: '/student',
-    name: 'student',
-    component: Student,
+    path: '/peyment',
+    name: 'peyment',
+    component: Peyment,
+    meta: { layout: DefaultLayout }
+    },
+    {
+    path: '/profil',
+    name: 'profil',
+    component: Profil,
     meta: { layout: DefaultLayout }
     }
   ],
@@ -41,7 +54,7 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   const token = localStorage.getItem('token');
   if (to.meta.requiresAuth && !token) {
-    next({ name: 'login' }); 
+    router.push('/login')
   } else {
     next();
   }

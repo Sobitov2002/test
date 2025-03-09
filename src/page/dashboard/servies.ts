@@ -51,7 +51,7 @@ const courseGetAll = async ()  =>{
 const getCurrentYearMonth = () => {
   return {
     year: 2025,
-    month: 2
+    month: 3
   };
 };
 
@@ -69,8 +69,9 @@ const fetchPayment = async () => {
 };
 
 const fetchExpence = async ()  =>{
+  
   try {
-     const response = await api.get('/expense/get', { withCredentials: true});
+     const response = await api.get('expense/get_sum_expense?year=2025&month=03', { withCredentials: true});
     return response.data;
   } catch (error) {
     console.error('Get course:', error);
