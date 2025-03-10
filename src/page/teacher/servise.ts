@@ -14,7 +14,7 @@ const getTeachers = async () => {
 
 const deleteTeacher = async (teacherId: string) => {
     try {
-        const response = await api.delete(`/admistrator/delete?ident=${teacherId}`, { withCredentials: true });
+        const response = await api.delete(`/admistrator/delete_teacher?ident=${teacherId}`, { withCredentials: true });
         return response.data;
     } catch (error: any) {
         console.error("Xatolik:", error.response?.data || error.message);

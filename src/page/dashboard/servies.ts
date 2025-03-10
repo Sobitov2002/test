@@ -41,7 +41,7 @@ const Adminstrator = async ()  =>{
 
 const courseGetAll = async ()  =>{
   try {
-     const response = await api.get('/course/get_all', { withCredentials: true});
+     const response = await api.get('/course/get', { withCredentials: true});
     return response.data;
   } catch (error) {
     console.error('Get course:', error);

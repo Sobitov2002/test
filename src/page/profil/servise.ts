@@ -20,4 +20,19 @@ const profilUpdate = async (profileData: any) =>{
        console.log(error);
     }
 }
-export { profilGet , profilUpdate };
+
+const profilImageUpdate = async (file: File) => {
+  try {
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const response = await api.post("/user/upload-image", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error("Rasm yuklashda xatolik:", error);
+  }
+};
+export { profilGet , profilUpdate , profilImageUpdate };
