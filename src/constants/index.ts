@@ -19,7 +19,7 @@ export const sidebarData = [
         </svg> `
     },
     {
-        path: '/student',
+        path: '/group',
         title: "Guruhlar",
         role: ['admin', 'teacher', 'student', 'general'],
         icon: `

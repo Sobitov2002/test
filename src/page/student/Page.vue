@@ -20,7 +20,7 @@ onMounted(async () => {
     <div style="background: linear-gradient(126.97deg, rgba(6, 11, 38, 0.74) 28.26%, rgba(26, 31, 55, 0.5) 91.2%);"
         class="p-6 rounded-lg shadow-lg w-full mx-auto">
         <h1 class="text-3xl font-semibold text-white mb-6">Studentlar Ro'yxati</h1>
-        <ul class="space-y-3">
+        <ul class="spacegoToGroupCourse-y-3">
             <li v-for="(student, index) in fetchFulstudent" :key="index" class="p-2 text-white"
                 :class="{ 'border-b border-gray-600': index !== fetchFulstudent.length - 1 }">
                 <div class="flex justify-between items-center">

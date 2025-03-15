@@ -7,6 +7,8 @@ import DefaultLayout from '@/layouts/DefaultLayout.vue';
 import Login from '@/page/auth/Login.vue'
 import Profil from '@/page/profil/Page.vue'
 import AddUpdateTeacher from '@/page/teacher/_components/Add&UpdateTeacher.vue'
+import Group from '@/page/course/Page.vue'
+import Course from "@/page/course/_components/Group.vue"
 import Peyment from '@/page/peyment/Page.vue'
 const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL),
@@ -40,6 +42,23 @@ const router = createRouter({
     path: '/peyment',
     name: 'peyment',
     component: Peyment,
+    meta: { layout: DefaultLayout }
+    },    {
+    path: '/group',
+    name: 'group',
+    component:Group,
+    meta: { layout: DefaultLayout }
+    },
+     {
+    path: '/group/course',
+    name: 'course',
+    component:Course,
+    meta: { layout: DefaultLayout }
+    },
+     {
+    path: '/group/course/students',
+    name: 'student',
+    component:Student,
     meta: { layout: DefaultLayout }
     },
     {

@@ -35,4 +35,7 @@ const profilImageUpdate = async (file: File) => {
     console.error("Rasm yuklashda xatolik:", error);
   }
 };
+
+
+
 export { profilGet , profilUpdate , profilImageUpdate };

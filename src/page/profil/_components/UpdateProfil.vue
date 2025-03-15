@@ -97,13 +97,10 @@ const updateProfile = async () => {
                 </label>
                 <input id="file-upload" type="file" class="hidden" accept="image/*" @change="handleFileUpload" />
 
-                <button v-if="selectedFile" @click="uploadFile"
-                    class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition">
-                    Yuklash
-                </button>
+
 
                 <button v-if="uploadedImageUrl" @click="saveProfileImage"
-                    class="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition">
+                    class="px-2 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition">
                     Saqlash
                 </button>
 
@@ -112,9 +109,16 @@ const updateProfile = async () => {
             </div>
 
         </div>
-        <button class="p-2 mt-4 rounded-md bg-blue-600" @click="updateProfile" :disabled="loading">
-            {{ loading ? "Yuklanmoqda..." : "Profilni yangilash" }}
-        </button>
+        <div class="flex justify-between">
+            <button v-if="selectedFile" @click="uploadFile"
+                class="p-2 mt-4 bg-green-500 text-white rounded-lg hover:bg-green-600 transition">
+                Yuklash
+            </button>
+            <button class="p-2 mt-4 rounded-md bg-blue-600" @click="updateProfile" :disabled="loading">
+                {{ loading ? "Yuklanmoqda..." : "Profilni yangilash" }}
+            </button>
+        </div>
+
         <p v-if="successMessage" class="success text-green-400">{{ successMessage }}</p>
         <p v-if="errorMessage" class="error text-red-400">{{ errorMessage }}</p>
     </div>
