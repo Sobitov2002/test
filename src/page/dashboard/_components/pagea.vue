@@ -37,10 +37,10 @@ const modules = [Autoplay, Pagination, Navigation];
                 <swiper-slide v-for="(course, index) in courses" :key="index">
                     <div class="flex items-center h-[300px] justify-between relative rounded-[12px] overflow-hidden">
                         <img class="absolute inset-0 w-full h-full object-cover"
-                            :src="'https://iteachsystem.uz/images/'  " alt="Course Image">
+                            :src="'https://iteachsystem.uz/images/' + course.image" alt="Course Image">
                         
                         <div class="relative z-10 p-4 w-full ">
-                            <p class="text-white text-[30px] font-bold"></p>
+                            <p class="text-white text-[30px] font-bold">{{ course.name }}</p>
                         </div>
                     </div>
                 </swiper-slide>

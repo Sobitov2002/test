@@ -2,7 +2,7 @@
 import { ref, computed, onMounted } from "vue";
 import { Line } from "vue-chartjs";
 import { Chart as ChartJS, Title, Tooltip, Legend, LineElement, PointElement, CategoryScale, LinearScale } from "chart.js";
-import { getMonthly } from "../servies"; // Backenddan ma'lumot olish
+import { getMonthly } from "../servies"; 
 
 ChartJS.register(Title, Tooltip, Legend, LineElement, PointElement, CategoryScale, LinearScale);
 

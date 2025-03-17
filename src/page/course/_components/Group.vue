@@ -112,9 +112,9 @@ const updateGroup = async () => {
         name: newGroupName.value.trim(),
         period: Number(coursePeriod.value),
         price: Number(coursePrice.value),
-        course_id: Number(groupStore.selectedGroupId), // Tanlangan kurs ID'si
+        course_id: Number(groupStore.selectedGroupId),
         teacher_id: Number(selectedTeacherId.value),
-        group_id: Number(selectedGroup.value.id) // Tanlangan guruh ID'si qo‘shildi
+        group_id: Number(selectedGroup.value.id) 
     });
 
     try {
@@ -151,7 +151,7 @@ const updateGroup = async () => {
         </div>
 
         <div class="grid grid-cols-5 gap-4">
-            <!-- ✅ Har bir card bosilganda `selectGroup(item)` chaqiriladi -->
+
             <div style="background: linear-gradient(126.97deg, rgba(6, 11, 38, 0.74) 28.26%, rgba(26, 31, 55, 0.5) 91.2%);"
                 v-for="(item, index) in groupData" :key="index"
                 class="relative flex gap-4 items-center p-4 rounded-xl bg-gray-800 cursor-pointer">
@@ -173,10 +173,10 @@ const updateGroup = async () => {
         </div>
 
 
-        <div v-if="showDeleteModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-            <div class="bg-white p-6 rounded-lg shadow-lg w-80">
-                <h2 class="text-lg font-semibold text-gray-800">Haqiqatan ham o‘chirmoqchimisiz?</h2>
-                <p class="text-gray-600 mt-2">"{{ selectedGroup?.name }}" guruhini o‘chirishni tasdiqlang.</p>
+        <div v-if="showDeleteModal" class="fixed inset-0 flex items-center justify-center bg-black/90 bg-opacity-50">
+            <div class="bg-slate-900 p-6 rounded-lg shadow-lg w-80">
+                <h2 class="text-lg font-semibold text-white">O'chirish </h2>
+                <p class="text-white mt-2">"{{ selectedGroup?.name }}" guruhini o‘chirishni tasdiqlang.</p>
 
                 <div class="flex justify-end gap-3 mt-4">
                     <button @click="showDeleteModal = false" class="px-4 py-2 bg-gray-300 rounded-lg">Bekor
@@ -187,18 +187,18 @@ const updateGroup = async () => {
         </div>
 
 
-        <div v-if="showUpdateModal" class="fixed inset-0 bg-black/80 flex items-center justify-center">
-            <div class="bg-white p-6 rounded-lg shadow-lg w-[400px]">
-                <h2 class="text-xl font-bold mb-4">Guruhni tahrirlash</h2>
+        <div v-if="showUpdateModal" class="fixed inset-0 bg-black/90 flex items-center justify-center">
+            <div class="bg-slate-800 p-6 rounded-lg shadow-lg w-[400px]">
+                <h2 class="text-xl text-white font-bold mb-4">Guruhni tahrirlash</h2>
 
                 <input v-model="newGroupName" type="text" placeholder="Guruh nomi"
-                    class="w-full border border-gray-300 rounded-md p-2 mb-4" />
+                    class="w-full border text-white border-gray-300 rounded-md p-2 mb-4" />
 
                 <input v-model="coursePrice" type="number" placeholder="Narx"
-                    class="w-full border border-gray-300 rounded-md p-2 mb-4" />
+                    class="w-full border text-white border-gray-300 rounded-md p-2 mb-4" />
 
                 <input v-model="coursePeriod" type="number" placeholder="Davomiylik (oy)"
-                    class="w-full border border-gray-300 rounded-md p-2 mb-4" />
+                    class="w-full border text-white border-gray-300 rounded-md p-2 mb-4" />
 
                 <div class="flex justify-end gap-2">
                     <button @click="showUpdateModal = false" class="px-4 py-2 bg-gray-300 rounded-md">Bekor
