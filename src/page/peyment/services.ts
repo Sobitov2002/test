@@ -2,7 +2,7 @@ import api from '@/service/apiService'
 
 const getAllStudents = async () =>{
     try {
-        const response = await api.get('/student/get_all_students', { withCredentials: true });
+        const response = await api.get('/payment/all', { withCredentials: true });
        
         return response.data
     } catch (error) {

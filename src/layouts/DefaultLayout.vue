@@ -17,7 +17,7 @@ const sidebarStore = useSidebarStore();
 
 <style scoped>
 .myBg {
-    background-image: url('https://ik.imagekit.io/vtroph5l9/Product/Background%20(1).png?updatedAt=1740908969368');
+    background-color: #0F172A;
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;

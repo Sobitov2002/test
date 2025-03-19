@@ -21,7 +21,7 @@ const login = async () => {
         const response = await api.post("/token", formData);
 
         await localStorage.setItem("token", response.data.access_token); 
-        router.push("/");
+        router.push("/dashboard");
     } catch (error) {
         console.error("Login error:", error);
         errorMessage.value = "Login yoki parol noto‘g‘ri!";
@@ -72,7 +72,7 @@ const login = async () => {
 
 <style scoped>
 .myimg{
-    background-image: url('https://s3-alpha-sig.figma.com/img/fd9d/1149/f82b2ead74cabcb8c47273f4713a6493?Expires=1742774400&Key-Pair-Id=APKAQ4GOSFWCW27IBOMQ&Signature=XN0x1obcC8FlT5j~x4Ae99JYzguwjhZhaZULE~sp67vMXTWK3UCiU-tPvkieP3Gz5rE9yT0FDl4Bxx9iFgGzELXBC3tZD5ue~~2KofdMn-6~Aul7AyGYgvcRCdoP~Bci~LeW7yqnU29SRwRJ3e9geg19hqcuMmfkccvPSF7SahBgIQwdBsWd9MUQ7YUw0YbzyXJN1Wj2qKQ5oc9TFeqTcXRV9iwAYH53XKyTgwojZelPaT1mlDk2Iei9Xb5YVGEPAYTEXpNqWbFRQE3m93QoW5wdwlErWoZ5oCEvOEWzMVN2fKT9AtQarLG8Aa72AcH0rwQdh9wCdXKrMi9vdGf78Q__');
+   
     background-size: cover;
     background-position: center;
     height: 100vh;

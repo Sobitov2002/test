@@ -1,46 +1,79 @@
 <script setup lang="ts">
-;
-import { defineProps } from 'vue';
+import { defineProps, onMounted, ref, watchEffect } from 'vue';
+import api from '@/service/apiService';
+import { useDateStore } from '@/page/dashboard/store/index';
+
+const store = useDateStore()
 interface Adminstratr {
     total_students: number;
-
+    count: number;
 }
+
+const allCourser = ref<{ count: number } | null>(null);
+const counter = ref<number | null>(null);
+const allPeyment = ref();
+
 
 const props = defineProps({
     studentCount: {
         type: Number,
-        default: null
-    },
-    getAllCourse: {
-        type: Number,
-        default: null
+        default: null,
     },
     fetchAdminstratr: {
-        type: Object,  
-        default: () => ({ count: null }) 
+        type: Object as () => { count: number },
+        default: () => ({ count: 0 }),
     },
     adminstratr: {
-        type: Array as () => Adminstratr[], // Define it as an array of Adminstratr objects
-        default: () => []
+        type: Number,
+        default: () => [],
+    },
+});
+
+onMounted(async () => {
+    try {
+        const response = await api.get('/course/get_count', { withCredentials: true });
+        allCourser.value = response.data;
+        counter.value = response.data.count;
+    } catch (error) {
+        console.error('Get course error:', error);
     }
 });
 
-console.log(props.adminstratr);
+const dateStore = useDateStore();
+const allPayment = ref();
+const expense = ref();
 
+watchEffect(async () => {
+    if (dateStore.startDate && dateStore.endDate) {
+        try {
+            const response = await api.get(`/payment/monthly_sum?start_date=${dateStore.startDate}&end_date=${dateStore.endDate}`);
+            allPayment.value = response.data;
+        } catch (error) {
+            console.error("To'lov ma'lumotlarini olishda xato:", error);
+        }
+
+        try {
+            const response = await api.get(`/expense/get_sum_expense?start_date=${dateStore.startDate}&end_date=${dateStore.endDate}`);
+            expense.value = response.data;
+        } catch (error) {
+            console.error("Xarajatlarni olishda xato:", error);
+        }
+    }
+});
 
 </script>
 
 
 <template>
-    <div class="grid lg:grid-cols-4 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-        <div style="background: linear-gradient(126.97deg, rgba(6, 11, 38, 0.74) 28.26%, rgba(26, 31, 55, 0.5) 91.2%);"
-            class="flex justify-between p-4 rounded-[20px]">
+    <div class="grid lg:grid-cols-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+
+        <div class="flex justify-between p-4 rounded-[20px] bg-[#1E293B] ">
             <div>
                 <h1 class="text-[#A0AEC0]">Talabalar soni: </h1>
                 <p class="text-[40px] text-white font-bold">{{ props.studentCount }}</p>
             </div>
             <div class="flex justify-center items-center">
-                <div class="bg-[#0075FF] p-[11px] rounded-[12px]">
+                <div class="bg-[#06b853] p-[11px] rounded-[12px]">
                     <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
                         xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
                         viewBox="0 0 24 24">
@@ -52,33 +85,13 @@ console.log(props.adminstratr);
             </div>
         </div>
 
-        <div style="background: linear-gradient(126.97deg, rgba(6, 11, 38, 0.74) 28.26%, rgba(26, 31, 55, 0.5) 91.2%);"
-            class="flex justify-between p-4 rounded-[20px]">
-            <div>
-                <h1 class="text-[#A0AEC0]">O'qituvchilar soni: </h1>
-                <p class="text-[40px] text-white font-bold">{{ props.getAllCourse }}</p>
-            </div>
-            <div class="flex justify-center items-center">
-                <div class="bg-[#0075FF] p-[11px] rounded-[12px]">
-                    <svg class="w-[22px] h-[22px] text-gray-800 dark:text-white" aria-hidden="true"
-                        xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M14.6144 7.19994c.3479.48981.5999 1.15357.5999 1.80006 0 1.6569-1.3432 3-3 3-1.6569 0-3.00004-1.3431-3.00004-3 0-.67539.22319-1.29865.59983-1.80006M6.21426 6v4m0-4 6.00004-3 6 3-6 2-2.40021-.80006M6.21426 6l3.59983 1.19994M6.21426 19.8013v-2.1525c0-1.6825 1.27251-3.3075 2.95093-3.6488l3.04911 2.9345 3-2.9441c1.7026.3193 3 1.9596 3 3.6584v2.1525c0 .6312-.5373 1.1429-1.2 1.1429H7.41426c-.66274 0-1.2-.5117-1.2-1.1429Z" />
-                    </svg>
-
-                </div>
-            </div>
-        </div>
-
-
-        <div style="background: linear-gradient(126.97deg, rgba(6, 11, 38, 0.74) 28.26%, rgba(26, 31, 55, 0.5) 91.2%);"
-            class="flex justify-between p-4 rounded-[20px]">
+        <div class="flex justify-between p-4 rounded-[20px] bg-[#1E293B] ">
             <div>
                 <h1 class="text-[#A0AEC0]">Ustozlar soni: </h1>
                 <p class="text-[40px] text-white font-bold">{{ props.fetchAdminstratr.count }}</p>
             </div>
             <div class="flex justify-center items-center">
-                <div class="bg-[#0075FF] p-[11px] rounded-[12px]">
+                <div class="bg-[#06b853] p-[11px] rounded-[12px]">
                     <svg class="w-[22px] h-[22px] text-gray-800 dark:text-white" aria-hidden="true"
                         xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -89,12 +102,30 @@ console.log(props.adminstratr);
             </div>
         </div>
 
-        <div style="background: linear-gradient(126.97deg, rgba(6, 11, 38, 0.74) 28.26%, rgba(26, 31, 55, 0.5) 91.2%);"
-            class="flex justify-between p-4 rounded-[20px]">
+        <div class="flex justify-between bg-[#1E293B] p-4 rounded-[20px]">
+            <div>
+                <h1 class="text-[#A0AEC0]">Guruhlar soni: </h1>
+                <p class="text-[40px] text-white font-bold">{{ counter }}</p>
+            </div>
+            <div class="flex justify-center items-center">
+                <div class="bg-[#06b853] p-[11px] rounded-[12px]">
+                    <svg class="w-[22px] h-[22px] text-gray-800 dark:text-white" aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M14.6144 7.19994c.3479.48981.5999 1.15357.5999 1.80006 0 1.6569-1.3432 3-3 3-1.6569 0-3.00004-1.3431-3.00004-3 0-.67539.22319-1.29865.59983-1.80006M6.21426 6v4m0-4 6.00004-3 6 3-6 2-2.40021-.80006M6.21426 6l3.59983 1.19994M6.21426 19.8013v-2.1525c0-1.6825 1.27251-3.3075 2.95093-3.6488l3.04911 2.9345 3-2.9441c1.7026.3193 3 1.9596 3 3.6584v2.1525c0 .6312-.5373 1.1429-1.2 1.1429H7.41426c-.66274 0-1.2-.5117-1.2-1.1429Z" />
+                    </svg>
+
+                </div>
+            </div>
+        </div>
+
+
+
+
+        <div class="flex justify-between bg-[#1E293B]  p-4 rounded-[20px]">
             <div>
                 <h1 class="text-[#A0AEC0]">Qabullar soni: </h1>
-                <p v-if="props.adminstratr"
-                    class="text-[40px] text-white font-bold">
+                <p v-if="props.adminstratr" class="text-[40px] text-white font-bold">
                     {{ props.adminstratr.total_students }}
                 </p>
                 <p v-else class="text-[20px] text-white font-bold">
@@ -103,7 +134,7 @@ console.log(props.adminstratr);
             </div>
 
             <div class="flex justify-center items-center">
-                <div class="bg-[#0075FF] p-[11px] rounded-[12px]">
+                <div class="bg-[#06b853] p-[11px] rounded-[12px]">
                     <svg class="w-[22px] h-[22px] text-gray-800 dark:text-white" aria-hidden="true"
                         xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -113,5 +144,54 @@ console.log(props.adminstratr);
                 </div>
             </div>
         </div>
+
+        <div style="" class="flex justify-between bg-[#1E293B] p-4 rounded-[20px]">
+            <div>
+                <h1 class="text-[#A0AEC0]">Umumiy to'lov: </h1>
+                <p v-if="props.adminstratr" class="text-[40px] text-white font-bold">{{ allPeyment &&
+                    allPeyment ? Math.round(allPeyment / 100) + "" : "0 so'm" }}
+                </p>
+                <p v-else class="text-[20px] text-white font-bold">
+                    Ma'lumot yo'q
+                </p>
+            </div>
+
+            <div class="flex justify-center items-center">
+                <div class="bg-[#06b853] p-[11px] rounded-[12px]">
+                    <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M19 6c0 1.657-3.134 3-7 3S5 7.657 5 6m14 0c0-1.657-3.134-3-7-3S5 4.343 5 6m14 0v6M5 6v6m0 0c0 1.657 3.134 3 7 3s7-1.343 7-3M5 12v6c0 1.657 3.134 3 7 3s7-1.343 7-3v-6" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+        <div class="flex justify-between p-4 rounded-[20px] bg-[#1E293B]">
+            <div>
+                <h1 class="text-[#A0AEC0]">Umumiy xarajat </h1>
+                <p v-if="props.adminstratr" class="text-[40px] text-white font-bold">
+                    {{ expense && expense.total_expense ? Math.round(expense.total_expense / 100) + " " : "0 So'm" }}
+                </p>
+                <p v-else class="text-[20px] text-white font-bold">
+                    Ma'lumot yo'q
+                </p>
+            </div>
+
+            <div class="flex justify-center items-center">
+                <div class="bg-[#06b853] p-[11px] rounded-[12px]">
+                    <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M13.5 8H4m4 6h8m0 0-2-2m2 2-2 2M4 6v13a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V9a1 1 0 0 0-1-1h-5.032a1 1 0 0 1-.768-.36l-1.9-2.28a1 1 0 0 0-.768-.36H5a1 1 0 0 0-1 1Z" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+
     </div>
+
+
+
+
+
 </template>

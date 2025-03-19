@@ -1,5 +1,7 @@
 import api from '@/service/apiService';
 
+
+
 const fetchStudentCount = async (): Promise<number | null> => {
   try {
     const response = await api.get('/student/get_count', { withCredentials: true });
@@ -12,7 +14,8 @@ const fetchStudentCount = async (): Promise<number | null> => {
 
 const fetchFullCourse = async ()=> {
   try {
-    const response = await api.get('/course/get_all', { withCredentials: true});
+    const response = await api.get('/course/get_count', { withCredentials: true});
+    
     return response.data;
     
   } catch (error) {
@@ -55,18 +58,6 @@ const getCurrentYearMonth = () => {
   };
 };
 
-const fetchPayment = async () => {
-  try {
-
-    const { year, month } = getCurrentYearMonth();
-
-   const response = await api.get(`/payment/monthly_sum?year=${year}&month=${month}`);   
-    return response.data;
-  } catch (error) {
-    console.error('To\'lov ma\'lumotlarini olishda xato:', error);
-  
-  }
-};
 
 const fetchExpence = async ()  =>{
   
@@ -94,4 +85,4 @@ const getMonthly = async () => {
 
 
 
-export { fetchStudentCount, fetchFullCourse , fetchAdminstrator , Adminstrator , courseGetAll , fetchPayment , fetchExpence ,getMonthly };
+export { fetchStudentCount, fetchFullCourse , fetchAdminstrator , Adminstrator , courseGetAll , fetchExpence ,getMonthly };

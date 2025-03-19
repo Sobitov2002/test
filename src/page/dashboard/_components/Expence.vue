@@ -16,15 +16,28 @@ const fetchPaymentStatistics = async () => {
   if (!dateStore.startDate || !dateStore.endDate) return;
 
   try {
-    const response = await api.get(`/payment/statistics?start_date=${dateStore.startDate}&end_date=${dateStore.endDate}`);
-    const data = response.data[0];
+    const response = await api.get(`/expense/get?start_date=${dateStore.startDate}&end_date=${dateStore.endDate}`);
+    const data = response.data;
 
+    // Naxt va Click to'lovlarini jamlash
+    let cashAmount = 0;
+    let clickAmount = 0;
+    
+    data.forEach((item: { amount: number; payment_type: string }) => {
+      if (item.payment_type === 'cash') {
+        cashAmount += item.amount;
+      } else if (item.payment_type === 'click') {
+        clickAmount += item.amount;
+      }
+    });
 
-    totalAmount.value = data.total_amount || 0;
+    // Jami to'lovni hisoblash
+    totalAmount.value = cashAmount + clickAmount;
 
+    // Diagramma uchun ma'lumotlar
     payments.value = [
-      { name: 'Naxt', amount: data.cash_amount || 0, color: 'red' },
-      { name: 'Click', amount: data.click_amount || 0, color: '#0F172A' }
+      { name: 'Naxt', amount: cashAmount, color: '#06b853' },
+      { name: 'Click', amount: clickAmount, color: '#0F172A' }
     ];
 
     updateChart();
@@ -65,7 +78,7 @@ watch(() => [dateStore.startDate, dateStore.endDate], fetchPaymentStatistics, { 
 
 <template>
   <div class="p-6 bg-[#1E293B] rounded-lg shadow-md">
-    <h2 class="text-lg font-semibold text-white">Tushumlar</h2>
+    <h2 class="text-lg font-semibold text-white">Xarajatlar</h2>
     <div class="h-[300px] w-full flex justify-center">
       <canvas ref="chartCanvas"></canvas>
     </div>

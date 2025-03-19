@@ -23,14 +23,27 @@ const deleteTeacher = async (teacherId: string) => {
 };
 
 
-const updateTeacher = async () => {
+const updateTeacher = async (id: string, data: any) => {
     try {
-        const response = await api.put('');
-        return response.data; 
-    } catch (error) {
-        console.error("O'qituvchini yangilashda xatolik:", error);
+        console.log("Yuborilayotgan ma'lumot:", JSON.stringify(data, null, 2));
+
+        const response = await api.put(`/admistrator/update_user?ident=${id}`, data, {
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+
+        console.log("Server javobi:", response.data);
+        return response.data;
+    } catch (error: any) {
+        if (error.response) {
+            console.error("Server xatosi:", error.response.data);
+        } else {
+            console.error("Tarmoq xatosi:", error);
+        }
         return null;
     }
 };
 
-export { getTeachers, deleteTeacher };
+
+export { getTeachers, deleteTeacher , updateTeacher };

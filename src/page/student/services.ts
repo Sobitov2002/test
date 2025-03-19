@@ -1,5 +1,5 @@
 import api from '@/service/apiService';
-import Student from '@/page/student/Page.vue';
+
 
 const fetchFullstudent = async ()=> {
   try {
@@ -66,6 +66,19 @@ const deleteStudent = async (students:number) =>{
 };
 
 
+const postStudent = async (paymentData: any) => {
+    try {
+        const response = await api.post('/payment/create', paymentData, {
+            headers: { "Content-Type": "application/json" },
+            withCredentials: true
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Xatolik yuz berdi:", error);
+        throw error;
+    }
+};
 
 
-export  {fetchFullstudent , addUser , deleteStudent,}
+
+export  {fetchFullstudent , addUser , deleteStudent, postStudent}

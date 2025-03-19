@@ -31,7 +31,7 @@ const newTeacher = ref({
 
 
 const submitTeacher = async () => {
-    console.log("Jo‘natilayotgan obyekt:", newTeacher.value);
+    
 
     if (!newTeacher.value.full_name || !newTeacher.value.password || !newTeacher.value.email || !newTeacher.value.phone_number) {
         alert("Barcha maydonlarni to‘ldiring!");

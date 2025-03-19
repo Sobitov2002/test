@@ -10,11 +10,13 @@ import AddUpdateTeacher from '@/page/teacher/_components/Add&UpdateTeacher.vue'
 import Group from '@/page/course/Page.vue'
 import Course from "@/page/course/_components/Group.vue"
 import Peyment from '@/page/peyment/Page.vue'
+import Expence from '@/page/expense/Page.vue'
+import StudentsAll from '@/page/student/_components/AllStudents.vue'
 const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/',
+      path: '/dashboard',
       name: 'home',
       component: Dashboard,
       meta: { layout: DefaultLayout }
@@ -33,17 +35,18 @@ const router = createRouter({
       meta: { layout: DefaultLayout, requiresAuth: true }
     },
     {
-    path: '/login',
+    path: '/',
     name: 'login',
     component: Login,
     meta: { layout: AuthLayout }
     },
     {
-    path: '/peyment',
+    path: '/payment',
     name: 'peyment',
     component: Peyment,
     meta: { layout: DefaultLayout }
-    },    {
+    },   
+     {
     path: '/group',
     name: 'group',
     component:Group,
@@ -61,6 +64,18 @@ const router = createRouter({
     component:Student,
     meta: { layout: DefaultLayout }
     },
+     {
+    path: '/expense',
+    name: 'expense',
+    component:Expence,
+    meta: { layout: DefaultLayout }
+    },
+     {
+    path: '/students',
+    name: 'students',
+    component:StudentsAll,
+    meta: { layout: DefaultLayout }
+    },
     {
     path: '/profil',
     name: 'profil',
@@ -72,8 +87,8 @@ const router = createRouter({
 })
 router.beforeEach((to, from, next) => {
   const token = localStorage.getItem('token');
-  if (to.meta.requiresAuth && !token) {
-    router.push('/login')
+  if (!token && to.path !== '/login') {
+    next('/login'); 
   } else {
     next();
   }

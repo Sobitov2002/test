@@ -15,7 +15,7 @@ const getRouteName = () => {
     return route.path === '/' ? 'Bosh Sahifa' : route.path.replace('/', '').replace(/-/g, ' ').toUpperCase();
 };
 const loginhandler = () =>{
-    router.push('/login')
+    router.push('/')
 }
 </script>
 
