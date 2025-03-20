@@ -25,4 +25,6 @@ const postStudent = async (paymentData: any) => {
 };
 
 
-export { getAllStudents , postStudent}
+
+
+export { getAllStudents , postStudent }

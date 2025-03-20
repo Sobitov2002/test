@@ -6,6 +6,7 @@ import api from '@/service/apiService';
 
 const expenses = ref<any[]>([]);
 const selectedFilter = ref("");
+const searchQuery = ref<string>('');
 onMounted(async () =>{
     try {
         expenses.value = await getAllExpence();
@@ -16,7 +17,19 @@ onMounted(async () =>{
     }
 })
 
+const filteredExpenses = computed(() => {
+    return expenses.value.filter(expense => {
+        const matchesCategory = searchQuery.value
+            ? expense.category.toLowerCase().includes(searchQuery.value.toLowerCase())
+            : true;
 
+        const matchesPaymentType = selectedFilter.value
+            ? expense.payment_type === selectedFilter.value
+            : true;
+
+        return matchesCategory && matchesPaymentType;
+    });
+});
 const deleteExpense = async (id: number) => {
     try {
         await api.delete(`/expense/delete?ident=${id}`);
@@ -27,12 +40,7 @@ const deleteExpense = async (id: number) => {
         console.error("Xatolik yuz berdi:", error);
     }
 };
-const filterExpence = computed(() => {
-    if (!selectedFilter.value) {
-        return expenses.value; 
-    }
-    return expenses.value.filter(expense => expense.payment_type === selectedFilter.value);
-});
+
 
 
 </script>
@@ -45,12 +53,14 @@ const filterExpence = computed(() => {
                 <h3 class="text-4xl max-md:text-2xl font-extrabold text-gray-700 dark:text-white">Xarajatlar</h3>
                 <p class="text-sm text-white text-muted-foreground">Barcha xarajatlar</p>
             </div>
-            <div class="flex gap-2 items-center justify-center">
+            <div class="flex gap-4 items-center justify-between">
                 <select class="bg-slate-900 text-white p-2 py-3 text-md rounded-md" v-model="selectedFilter">
                     <option value="">Hammasi</option>
                     <option value="click">Click</option>
                     <option value="cash">Cash</option>
                 </select>
+                <input v-model="searchQuery" type="text" placeholder="Ism bo‘yicha qidirish..."
+                    class="p-2 border border-gray-300 rounded-xl bg-gray-700 text-white" />
                 <button class="bg-blue-500 text-white px-4 py-2 rounded-md text-md ">+
                     Qo'shish</button>
             </div>
@@ -71,7 +81,7 @@ const filterExpence = computed(() => {
                         Summa
                     </th>
                     <th scope="col" class="px-0 text-white py-3 max-md:hidden">
-                       To'lov turi
+                        To'lov turi
                     </th>
                     <th scope="col" class="px-2 text-white py-3 w-[80px]">
                         Action
@@ -79,7 +89,7 @@ const filterExpence = computed(() => {
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="(item, index) in filterExpence " :key="index"
+                <tr v-for="(item, index) in filteredExpenses   " :key="index"
                     class="border-b last:border-b-0 hover:bg-gray-50 dark:hover:bg-gray-900 bg-blue-950 text-gray-900 dark:text-white">
                     <th class="px-2 py-2 md:px-6 flex items-center gap-2">
                         <img class="w-14 h-14 rounded-[50%] border border-white"
@@ -89,7 +99,7 @@ const filterExpence = computed(() => {
                     <td class="px-1 py-4 ">
                         {{ item.date }}
                     </td>
-                    
+
                     <td class="px-1 py-4">
                         {{ item.amount }}
                     </td>

@@ -49,7 +49,13 @@ const createNewCourse = async () => {
         if (newCourse && newCourse.id) {
             newCourseId.value = newCourse.id;
             courseName.value = '';
+
+            if (selectedFile.value) {
+                await uploadCourseImage(newCourse.id);
+            }
+
             groupData.value = await getAllGroup();
+            isModalOpen.value = false; // Modalni yopish
         } else {
             errorMessage.value = 'Kurs yaratishda xatolik yuz berdi.';
         }
@@ -61,29 +67,26 @@ const createNewCourse = async () => {
     }
 };
 
-const uploadCourseImage = async () => {
-    if (!selectedFile.value || !newCourseId.value) {
-        alert("Fayl tanlanmagan yoki kurs ID mavjud emas!");
-        return;
-    }
+const uploadCourseImage = async (courseId: number) => {
+    if (!selectedFile.value) return;
     isUploading.value = true;
     const formData = new FormData();
     formData.append("file", selectedFile.value);
 
     try {
-        await api.post(`/course/upload-image?ident=${newCourseId.value}`, formData, {
+        await api.post(`/course/upload-image?ident=${courseId}`, formData, {
             headers: {
                 "Accept": "application/json",
                 "Content-Type": "multipart/form-data"
             }
         });
-        isModalOpen.value = false;
     } catch (error) {
         console.error("Rasm yuklashda xatolik:", error);
     } finally {
         isUploading.value = false;
     }
 };
+
 
 const openDeleteModal = (id: number) => {
     selectedCourseId.value = id;
@@ -126,6 +129,26 @@ const confirmDelete = async () => {
                     <img @click.stop="openDeleteModal(item.id)" class="w-5 h-5 cursor-pointer"
                         src="../../assets/icon/trash.svg" alt="O‘chirish">
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <div v-if="isModalOpen" class="fixed inset-0 flex items-center justify-center bg-black/60">
+        <div class="bg-white p-6 rounded-lg shadow-lg w-96">
+            <h2 class="text-lg font-semibold mb-4">Yangi kurs yaratish</h2>
+
+            <input v-model="courseName" type="text" placeholder="Kurs nomi" class="w-full p-2 border rounded-md mb-4" />
+
+            <input type="file" @change="handleFileUpload" class="w-full p-2 border rounded-md mb-4" />
+
+            <div class="flex justify-end gap-3">
+                <button @click="isModalOpen = false" class="px-4 py-2 bg-gray-300 rounded-lg">
+                    Bekor qilish
+                </button>
+                <button @click="createNewCourse" :disabled="isLoading"
+                    class="px-4 py-2 bg-blue-600 text-white rounded-lg">
+                    {{ isLoading ? 'Yaratilmoqda...' : "Yaratish" }}
+                </button>
             </div>
         </div>
     </div>

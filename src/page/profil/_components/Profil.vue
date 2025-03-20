@@ -43,7 +43,7 @@ const closeModal = () => {
 
 <template>
     <div style="background: linear-gradient(126.97deg, rgba(6, 11, 38, 0.74) 28.26%, rgba(26, 31, 55, 0.5) 91.2%);"
-        class="w-full h-auto rounded-[20px] shadow-lg overflow-hidden relative">
+        class="w-[100%] h-auto rounded-[20px] shadow-lg overflow-hidden relative">
         <div
             class="banner w-full sm:h-[180px] h-[140px] rounded-t-[20px] bg-slate-400 relative flex sm:justify-start sm:pl-[30px] justify-center">
             <img src="https://i.pinimg.com/736x/78/22/d4/7822d44284a4218f82d4e001f80c4ca9.jpg"
@@ -70,7 +70,7 @@ const closeModal = () => {
             <h2 class="text-gray-700 text-sm font-medium dark:text-white">{{ profilData.role }}</h2>
         </div>
 
-        <div class="grid grid-cols-4 max-sm:grid-cols-1 max-lg:grid-cols-2 w-[95%] m-auto gap-4 mb-[20px]">
+        <div class="grid grid-cols-2 max-sm:grid-cols-1 max-lg:grid-cols-2  gap-4 mb-[20px]">
             <div class="flex items-start gap-2 w-full p-[5px] flex-col text-left">
                 <h1 class="block text-gray-600 m-0 dark:text-white">Telefon</h1>
                 <p class="text-gray-700 text-lg font-bold dark:text-white flex items-center">
