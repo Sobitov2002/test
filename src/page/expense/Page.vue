@@ -98,11 +98,11 @@ const deleteExpense = async (id: number) => {
                         <th scope="col" class="px-2 text-white py-3 w-[80px]">Action</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="py-2">
                     <tr v-for="(item, index) in filteredExpenses" :key="index"
                         class="border-b last:border-b-0 hover:bg-gray-50 dark:hover:bg-gray-900 bg-blue-950 text-gray-900 dark:text-white">
 
-                        <th class="px-2 py-2 md:px-6 flex items-center gap-2 whitespace-nowrap">
+                        <th class="px-2 py-4 md:px-6 flex items-center gap-2 whitespace-nowrap">
                             <img class="w-10 h-10 rounded-full border border-white"
                                 src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRH87TKQrWcl19xly2VNs0CjBzy8eaKNM-ZpA&s"
                                 alt="">
