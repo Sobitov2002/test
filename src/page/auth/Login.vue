@@ -1,81 +1,103 @@
 <script setup lang="ts">
-import { ref } from "vue";
-import { useRouter } from "vue-router";
-import api from "@/service/apiService";
+import { ref, reactive, watchEffect } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import { useSidebarStore } from '@/stores/sidebarStore';
 
+
+const sidebarStore = useSidebarStore();
+const route = useRoute();
 const router = useRouter();
-const email = ref("");
-const password = ref("");
-const errorMessage = ref("");
 
-const login = async () => {
-    try {
-        const formData = new URLSearchParams();
-        formData.append("grant_type", "password");
-        formData.append("username", email.value);
-        formData.append("password", password.value);
-        formData.append("scope", "");
-        formData.append("client_id", "string");
-        formData.append("client_secret", "string");
-
-        const response = await api.post("/token", formData);
-
-        await localStorage.setItem("token", response.data.access_token); 
-        router.push("/dashboard");
-    } catch (error) {
-        console.error("Login error:", error);
-        errorMessage.value = "Login yoki parol noto‘g‘ri!";
-    }
+// Sidebar'ni ochish / yopish
+const toggleSidebar = () => {
+    sidebarStore.isOpen = !sidebarStore.isOpen;
 };
 
+// Tokenni olish
+const token = ref<string | null>(localStorage.getItem('token'));
+
+// Foydalanuvchi ma'lumotlari
+const user = reactive({
+    name: 'Foydalanuvchi',
+    avatar: 'https://i.pravatar.cc/100'
+});
+
+// Dropdown menyuni boshqarish
+const menuOpen = ref(false);
+const toggleMenu = () => {
+    menuOpen.value = !menuOpen.value;
+};
+
+// Login funksiyasi
+const loginHandler = () => {
+    router.push('/login');
+};
+
+// Logout funksiyasi
+const logoutHandler = () => {
+    localStorage.removeItem('token'); // Tokenni tozalash
+    token.value = null; // Vue state'ni yangilash
+    console.log("Chiqildi");
+};
+
+// Foydalanuvchi ma'lumotlarini token bilan bog‘lash
+watchEffect(() => {
+    if (token.value) {
+        // Token mavjud bo‘lsa, foydalanuvchi ma'lumotlarini yuklash (dummy ma'lumot)
+        user.name = "John Doe";
+        user.avatar = "https://i.pravatar.cc/100";
+    }
+});
 </script>
 
 <template>
-    <div class="grid grid-cols-2 w-full">
+    <header
+        class="rounded-2xl fixed lg:left-0 right-0 mb-2 w-full bg-slate-900 md:bg-transparent text-white py-4 px-6 flex items-center justify-between z-50">
 
-        <div class="myimg flex items-center justify-center">
-            <img src="https://ik.imagekit.io/vtroph5l9/itechIcademy/photo_2025-03-10_11-58-11-Photoroom.png?updatedAt=1741592141139"
-                alt="">
+        <!-- Sidebar Toggle -->
+        <div class="lg:hidden cursor-pointer" @click="toggleSidebar">
+            <svg class="w-5 h-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
         </div>
-        <div class="bg-[#0F123B] flex items-center pl-4">
-            <div class="flex rounded-2xl px-3 py-5 w-[400px] border border-[#cccccc69] items-center justify-center ">
-                <div class="w-full max-w-md p-4">
-                    <h2 class="text-2xl font-bold text-center text-white mb-4">Kirish</h2>
 
-                    <div class="mb-4">
-                        <label for="email" class="block text-sm font-medium text-gray-100">Email</label>
-                        <input id="email" v-model="email" type="email" placeholder="Email kiriting"
-                            class="w-full mt-1 p-3 border text-gray-100 bg-[#090D2E] border-[#582CFF] rounded-[20px] " />
-                    </div>
+        <!-- Router Name -->
+        <div class="absolute lg:left-[284px] md:left-10 hidden md:block">
+            <RouteName />
+        </div>
 
-                    <div class="mb-4">
-                        <label for="password" class="block text-sm font-medium text-gray-100">Parol</label>
-                        <input id="password" v-model="password" type="password" placeholder="Parol kiriting"
-                            class="w-full bg-[#090D2E] mt-1 p-3 text-gray-100 border rounded-[20px] focus:ring-2 focus:ring-blue-500 focus:border-blue-500 " />
-                    </div>
+        <!-- Search & User Menu -->
+        <div>
+            <div v-if="token" class="relative">
+                <!-- User Menu -->
+                <div @click="toggleMenu"
+                    class="flex items-center cursor-pointer border border-gray-600 rounded-full p-2">
+                    <img class="w-10 h-10 rounded-full" :src="user.avatar" alt="User Avatar" />
+                    <p class="text-white ml-2">{{ user.name }}</p>
+                </div>
 
-                    <button @click="login"
-                        class="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 rounded-[12px] transition duration-300">
-                        Kirish
-                    </button>
+                <!-- Dropdown Menu -->
+                <div v-if="menuOpen" class="absolute right-0 mt-2 w-48 bg-gray-800 rounded-md shadow-lg z-10">
+                    <ul class="py-2 text-white">
+                        <li @click="profileHandler" class="px-4 py-2 hover:bg-gray-700 cursor-pointer">Profil</li>
+                        <li @click="logoutHandler" class="px-4 py-2 hover:bg-gray-700 cursor-pointer">Chiqish</li>
+                    </ul>
+                </div>
+            </div>
 
-                    <p v-if="errorMessage" class="mt-4 text-red-500 text-center">{{ errorMessage }}</p>
+            <!-- Kirish tugmasi -->
+            <div v-else class="grid grid-cols-1 border rounded-2xl items-center px-2 max-w-md ml-auto">
+                <div @click="loginHandler" class="flex gap-2 items-center cursor-pointer">
+                    <svg class="w-6 h-6 text-white" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                        fill="currentColor" viewBox="0 0 24 24">
+                        <path fill-rule="evenodd"
+                            d="M12 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm-2 9a4 4 0 0 0-4 4v1a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-1a4 4 0 0 0-4-4h-4Z"
+                            clip-rule="evenodd" />
+                    </svg>
+                    <p class="text-white px-2 py-1">Kirish</p>
                 </div>
             </div>
         </div>
-            
-
-    </div>
-
-
+    </header>
 </template>
-
-<style scoped>
-.myimg{
-   
-    background-size: cover;
-    background-position: center;
-    height: 100vh;
-    width: 100%;
-}
-</style>

@@ -37,20 +37,20 @@ const loginhandler = () =>{
         </div>
 
         <!-- Search & User Menu -->
-        <div class="grid grid-cols-2 items-center  max-w-md ml-auto">
+        <div class="grid grid-cols-1 border-1 rounded-2xl items-center px-2  max-w-md ml-auto">
 
-            <!-- Search Input -->
+           
             
 
             <!-- Sign In -->
-            <div @click="loginhandler" class="flex gap-2 cursor-pointer">
-                <svg class="w-6 h-6 text-gray-800 dark:text-[#E2E8F04D]" xmlns="http://www.w3.org/2000/svg" width="24"
+            <div @click="loginhandler" class="flex gap-2 items-center cursor-pointer ">
+                <svg class="w-6 h-6 text-white dark:text-[#fff]" xmlns="http://www.w3.org/2000/svg" width="24"
                     height="24" fill="currentColor" viewBox="0 0 24 24">
                     <path fill-rule="evenodd"
                         d="M12 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm-2 9a4 4 0 0 0-4 4v1a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-1a4 4 0 0 0-4-4h-4Z"
                         clip-rule="evenodd" />
                 </svg>
-                <p class="text-[#718096] hidden md:block">Sign In</p>
+                <p class="text-white px-2 py-1 ">Kirish</p>
             </div>
 
         </div>
