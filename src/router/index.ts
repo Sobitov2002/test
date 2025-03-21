@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router'
 import Teacher from '@/page/teacher/Page.vue'
 import Dashboard from '@/page/dashboard/page.vue'
 import Student from '@/page/student/Page.vue'
@@ -13,7 +13,7 @@ import Peyment from '@/page/peyment/Page.vue'
 import Expence from '@/page/expense/Page.vue'
 import StudentsAll from '@/page/student/_components/AllStudents.vue'
 const router = createRouter({
-   history: createWebHistory(import.meta.env.BASE_URL),
+   history: createWebHashHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/dashboard',

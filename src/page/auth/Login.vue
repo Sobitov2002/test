@@ -34,12 +34,14 @@ const login = async () => {
 </script>
 
 <template>
-    <div class="grid grid-cols-2 w-full">
-        <div class="myimg flex items-center justify-center">
-            <img src="https://ik.imagekit.io/vtroph5l9/itechIcademy/photo_2025-03-10_11-58-11-Photoroom.png?updatedAt=1741592141139"
-                alt="">
+    <div class="grid md:grid-cols-2 w-full">
+        <div class="hidden md:block">
+            <div class="myimg  flex items-center justify-center">
+                <img src="https://ik.imagekit.io/vtroph5l9/itechIcademy/photo_2025-03-10_11-58-11-Photoroom.png?updatedAt=1741592141139"
+                    alt="">
+            </div>
         </div>
-        <div class="bg-[#0F123B] flex items-center pl-4">
+        <div class="bg-[#0F123B] h-[100vh] flex items-center justify-center md:justify-start pl-4">
             <div class="flex rounded-2xl px-3 py-5 w-[400px] border border-[#cccccc69] items-center justify-center">
                 <div class="w-full max-w-md p-4">
                     <h2 class="text-2xl font-bold text-center text-white mb-4">Kirish</h2>
