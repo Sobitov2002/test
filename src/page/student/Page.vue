@@ -96,34 +96,50 @@ const updateStudentData = async () => {
         <div class="flex justify-between border-b border-gray-600 mb-4">
             <div>
                 <h3 class="text-4xl max-md:text-2xl font-extrabold text-gray-700 dark:text-white">O'quvchilar</h3>
-                <p class="text-sm text-white text-muted-foreground">Barcha O'quvchilar</p>
             </div>
             <button @click="isModalOpen = true" class="bg-blue-500 text-white px-4 py-2 rounded-md mb-4">
                 + Qo'shish
             </button>
         </div>
 
-        <ul class="space-y-3">
-            <li v-for="(student, index) in fetchFulstudent" :key="index" class="p-2 text-white"
-                :class="{ 'border-b border-gray-600': index !== fetchFulstudent.length - 1 }">
-                <div class="flex justify-between items-center">
-                    <div class="flex items-center gap-4">
-                        <img class="w-12 h-12 rounded-full"
-                            src="https://i.pinimg.com/236x/4e/22/be/4e22beef6d94640c45a1b15f4a158b23.jpg" alt="User">
-                        <p class="text-sm text-gray-400">ID: {{ student.id }}</p>
-                        <p class="text-lg font-bold">{{ student.full_name }}</p>
-                    </div>
-                    <p class="text-sm text-gray-400">{{ student.phone_number }}</p>
-                    <p class="text-sm text-gray-400">{{ student.started_date }}</p>
-                    <div class="flex gap-4">
-                        <img src="../../assets/icon/edit.svg" alt="edit_icon" class="w-5 h-5 mb-2 cursor-pointer"
-                            @click="editStudent(student)">
-                        <img src="../../assets/icon/trash.svg" alt="delete_icon" class="w-5 h-5 cursor-pointer"
-                            @click="removeStudent(student.id)">
-                    </div>
-                </div>
-            </li>
-        </ul>
+        <div class="overflow-x-auto w-full">
+            <table class="w-full min-w-max text-sm shadow-md sm:rounded-lg text-left text-gray-500">
+                <thead class="text-xs text-gray-700 uppercase">
+                    <tr>
+                        <th class="px-2 text-white py-3">O'quvchi</th>
+                        <th class="px-2 text-white py-3">Telefon raqami</th>
+                        <th class="px-2 text-white py-3">Boshlagan sana</th>
+                        <th class="px-2 text-white py-3">Harakatlar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(student, index) in fetchFulstudent" :key="index"
+                        class="border-b last:border-b-0 hover:bg-gray-50 dark:hover:bg-gray-900 bg-blue-950 text-gray-900 dark:text-white">
+
+
+
+                        <td class="px-2 py-4 flex items-center  gap-2 whitespace-nowrap">
+                            <img class="w-12 h-12 rounded-full border border-white"
+                                src="https://i.pinimg.com/236x/4e/22/be/4e22beef6d94640c45a1b15f4a158b23.jpg"
+                                alt="User">
+                            <span class="font-bold"> {{ student.full_name }} </span>
+                        </td>
+
+                        <td class="px-2 py-4 whitespace-nowrap text-gray-400"> {{ student.phone_number }} </td>
+                        <td class="px-2 py-4 whitespace-nowrap text-gray-400"> {{ student.started_date }} </td>
+
+                        <td class="px-2 py-4    ">
+                            <div class="flex gap-4 ">
+                                <img src="../../assets/icon/edit.svg" alt="edit_icon" class="w-5 h-5 cursor-pointer"
+                                    @click="editStudent(student)">
+                                <img src="../../assets/icon/trash.svg" alt="delete_icon" class="w-5 h-5 cursor-pointer"
+                                    @click="removeStudent(student.id)">
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <div v-if="isModalOpen" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
@@ -134,7 +150,8 @@ const updateStudentData = async () => {
             <input v-model="newStudent.phone_number" type="text" placeholder="Telefon raqam"
                 class="border p-2 rounded w-full mb-3" />
             <div class="flex justify-end space-x-2">
-                <button @click="isModalOpen = false" class="bg-gray-400 text-white px-4 py-2 rounded">Bekor qilish</button>
+                <button @click="isModalOpen = false" class="bg-gray-400 text-white px-4 py-2 rounded">Bekor
+                    qilish</button>
                 <button @click="addStudent" class="bg-blue-500 text-white px-4 py-2 rounded">Qo'shish</button>
             </div>
         </div>
@@ -148,7 +165,8 @@ const updateStudentData = async () => {
             <input v-model="selectedStudent.phone_number" type="text" placeholder="Telefon raqam"
                 class="border p-2 rounded w-full mb-3" />
             <div class="flex justify-end space-x-2">
-                <button @click="isEditModalOpen = false" class="bg-gray-400 text-white px-4 py-2 rounded">Bekor qilish</button>
+                <button @click="isEditModalOpen = false" class="bg-gray-400 text-white px-4 py-2 rounded">Bekor
+                    qilish</button>
                 <button @click="updateStudentData" class="bg-blue-500 text-white px-4 py-2 rounded">Saqlash</button>
             </div>
         </div>

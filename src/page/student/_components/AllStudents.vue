@@ -126,32 +126,48 @@ const confirmPayment = async () => {
         </div>
     </div>
 
-    <table class="w-full text-sm shadow-md sm:rounded-lg overflow-hidden text-left text-gray-500">
-        <thead class="text-xs text-gray-700 uppercase">
-            <tr>
-                <th class="px-2 text-white py-3">O'qituvchilar</th>
-                <th class="px-1 text-white py-3">Telefon raqami</th>
-                <th class="px-1 text-white py-3">Email</th>
-                <th class="px-0 text-white py-3 max-md:hidden">Status</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr v-for="(item, index) in students" :key="index"
-                class="border-b last:border-b-0 hover:bg-gray-50 dark:hover:bg-gray-900 bg-blue-950 text-gray-900 dark:text-white">
-                <th class="px-2 py-2 md:px-6 flex items-center gap-2">
-                    <img class="w-14 h-14 rounded-full border border-white"
-                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRH87TKQrWcl19xly2VNs0CjBzy8eaKNM-ZpA&s"
-                        alt=""> {{ item.full_name }}
-                </th>
-                <td class="px-1 py-4">+998 {{ item.phone_number }}</td>
-                <td class="px-1 py-4">{{ item.started_date }}</td>
-                <td class="px-0 py-4 max-md:hidden">
-                    <button @click="openPaymentModal(item)"
-                        class="px-4 py-2 text-white bg-blue-600 rounded hover:bg-blue-700">
-                        To'lov qilish
-                    </button>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+
+    <div class="p-4 rounded-md max-w-[1400px] mx-auto "
+        style="background: linear-gradient(126.97deg, rgba(6, 11, 38, 0.74) 28.26%, rgba(26, 31, 55, 0.5) 91.2%);">
+        <div class="flex justify-between border-b border-gray-600 mb-4">
+            <div>
+                <h3 class="text-4xl max-md:text-2xl font-extrabold text-gray-700 dark:text-white">O'quvchilar</h3>
+            </div>
+        </div>
+
+        <!-- Mobil ekran uchun X o‘qi bo‘ylab skroll -->
+        <div class="overflow-x-auto w-full">
+            <table class="w-full min-w-max text-sm shadow-md sm:rounded-lg text-left text-gray-500">
+                <thead class="text-xs text-gray-700 uppercase">
+                    <tr>
+                        <th class="px-2 text-white py-3">O'qituvchilar</th>
+                        <th class="px-1 text-white py-3">Telefon raqami</th>
+                        <th class="px-1 text-white py-3">Email</th>
+                        <th class="px-0 text-white py-3">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(item, index) in students" :key="index"
+                        class="border-b last:border-b-0 hover:bg-gray-50 dark:hover:bg-gray-900 bg-blue-950 text-gray-900 dark:text-white">
+                        <th class="px-2 py-2 md:px-6 flex items-center gap-2 whitespace-nowrap">
+                            <img class="w-14 h-14 rounded-full border border-white"
+                                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRH87TKQrWcl19xly2VNs0CjBzy8eaKNM-ZpA&s"
+                                alt="">
+                            {{ item.full_name }}
+                        </th>
+                        <td class="px-1 py-4 whitespace-nowrap">+998 {{ item.phone_number }}</td>
+                        <td class="px-1 py-4 whitespace-nowrap">{{ item.started_date }}</td>
+                        <td class="px-0 py-4 whitespace-nowrap">
+                            <button @click="openPaymentModal(item)"
+                                class="px-4 py-2 text-white bg-blue-600 rounded hover:bg-blue-700">
+                                To'lov qilish
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
 </template>

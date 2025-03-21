@@ -36,8 +36,8 @@ const fetchPaymentStatistics = async () => {
 
     // Diagramma uchun ma'lumotlar
     payments.value = [
-      { name: 'Naxt', amount: cashAmount, color: '#06b853' },
-      { name: 'Click', amount: clickAmount, color: '#0F172A' }
+      { name: 'Naxt', amount: cashAmount, color: '#00ff71' },
+      { name: 'Click', amount: clickAmount, color: '#00985b' }
     ];
 
     updateChart();
@@ -82,21 +82,18 @@ watch(() => [dateStore.startDate, dateStore.endDate], fetchPaymentStatistics, { 
     <div class="h-[300px] w-full flex justify-center">
       <canvas ref="chartCanvas"></canvas>
     </div>
-    
+
     <!-- To'lovlar ro'yxati -->
     <div class="mt-4 space-y-2">
-      <div
-        v-for="(payment, index) in payments"
-        :key="index"
-        class="flex justify-between items-center p-3 rounded bg-green-100 text-green-700"
-      >
+      <div v-for="(payment, index) in payments" :key="index"
+        class="flex justify-between items-center p-3 rounded bg-[#0F172A] text-green-700">
         <span class="font-medium">{{ payment.name }}</span>
         <span class="font-bold">{{ payment.amount.toLocaleString() }} so'm</span>
       </div>
     </div>
 
     <!-- Jami to'lov -->
-    <div class="mt-4 p-3 rounded bg-blue-100 text-blue-700 flex justify-between items-center">
+    <div class="mt-4 p-3 rounded bg-[#0F172A] text-white flex justify-between items-center">
       <span class="font-medium">Jami:</span>
       <span class="font-bold">{{ totalAmount.toLocaleString() }} so'm</span>
     </div>

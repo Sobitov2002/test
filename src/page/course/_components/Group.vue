@@ -143,14 +143,13 @@ const updateGroup = async () => {
                 <h3 class="text-4xl max-md:text-2xl font-extrabold text-gray-700 dark:text-white">
                     Guruhlar
                 </h3>
-                <p class="text-sm text-white text-muted-foreground">Barcha guruhlar</p>
             </div>
             <button @click="isModalOpen = true" class="bg-blue-500 text-white px-4 py-2 rounded-md mb-4">
                 + Qo'shish
             </button>
         </div>
 
-        <div class="grid grid-cols-5 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-4">
 
             <div style="background: linear-gradient(126.97deg, rgba(6, 11, 38, 0.74) 28.26%, rgba(26, 31, 55, 0.5) 91.2%);"
                 v-for="(item, index) in groupData" :key="index"

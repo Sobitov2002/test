@@ -30,7 +30,7 @@ onMounted(async () => {
 
 <template>
     <div class="p-2">
-        <div>
+        <div class="">
             <div class="flex items-center gap-4">
 
                 <input type="date" v-model="dateStore.startDate" @change="dateStore.setStartDate(dateStore.startDate)"
@@ -39,12 +39,14 @@ onMounted(async () => {
                     class="text-white p-3 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" />
             </div>
 
-            <Statistic :studentCount="studentCount" :fetchAdminstratr="fetchAdminstratr" :adminstratr="adminstratr"
-                :peyment="allPayment" />
+            <div class="mt-4">
+                <Statistic :studentCount="studentCount" :fetchAdminstratr="fetchAdminstratr" :adminstratr="adminstratr"
+                    :peyment="allPayment" />
+            </div>
         </div>
         <div class="grid md:grid-cols-3 gap-4 grid-cols-1 mt-4">
             <PeymentDiagram />
             <Expence />
-             </div>
         </div>
+    </div>
 </template>

@@ -112,25 +112,29 @@ const confirmDelete = async () => {
         <div class="flex justify-between border-b border-gray-600 mb-4">
             <div>
                 <h3 class="text-4xl max-md:text-2xl font-extrabold text-gray-700 dark:text-white">Guruhlar</h3>
-                <p class="text-sm text-white text-muted-foreground">Barcha guruhlar</p>
             </div>
             <button @click="isModalOpen = true" class="bg-blue-500 text-white px-4 py-2 rounded-md mb-4">+
                 Qo'shish</button>
         </div>
 
-        <div class="grid xl:grid-cols-5 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-4">
             <div v-for="(item, index) in groupData" :key="index"
-                class="flex-col gap-4 cursor-pointer items-center p-4 rounded-xl bg-gray-800"
+                class="flex flex-col gap-4 cursor-pointer items-center p-4 rounded-xl bg-gray-800 hover:bg-gray-700 transition"
                 @click="goToGroupCourse(item.id)">
-                <img class="h-[250px] rounded-xl" :src="'https://iteachsystem.uz/images/' + item.image"
-                    :alt="item.name">
-                <div class="flex items-center justify-between">
-                    <p class="text-white flex items-center gap-4 text-xl font-bold">{{ item.name }}</p>
-                    <img @click.stop="openDeleteModal(item.id)" class="w-5 h-5 cursor-pointer"
-                        src="../../assets/icon/trash.svg" alt="O‘chirish">
+
+                <img class="h-[200px] w-full object-cover rounded-xl"
+                    :src="'https://iteachsystem.uz/images/' + item.image" :alt="item.name">
+
+                <div class="flex items-center justify-between w-full">
+                    <p class="text-white text-xl font-bold">{{ item.name }}</p>
+
+                    <button @click.stop="openDeleteModal(item.id)">
+                        <img class="w-5 h-5" src="../../assets/icon/trash.svg" alt="O‘chirish">
+                    </button>
                 </div>
             </div>
         </div>
+
     </div>
 
     <div v-if="isModalOpen" class="fixed inset-0 flex items-center justify-center bg-black/60">

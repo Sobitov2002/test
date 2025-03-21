@@ -73,7 +73,7 @@ const nextAddUdt = () => {
 </script>
 
 <template>
-    
+
     <div v-if="modalOpen" class="fixed inset-0 flex items-center justify-center bg-opacity-50 z-50">
         <div class="bg-slate-900 rounded-lg shadow-lg w-96 p-6">
             <h2 class="text-lg font-semibold text-gray-300">Tasdiqlash</h2>
@@ -92,7 +92,7 @@ const nextAddUdt = () => {
         </div>
     </div>
 
-    
+
     <div v-if="editModalOpen" class="fixed inset-0 flex items-center justify-center bg-opacity-50 z-50">
         <div class="bg-slate-900 rounded-lg shadow-lg w-96 p-6">
             <h2 class="text-lg font-semibold text-gray-300">O‘qituvchini tahrirlash</h2>
@@ -120,8 +120,9 @@ const nextAddUdt = () => {
         style="background: linear-gradient(126.97deg, rgba(6, 11, 38, 0.74) 28.26%, rgba(26, 31, 55, 0.5) 91.2%);">
         <div class="flex justify-between border-b border-gray-600 mb-4">
             <div>
-                <h3 class="text-4xl max-md:text-2xl font-extrabold text-gray-700 dark:text-white">O'qituvchilar</h3>
-                <p class="text-sm text-white text-muted-foreground">Barcha Ustozlar</p>
+                <h3 class="text-4xl max-md:text-2xl font-extrabold text-gray-700 space-x-1.5 dark:text-white">
+                    O'qituvchilar</h3>
+
             </div>
             <button @click="nextAddUdt" class="bg-blue-500 text-white px-4 py-2 rounded-md mb-4">+ Qo'shish</button>
         </div>
@@ -145,14 +146,16 @@ const nextAddUdt = () => {
                     </th>
                     <td class="px-1 py-4">+998 {{ item.phone_number }}</td>
                     <td class="px-1 py-4">{{ item.email }}</td>
-                    <td class="px-0 py-4 max-md:hidden">{{  }}</td>
-                    <td class="px-2 py-4 flex gap-3">
-                        <span @click="openDeleteModal(item)">
-                            <img src="../../../assets/icon/trash.svg" class="w-5 h-5 cursor-pointer">
-                        </span>
-                        <span @click="openEditModal(item)">
-                            <img src="../../../assets/icon/edit.svg" class="w-5 h-5 cursor-pointer">
-                        </span>
+                    <td class="px-0 py-4 max-md:hidden">{{ }}</td>
+                    <td class="px-2 py-4 ">
+                        <div class="flex  gap-4">
+                            <span @click="openDeleteModal(item)">
+                                <img src="../../../assets/icon/trash.svg" class="w-5 h-5 cursor-pointer">
+                            </span>
+                            <span @click="openEditModal(item)">
+                                <img src="../../../assets/icon/edit.svg" class="w-5 h-5 cursor-pointer">
+                            </span>
+                        </div>
                     </td>
                 </tr>
             </tbody>
