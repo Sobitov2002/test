@@ -94,8 +94,8 @@ const updateStudentData = async () => {
     <div class="p-4 rounded-md max-w-[1400px] mx-auto"
         style="background: linear-gradient(126.97deg, rgba(6, 11, 38, 0.74) 28.26%, rgba(26, 31, 55, 0.5) 91.2%);">
         <div class="flex justify-between border-b border-gray-600 mb-4">
-            <div>
-                <h3 class="text-4xl max-md:text-2xl font-extrabold text-gray-700 dark:text-white">O'quvchilar</h3>
+            <div class="mb-4">
+                <h3 class="text-4xl max-md:text-2xl font-extrabold text-gray-700 dark:text-white ">O'quvchilar</h3>
             </div>
             <button @click="isModalOpen = true" class="bg-blue-500 text-white px-4 py-2 rounded-md mb-4">
                 + Qo'shish

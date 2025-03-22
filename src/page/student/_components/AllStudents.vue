@@ -131,7 +131,7 @@ const confirmPayment = async () => {
         style="background: linear-gradient(126.97deg, rgba(6, 11, 38, 0.74) 28.26%, rgba(26, 31, 55, 0.5) 91.2%);">
         <div class="flex justify-between border-b border-gray-600 mb-4">
             <div>
-                <h3 class="text-4xl max-md:text-2xl font-extrabold text-gray-700 dark:text-white">O'quvchilar</h3>
+                <h3 class="text-4xl max-md:text-2xl font-extrabold text-gray-700 dark:text-white mb-3">O'quvchilar</h3>
             </div>
         </div>
 
@@ -140,7 +140,7 @@ const confirmPayment = async () => {
             <table class="w-full min-w-max text-sm shadow-md sm:rounded-lg text-left text-gray-500">
                 <thead class="text-xs text-gray-700 uppercase">
                     <tr>
-                        <th class="px-2 text-white py-3">O'qituvchilar</th>
+                        <th class="px-2 text-white py-3">O'quvchilar</th>
                         <th class="px-1 text-white py-3">Telefon raqami</th>
                         <th class="px-1 text-white py-3">Email</th>
                         <th class="px-0 text-white py-3">Status</th>

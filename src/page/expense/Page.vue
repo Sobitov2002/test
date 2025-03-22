@@ -1,21 +1,31 @@
 <script setup lang="ts">
 import { getAllExpence } from './service.ts'
-import { ref , onMounted , computed } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import api from '@/service/apiService';
-
 
 const expenses = ref<any[]>([]);
 const selectedFilter = ref("");
 const searchQuery = ref<string>('');
-onMounted(async () =>{
+const isModalOpen = ref(false);
+const isDeleteModalOpen = ref(false);
+const isLoading = ref(false);
+const deletingExpenseId = ref<number | null>(null);
+
+const newExpense = ref({
+    date: "",
+    amount: 0,
+    description: "",
+    category: "",
+    payment_type: ""
+});
+
+onMounted(async () => {
     try {
         expenses.value = await getAllExpence();
-        console.log(expenses.value);
-        
     } catch (error) {
         console.log(error);
     }
-})
+});
 
 const filteredExpenses = computed(() => {
     return expenses.value.filter(expense => {
@@ -30,19 +40,51 @@ const filteredExpenses = computed(() => {
         return matchesCategory && matchesPaymentType;
     });
 });
-const deleteExpense = async (id: number) => {
+
+const confirmDeleteExpense = (id: number) => {
+    deletingExpenseId.value = id;
+    isDeleteModalOpen.value = true;
+};
+
+const deleteExpense = async () => {
+    if (deletingExpenseId.value === null) return;
+    isLoading.value = true;
     try {
-        await api.delete(`/expense/delete?ident=${id}`);
-        console.log("O'chirildi", id);
-        expenses.value = expenses.value.filter(expense => expense.id !== id);
-        return getAllExpence()
+        await api.delete(`/expense/delete?ident=${deletingExpenseId.value}`);
+        expenses.value = expenses.value.filter(expense => expense.id !== deletingExpenseId.value);
     } catch (error) {
         console.error("Xatolik yuz berdi:", error);
+    } finally {
+        isLoading.value = false;
+        isDeleteModalOpen.value = false;
     }
 };
 
+const addExpense = async () => {
+    isLoading.value = true;
+    try {
+        const formattedExpense = {
+            date: new Date(newExpense.value.date).toISOString().split('T')[0],
+            amount: newExpense.value.amount,
+            description: newExpense.value.description,
+            category: newExpense.value.category,
+            payment_type: newExpense.value.payment_type
+        };
+        await api.post('/expense/create', formattedExpense, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
 
-
+            }
+        });
+        expenses.value = await getAllExpence();
+        isModalOpen.value = false;
+    } catch (error) {
+        console.error("Xatolik:", error);
+    } finally {
+        isLoading.value = false;
+    }
+};
 </script>
 
 <template >
@@ -51,7 +93,6 @@ const deleteExpense = async (id: number) => {
         <div class="flex justify-between border-b border-gray-600 mb-4">
             <div>
                 <h3 class="text-4xl max-md:text-2xl font-extrabold text-gray-700 dark:text-white">Xarajatlar</h3>
-                <p class="text-sm text-white text-muted-foreground">Barcha xarajatlar</p>
             </div>
             <div class="flex flex-col md:flex-row gap-4 md:items-center justify-between">
                 <!-- Filter -->
@@ -75,12 +116,56 @@ const deleteExpense = async (id: number) => {
                     </svg>
                 </div>
 
-                <!-- Qo'shish tugmasi -->
-                <button class="bg-blue-500 text-white px-4 py-2 rounded-md text-md w-full md:w-auto">+
+
+                <button @click="isModalOpen = true"
+                    class="bg-blue-500 text-white px-4 py-2 rounded-md text-md w-full md:w-auto">+
                     Qo'shish
                 </button>
             </div>
 
+            <div v-if="isModalOpen" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                <div class="bg-white p-6 rounded-md w-96">
+                    <h2 class="text-xl font-bold mb-4">Yangi xarajat qo'shish</h2>
+                    <label class="block mb-2">Sana:</label>
+                    <input v-model="newExpense.date" type="date" class="border p-2 w-full mb-2" />
+
+                    <label class="block mb-2">Summa:</label>
+                    <input v-model="newExpense.amount" type="number" class="border p-2 w-full mb-2" />
+
+                    <label class="block mb-2">Tavsif:</label>
+                    <input v-model="newExpense.description" type="text" class="border p-2 w-full mb-2" />
+
+                    <label class="block mb-2">Ism-Familya:</label>
+                    <input v-model="newExpense.category" type="text" class="border p-2 w-full mb-2" />
+
+                    <label class="block mb-2">To'lov turi:</label>
+                    <select v-model="newExpense.payment_type" class="border p-2 w-full mb-4">
+                        <option value="click">Click</option>
+                        <option value="cash">Cash</option>
+                    </select>
+                    <div class="flex  justify-end gap-2">
+                        <button @click="isModalOpen = false" class="bg-gray-500 text-white px-4 py-2 rounded-md">Bekor
+                            qilish</button>
+                        <button @click="addExpense" :disabled="isLoading"
+                            class="bg-blue-500  text-white px-4 py-2 rounded-md">Qo'shish</button>
+                    </div>
+                </div>
+            </div>
+
+            <div v-if="isDeleteModalOpen" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                <div class="bg-white p-6 rounded-md w-96">
+                    <h2 class="text-xl font-bold mb-4">Haqiqatan ham o‘chirmoqchimisiz?</h2>
+                    <div class="flex justify-end gap-2">
+                        <button @click="isDeleteModalOpen = false"
+                            class="bg-gray-500 text-white px-4 py-2 rounded-md">Bekor qilish</button>
+                        <button @click="deleteExpense"
+                            class="bg-red-500 text-white px-4 py-2 rounded-md flex items-center" :disabled="isLoading">
+                            <span v-if="isLoading" class="loader"></span>
+                            Ha, o‘chirish
+                        </button>
+                    </div>
+                </div>
+            </div>
 
         </div>
         <div class="overflow-x-auto w-full">
@@ -122,7 +207,7 @@ const deleteExpense = async (id: number) => {
 
                         <td class="px-2 py-4 whitespace-nowrap">
                             <div class="flex gap-3 h-[18px]">
-                                <span @click="deleteExpense(item.id)" class="cursor-pointer">
+                                <span @click="confirmDeleteExpense(item.id)" class="cursor-pointer">
                                     <img src="../../assets/icon/trash.svg" alt="delete_icon" class="w-5 h-5">
                                 </span>
                             </div>
@@ -134,3 +219,25 @@ const deleteExpense = async (id: number) => {
 
     </div>
 </template>
+
+<style scoped>
+.loader {
+    width: 16px;
+    height: 16px;
+    border: 2px solid white;
+    border-top: 2px solid transparent;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+    margin-right: 8px;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+</style>

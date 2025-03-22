@@ -64,25 +64,30 @@ watch(() => [dateStore.startDate, dateStore.endDate], fetchPaymentStatistics, { 
 </script>
 
 <template>
-  <div class="p-6 bg-[#1E293B] rounded-lg shadow-md">
-    <h2 class="text-lg font-semibold text-white">Tushumlar</h2>
-    <div class="h-[300px] w-full flex justify-center">
-      <canvas ref="chartCanvas"></canvas>
-    </div>
-
-    <!-- To'lovlar ro'yxati -->
-    <div class="mt-4 space-y-2">
-      <div v-for="(payment, index) in payments" :key="index"
-        class="flex justify-between items-center p-3 rounded bg-[#0F172A] text-green-700">
-        <span class="font-medium">{{ payment.name }}</span>
-        <span class="font-bold">{{ payment.amount.toLocaleString() }} so'm</span>
+  <div class="px-4 py-2 bg-[#1E293B] rounded-lg shadow-md grid grid-cols-2 items- ">
+    <div>
+      <h2 class="text-lg font-semibold text-white">Tushumlar</h2>
+      <div class="h-[300px] w-full flex justify-center">
+        <canvas ref="chartCanvas"></canvas>
       </div>
     </div>
 
-    <!-- Jami to'lov -->
-    <div class="mt-4 p-3 rounded bg-[#0F172A] text-white flex justify-between items-center">
-      <span class="font-medium">Jami:</span>
-      <span class="font-bold">{{ totalAmount.toLocaleString() }} so'm</span>
+    <div class="  items-center">
+      <!-- To'lovlar ro'yxati -->
+      <div class="mt-4 space-y-2 ">
+        <div v-for="(payment, index) in payments" :key="index"
+          class="flex justify-between items-center p-1 rounded bg-[#0F172A] text-green-700">
+          <span class="font-medium text-sm">{{ payment.name }}</span>
+          <span class="font-bold text-sm">{{ payment.amount.toLocaleString() }} so'm</span>
+        </div>
+        <div class="mt-4 p-1 rounded bg-[#0F172A] text-white flex justify-between items-center">
+          <span class="font-medium">Jami:</span>
+          <span class="font-bold text-sm ">{{ totalAmount.toLocaleString() }} so'm</span>
+        </div>
+      </div>
+
+     
+
     </div>
   </div>
 </template>
