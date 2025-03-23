@@ -42,7 +42,7 @@ const toggleSidebar = () => {
         class="fixed lg:top-0 left-0 z-40 w-[264px] h-screen transition-transform top-14 -translate-x-full lg:translate-x-0"
         :class="{ 'translate-x-0': sidebarStore.isOpen }">
         <div style="background: linear-gradient(100.84deg, rgba(6, 11, 38, 0.94) 59.3%, rgba(26, 31, 55, 0) 100%);"
-            class="overflow-y-auto rounded-[20px] py-5 px-3 m-2 h-full relative">
+            class="overflow-y-hidden rounded-[20px] py-5 px-3 m-2 h-full relative">
 
            
             <div class="w-full m-auto">

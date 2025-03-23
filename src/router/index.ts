@@ -12,6 +12,7 @@ import Course from "@/page/course/_components/Group.vue"
 import Peyment from '@/page/peyment/Page.vue'
 import Expence from '@/page/expense/Page.vue'
 import StudentsAll from '@/page/student/_components/AllStudents.vue'
+import Reception from '@/page/reseption/Page.vue'
 const router = createRouter({
    history: createWebHashHistory(import.meta.env.BASE_URL),
   routes: [
@@ -74,6 +75,12 @@ const router = createRouter({
     path: '/students',
     name: 'students',
     component:StudentsAll,
+    meta: { layout: DefaultLayout }
+    },
+    {
+    path: '/reception',
+    name: 'Reception',
+    component:Reception,
     meta: { layout: DefaultLayout }
     },
     {

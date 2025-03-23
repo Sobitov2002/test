@@ -99,7 +99,6 @@ const confirmDelete = async () => {
         <div class="flex justify-between border-b border-gray-600 mb-4">
             <div>
                 <h3 class="text-4xl max-md:text-2xl font-extrabold text-gray-700 dark:text-white">Umumiy to'lov</h3>
-
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 p-2 gap-4 items-center justify-center ">
 

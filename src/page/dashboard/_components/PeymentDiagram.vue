@@ -85,9 +85,6 @@ watch(() => [dateStore.startDate, dateStore.endDate], fetchPaymentStatistics, { 
           <span class="font-bold text-sm ">{{ totalAmount.toLocaleString() }} so'm</span>
         </div>
       </div>
-
-     
-
     </div>
   </div>
 </template>
