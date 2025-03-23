@@ -106,7 +106,7 @@ const updateChart = () => {
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        cutout: '70%',
+        cutout: '69%',
         plugins: {
           legend: {
             display: false
@@ -157,15 +157,15 @@ watch(() => [dateStore.startDate, dateStore.endDate], fetchPaymentStatistics, { 
 <template>
   <div
     class="bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl shadow-xl p-6 transition-all duration-300 hover:shadow-2xl">
-    <div class="flex items-center justify-between mb-6">
+    <div class="flex items-center justify-between mb-">
       <h2 class="text-xl font-bold text-white flex items-center gap-2">
         <ArrowUpCircle class="text-emerald-500" size="20" />
         Xarajatlar statistikasi
       </h2>
 
       <!-- Date range indicator could go here -->
-      <div v-if="isLoading" class="flex items-center text-blue-400 text-sm">
-        <Loader2 class="animate-spin mr-2" size="16" />
+      <div v-if="isLoading" class="flex items-center  h-[240px] text-blue-400 text-sm">
+        <Loader2 class="animate-spin mr-2  h-[240px] " size="12" />
         Yuklanmoqda...
       </div>
     </div>
@@ -177,9 +177,9 @@ watch(() => [dateStore.startDate, dateStore.endDate], fetchPaymentStatistics, { 
     </div>
 
     <!-- Chart and summary -->
-    <div class="flex flex-col md:flex-row gap-6">
+    <div class="flex flex-col kg:flex-row gap-6">
       <!-- Chart section -->
-      <div class="relative flex-1 min-h-[280px]">
+      <div class="relative flex-1 h-[200px]">
         <div v-if="isLoading && !chartInstance" class="absolute inset-0 flex items-center justify-center">
           <Loader2 class="animate-spin text-blue-400" size="40" />
         </div>

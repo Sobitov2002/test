@@ -1,17 +1,18 @@
 <script setup lang="ts">
 import api from '@/service/apiService';
 import { postStudent } from '../services';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, computed } from 'vue';
 
-const students = ref()
+const students = ref([]);
 
 const modalOpen = ref(false);
 const selectedStudent = ref<any>(null);
 const selectedMonth = ref<string>('');
 const paymentAmount = ref<number | null>(null);
 const paymentType = ref<string>('cash');
-const paymentDate = ref<string>('');
-const paymentSuccess = ref(false); // ✅ To'lov amalga oshirilganini ko'rsatish uchun
+const paymentDate = ref<string>(new Date().toISOString().split('T')[0]);
+const paymentSuccess = ref(false);
+const isLoading = ref(false);
 
 const months = [
     'January', 'February', 'March', 'April', 'May', 'June',
@@ -20,23 +21,34 @@ const months = [
 
 const paymentTypes = ['cash', 'click'];
 
+const isFormValid = computed(() => {
+    return selectedStudent.value &&
+        paymentAmount.value &&
+        selectedMonth.value &&
+        paymentDate.value;
+});
+
 onMounted(async () => {
     try {
+        isLoading.value = true;
         const response = await api.get('/student/get_all_students', { withCredentials: true });
         students.value = response.data;
     } catch (error) {
         console.log(error);
+    } finally {
+        isLoading.value = false;
     }
 });
 
 const openPaymentModal = (student: any) => {
     selectedStudent.value = student;
     modalOpen.value = true;
-    paymentSuccess.value = false; // Modal ochilganda xabarni yashirish
+    paymentSuccess.value = false;
+    paymentDate.value = new Date().toISOString().split('T')[0];
 };
 
 const confirmPayment = async () => {
-    if (!selectedStudent.value || !paymentAmount.value || !selectedMonth.value || !paymentDate.value) {
+    if (!isFormValid.value) {
         alert("Barcha maydonlarni to'ldiring!");
         return;
     }
@@ -51,123 +63,214 @@ const confirmPayment = async () => {
     };
 
     try {
+        isLoading.value = true;
         await postStudent(paymentData);
         console.log("Payment successfully submitted:", paymentData);
-
-        // ✅ To'lov amalga oshirildi xabarini ko'rsatish
         paymentSuccess.value = true;
 
-        // 1 sekund kutib, modalni yopish
         setTimeout(() => {
             modalOpen.value = false;
             paymentSuccess.value = false;
-
-            // 🔄 Formani tozalash
             paymentAmount.value = null;
-            selectedMonth.value = 'January';
+            selectedMonth.value = '';
             paymentType.value = 'cash';
-            paymentDate.value = new Date().toISOString().split('T')[0];
-        }, 1000);
+        }, 1500);
     } catch (error) {
-        console.error("To‘lovni yuborishda xatolik yuz berdi:", error);
+        console.error("To'lovni yuborishda xatolik yuz berdi:", error);
+    } finally {
+        isLoading.value = false;
+    }
+};
+
+const closeModal = () => {
+    if (!isLoading.value) {
+        modalOpen.value = false;
     }
 };
 </script>
 
 <template>
-    <div v-if="modalOpen" class="fixed inset-0 flex items-center justify-center bg-opacity-50 z-50">
-        <div class="bg-slate-900 rounded-lg shadow-lg w-96 p-6">
-            <h2 class="text-lg font-semibold text-gray-300">To'lov oynasi</h2>
+    <!-- Modal Backdrop with transition -->
+    <transition name="fade">
+        <div v-if="modalOpen" class="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50"
+            @click="closeModal">
 
-            <p class="mt-2 text-gray-300">
-                <strong>{{ selectedStudent?.full_name }}</strong> uchun oy tanlang:
-            </p>
+            <!-- Modal Card -->
+            <div class="relative max-w-md w-full mx-4" @click.stop>
+                <div
+                    class="bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl shadow-2xl overflow-hidden border border-slate-700">
+                    <!-- Modal Header -->
+                    <div class="p-5 border-b border-slate-700">
+                        <h2 class="text-xl font-bold text-white">To'lov oynasi</h2>
+                        <p class="mt-1 text-slate-300">
+                            <span class="font-medium">{{ selectedStudent?.full_name }}</span> uchun to'lov
+                        </p>
+                    </div>
 
-            <div v-if="paymentSuccess" class="text-green-400 text-center mt-2 font-bold">
-                ✅ To'lov amalga oshirildi!
-            </div>
+                    <!-- Success Message -->
+                    <div v-if="paymentSuccess" class="p-8 flex flex-col items-center justify-center">
+                        <div class="w-16 h-16 bg-green-500/20 rounded-full flex items-center justify-center mb-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-green-500" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M5 13l4 4L19 7" />
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-white mb-1">To'lov amalga oshirildi!</h3>
+                        <p class="text-slate-400 text-center">To'lov muvaffaqiyatli qayd etildi</p>
+                    </div>
 
-            <div v-else>
-                <div class="my-2 flex-col">
-                    <label for="payment-amount" class="text-sm text-gray-500">To'lov qiymati:</label>
-                    <input v-model="paymentAmount" type="number" id="payment-amount"
-                        class="mt-2 w-full p-2 rounded bg-gray-700 text-white">
+                    <!-- Payment Form -->
+                    <div v-else class="p-5 space-y-4">
+                        <!-- Payment Amount -->
+                        <div class="space-y-1.5">
+                            <label for="payment-amount" class="block text-sm font-medium text-slate-300">To'lov
+                                qiymati</label>
+                            <div class="relative">
+                                <input v-model="paymentAmount" type="number" id="payment-amount"
+                                    placeholder="Miqdorni kiriting"
+                                    class="w-full px-4 py-2.5 bg-slate-800/50 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" />
+                            </div>
+                        </div>
+
+                        <!-- Month Selection -->
+                        <div class="space-y-1.5">
+                            <label for="month-select" class="block text-sm font-medium text-slate-300">Oyni
+                                tanlang</label>
+                            <select v-model="selectedMonth" id="month-select"
+                                class="w-full px-4 py-2.5 bg-slate-800/50 border border-slate-700 rounded-lg text-white appearance-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+                                <option value="" disabled selected>Oyni tanlang</option>
+                                <option v-for="month in months" :key="month" :value="month">{{ month }}</option>
+                            </select>
+                        </div>
+
+                        <!-- Payment Type -->
+                        <div class="space-y-1.5">
+                            <label class="block text-sm font-medium text-slate-300">To'lov turi</label>
+                            <div class="flex space-x-4">
+                                <label v-for="type in paymentTypes" :key="type" class="flex items-center">
+                                    <input type="radio" :value="type" v-model="paymentType"
+                                        class="w-4 h-4 text-blue-600 bg-slate-800 border-slate-600 focus:ring-blue-500" />
+                                    <span class="ml-2 text-slate-300 capitalize">{{ type }}</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Payment Date -->
+                        <div class="space-y-1.5">
+                            <label for="payment-date" class="block text-sm font-medium text-slate-300">To'lov
+                                sanasi</label>
+                            <input v-model="paymentDate" type="date" id="payment-date"
+                                class="w-full px-4 py-2.5 bg-slate-800/50 border border-slate-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" />
+                        </div>
+                    </div>
+
+                    <!-- Modal Footer -->
+                    <div v-if="!paymentSuccess" class="p-5 border-t border-slate-700 flex justify-end space-x-3">
+                        <button @click="closeModal" :disabled="isLoading"
+                            class="px-4 py-2 rounded-lg text-slate-300 hover:bg-slate-700 transition-colors disabled:opacity-50">
+                            Bekor qilish
+                        </button>
+                        <button @click="confirmPayment" :disabled="isLoading || !isFormValid"
+                            class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors disabled:opacity-50 disabled:bg-blue-800/50 flex items-center">
+                            <span v-if="isLoading"
+                                class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></span>
+                            Tasdiqlash
+                        </button>
+                    </div>
                 </div>
-
-                <label class="text-sm text-gray-500">Oyni tanlang:</label>
-                <select v-model="selectedMonth" class="mt-2 w-full p-2 rounded bg-gray-700 text-white">
-                    <option v-for="month in months" :key="month" :value="month">{{ month }}</option>
-                </select>
-
-                <div class="my-2">
-                    <label for="payment-type" class="text-sm text-gray-500">To'lov turi:</label>
-                    <select v-model="paymentType" id="payment-type"
-                        class="mt-2 w-full p-2 rounded bg-gray-700 text-white">
-                        <option v-for="type in paymentTypes" :key="type" :value="type">{{ type }}</option>
-                    </select>
-                </div>
-
-                <div class="my-2">
-                    <label for="payment-date" class="text-sm text-gray-500">To'lov sanasi:</label>
-                    <input v-model="paymentDate" type="date" id="payment-date"
-                        class="mt-2 w-full p-2 rounded bg-gray-700 text-white">
-                </div>
-            </div>
-
-            <div v-if="!paymentSuccess" class="mt-4 flex justify-end gap-3">
-                <button @click="modalOpen = false"
-                    class="px-4 py-2 text-gray-600 bg-gray-200 rounded hover:bg-gray-300">
-                    Bekor qilish
-                </button>
-                <button @click="confirmPayment" class="px-4 py-2 text-white bg-green-600 rounded hover:bg-green-700">
-                    Tasdiqlash
-                </button>
             </div>
         </div>
-    </div>
+    </transition>
 
-
-    <div class="p-4 rounded-md max-w-[1400px] mx-auto "
-        style="background: linear-gradient(126.97deg, rgba(6, 11, 38, 0.74) 28.26%, rgba(26, 31, 55, 0.5) 91.2%);">
-        <div class="flex justify-between border-b border-gray-600 mb-4">
+    <!-- Main Content -->
+    <div
+        class="p-6 rounded-xl max-w-[1400px] mx-auto bg-gradient-to-br from-slate-900 to-slate-800 shadow-xl border border-slate-700">
+        <!-- Header -->
+        <div class="flex justify-between items-center mb-6 pb-4 border-b border-slate-700">
             <div>
-                <h3 class="text-4xl max-md:text-2xl font-extrabold text-gray-700 dark:text-white mb-3">O'quvchilar</h3>
+                <h3 class="text-3xl font-bold text-white">O'quvchilar</h3>
+                <p class="text-slate-400 mt-1">Barcha o'quvchilar ro'yxati</p>
             </div>
         </div>
 
-        <!-- Mobil ekran uchun X o‘qi bo‘ylab skroll -->
-        <div class="overflow-x-auto w-full">
-            <table class="w-full min-w-max text-sm shadow-md sm:rounded-lg text-left text-gray-500">
-                <thead class="text-xs text-gray-700 uppercase">
-                    <tr>
-                        <th class="px-2 text-white py-3">O'quvchilar</th>
-                        <th class="px-1 text-white py-3">Telefon raqami</th>
-                        <th class="px-1 text-white py-3">Email</th>
-                        <th class="px-0 text-white py-3">Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="(item, index) in students" :key="index"
-                        class="border-b last:border-b-0 hover:bg-gray-50 dark:hover:bg-gray-900 bg-blue-950 text-gray-900 dark:text-white">
-                        <th class="px-2 py-2 md:px-6 flex items-center gap-2 whitespace-nowrap">
-                            <img class="w-14 h-14 rounded-full border border-white"
-                                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRH87TKQrWcl19xly2VNs0CjBzy8eaKNM-ZpA&s"
-                                alt="">
-                            {{ item.full_name }}
-                        </th>
-                        <td class="px-1 py-4 whitespace-nowrap">+998 {{ item.phone_number }}</td>
-                        <td class="px-1 py-4 whitespace-nowrap">{{ item.started_date }}</td>
-                        <td class="px-0 py-4 whitespace-nowrap">
-                            <button @click="openPaymentModal(item)"
-                                class="px-4 py-2 text-white bg-blue-600 rounded hover:bg-blue-700">
-                                To'lov qilish
-                            </button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+        <!-- Loading State -->
+        <div v-if="isLoading && !students.length" class="flex justify-center items-center py-20">
+            <div class="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+        </div>
+
+        <!-- Students Table -->
+        <div v-else class="overflow-hidden rounded-xl border border-slate-700 shadow-lg">
+            <div class="overflow-x-auto w-full">
+                <table class="w-full min-w-max text-sm text-left">
+                    <thead class="bg-slate-800 text-slate-300 uppercase text-xs tracking-wider">
+                        <tr>
+                            <th class="px-6 py-4">O'quvchilar</th>
+                            <th class="px-6 py-4">Telefon raqami</th>
+                            <th class="px-6 py-4">Boshlangan sana</th>
+                            <th class="px-6 py-4 text-right">Amallar</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-700">
+                        <tr v-for="(item, index) in students" :key="index"
+                            class="bg-slate-800/30 hover:bg-slate-700/50 transition-colors text-white">
+                            <td class="px-6 py-4">
+                                <div class="flex items-center space-x-3">
+                                    <div
+                                        class="flex-shrink-0 w-10 h-10 rounded-full overflow-hidden border border-slate-600">
+                                        <img class="w-full h-full object-cover"
+                                            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRH87TKQrWcl19xly2VNs0CjBzy8eaKNM-ZpA&s"
+                                            alt="" />
+                                    </div>
+                                    <div>
+                                        <p class="font-medium">{{ item.full_name }}</p>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 text-slate-300">+998 {{ item.phone_number }}</td>
+                            <td class="px-6 py-4 text-slate-300">{{ item.started_date }}</td>
+                            <td class="px-6 py-4 text-right">
+                                <button @click="openPaymentModal(item)"
+                                    class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors inline-flex items-center space-x-1">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                                    </svg>
+                                    <span>To'lov qilish</span>
+                                </button>
+                            </td>
+                        </tr>
+
+                        <!-- Empty State -->
+                        <tr v-if="!students.length && !isLoading">
+                            <td colspan="4" class="px-6 py-12 text-center text-slate-400">
+                                <div class="flex flex-col items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mb-4 text-slate-600"
+                                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                                    </svg>
+                                    <p class="text-lg font-medium">O'quvchilar topilmadi</p>
+                                    <p class="mt-1">Hozircha o'quvchilar ro'yxati bo'sh</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-
-
 </template>
+
+<style scoped>
+.fade-enter-active,
+.fade-leave-active {
+    transition: opacity 0.2s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+    opacity: 0;
+}
+</style>

@@ -27,7 +27,7 @@ const getRouteName = computed(() => {
 
 <template>
     <header
-        class="rounded-2xl fixed lg:left-0 right-0 w-full bg-slate-900 md:bg-transparent text-white py-4 px-6 flex items-center justify-between z-50">
+        class="rounded-2xl fixed lg:left-0 right-0 w-full bg-slate-950 md:bg-transparent text-white py-4 px-6 flex items-center justify-between z-50">
 
         <!-- Sidebar Toggle -->
         <div class="lg:hidden cursor-pointer" @click="sidebarStore.isOpen = !sidebarStore.isOpen">
@@ -43,7 +43,7 @@ const getRouteName = computed(() => {
         </div>
 
         <!-- Sign In / Sign Out -->
-        <div class="grid grid-cols-1 border-1 rounded-2xl items-center px-2 max-w-md ml-auto">
+        <div class="grid grid-cols-1 border-1 rounded-2xl bg-slate-900 items-center px-2 max-w-md ml-auto">
             <!-- Agar token bo‘lsa chiqish tugmasi chiqadi -->
             <div v-if="token" @click="loginHandler" class="flex gap-2 items-center cursor-pointer">
                 <svg class="w-6 h-6 text-white dark:text-[#fff]" xmlns="http://www.w3.org/2000/svg" width="24"

@@ -44,7 +44,7 @@ onMounted(async () => {
                     :peyment="allPayment" />
             </div>
         </div>
-        <div class="grid md:grid-cols-2 gap-4 grid-cols-1 mt-4">
+        <div class="grid md:grid-cols-3 gap-6 grid-cols-1 mt-4">
             <PeymentDiagram />
             <Expence />
         </div>
