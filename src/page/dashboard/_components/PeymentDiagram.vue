@@ -3,32 +3,42 @@ import { onMounted, ref, watch } from 'vue';
 import { Chart, registerables } from 'chart.js';
 import api from '@/service/apiService';
 import { useDateStore } from '@/page/dashboard/store/index';
+import { ArrowUpCircle, Wallet, CreditCard, Loader2 } from 'lucide-vue-next';
 
 Chart.register(...registerables);
 
 const dateStore = useDateStore();
 const chartCanvas = ref<HTMLCanvasElement | null>(null);
-const payments = ref<{ name: string; amount: number; color: string }[]>([]);
+const payments = ref<{ name: string; amount: number; color: string; icon: string }[]>([]);
 const totalAmount = ref(0);
+const isLoading = ref(false);
+const hasError = ref(false);
+const errorMessage = ref('');
 let chartInstance: Chart | null = null;
 
 const fetchPaymentStatistics = async () => {
   if (!dateStore.startDate || !dateStore.endDate) return;
+
+  isLoading.value = true;
+  hasError.value = false;
 
   try {
     const response = await api.get(`/payment/statistics?start_date=${dateStore.startDate}&end_date=${dateStore.endDate}`);
     const data = response.data[0];
 
     totalAmount.value = data.total_amount || 0;
-
     payments.value = [
-      { name: 'Naxt', amount: data.cash_amount || 0, color: '#38bdf8' },
-      { name: 'Click', amount: data.click_amount || 0, color: '#4ade80' }
+      { name: 'Naxt', amount: data.cash_amount || 0, color: '#10B981', icon: 'wallet' },
+      { name: 'Click', amount: data.click_amount || 0, color: '#3B82F6', icon: 'credit-card' }
     ];
 
     updateChart();
   } catch (error) {
     console.error("To'lov statistikalarini olishda xato:", error);
+    hasError.value = true;
+    errorMessage.value = "Ma'lumotlarni yuklashda xatolik yuz berdi";
+  } finally {
+    isLoading.value = false;
   }
 };
 
@@ -53,36 +63,30 @@ const updateChart = () => {
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        cutout: '70%',
+        cutout: '69%',
         plugins: {
-          legend: {
-            display: false
-          },
+          legend: { display: false },
           tooltip: {
-            backgroundColor: 'rgba(17, 24, 39, 0.9)',
+            backgroundColor: '#1E293B',
             padding: 12,
-            titleFont: {
-              size: 14,
-              weight: 'bold'
-            },
-            bodyFont: {
-              size: 13
-            },
+            titleFont: { size: 14, weight: 'bold' },
+            bodyFont: { size: 12 },
             callbacks: {
-              label: function (context) {
+              label: (context) => {
                 const value = context.raw as number;
                 return `${value.toLocaleString()} so'm`;
               }
             }
           }
         },
-        animation: {
-          animateScale: true,
-          animateRotate: true
-        }
+        animation: { animateScale: true, animateRotate: true }
       }
     });
   }
+};
+
+const getIcon = (iconName: string) => {
+  return iconName === 'wallet' ? Wallet : CreditCard;
 };
 
 onMounted(fetchPaymentStatistics);
@@ -90,56 +94,74 @@ watch(() => [dateStore.startDate, dateStore.endDate], fetchPaymentStatistics, { 
 </script>
 
 <template>
-  <div class="bg-slate-800 rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl">
-    <div class="p-5">
-      <h2 class="text-xl font-semibold text-white flex items-center gap-2">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-sky-400">
-          <circle cx="12" cy="12" r="10" />
-          <polyline points="8 12 12 16 16 12" />
-          <line x1="12" y1="8" x2="12" y2="16" />
-        </svg>
-        Tushumlar
+  <div
+    class="bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl shadow-xl p-6 transition-all duration-300 hover:shadow-2xl">
+    <div class="flex items-center justify-between">
+      <h2 class="text-xl font-bold text-white flex items-center gap-2 pb-5">
+        <ArrowUpCircle class="text-emerald-500" :size="20" />
+        Tushumlar statistikasi
       </h2>
+    </div>
 
-      <div class="mt-4 grid md:grid-cols-1 gap-6 items-center">
-        <div class="relative h-[300px] flex items-center justify-center">
-          <canvas ref="chartCanvas" class="h-[240px]"></canvas>
-          <div class="absolute inset-0 flex items-center justify-center flex-col pointer-events-none">
-            <span class="text-sm text-slate-400">Jami</span>
-            <span class="text-2xl font-bold text-white">{{ totalAmount.toLocaleString() }}</span>
-            <span class="text-xs text-slate-400">so'm</span>
+    <div v-if="isLoading" class="flex items-center justify-center h-[240px]">
+      <Loader2 class="animate-spin text-blue-400" :size="40" />
+
+    </div>
+
+    <div v-if="hasError" class="bg-red-900/30 text-red-300 p-4 rounded-lg mb-4 flex items-center">
+      <span class="mr-2">⚠️</span>
+      {{ errorMessage }}
+    </div>
+
+    <div class="flex flex-col  gap-6">
+      <div class="relative flex-1 h-[200px] ">
+        <canvas ref="chartCanvas"></canvas>
+        <div v-if="!isLoading && totalAmount > 0"
+          class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center">
+          <div class="text-sm text-slate-400">Jami</div>
+          <div class="text-xl font-bold text-white">{{ totalAmount.toLocaleString() }}</div>
+          <div class="text-xs text-slate-400">so'm</div>
+        </div>
+      </div>
+
+      <div class="flex-1 flex flex-col justify-center">
+        <div v-if="payments.length === 0 && !isLoading" class="text-slate-400 text-center py-8">
+          Ma'lumot topilmadi
+        </div>
+
+        <div v-else class="space-y-4">
+          <div v-for="(payment, index) in payments" :key="index"
+            class="bg-slate-800/50 backdrop-blur rounded-lg p-4 transition-all duration-300 hover:bg-slate-700/50 group">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <div class="p-2 rounded-lg" :style="{ backgroundColor: payment.color + '20' }">
+                  <component :is="getIcon(payment.icon)" class="text-white" :size="20" />
+                </div>
+                <div>
+                  <div class="font-medium text-white">{{ payment.name }}</div>
+                  <div class="text-xs text-slate-400">{{ ((payment.amount / totalAmount) * 100).toFixed(1) }}% of total
+                  </div>
+                </div>
+              </div>
+              <div class="text-right">
+                <div class="font-bold text-white">{{ payment.amount.toLocaleString() }}</div>
+                <div class="text-xs text-slate-400">so'm</div>
+              </div>
+            </div>
+
+            <div class="mt-3 h-1.5 bg-slate-700 rounded-full overflow-hidden">
+              <div class="h-full rounded-full transition-all duration-500 ease-out group-hover:brightness-110"
+                :style="{ width: `${((payment.amount / totalAmount) * 100).toFixed(1)}%`, backgroundColor: payment.color }">
+              </div>
+            </div>
           </div>
         </div>
 
-        <div class="space-y-3">
-          <div v-for="(payment, index) in payments" :key="index"
-            class="bg-slate-800 rounded-lg p-4 transition-all duration-200 hover:bg-slate-700/50">
-            <div class="flex justify-between items-center">
-              <div class="flex items-center gap-2">
-                <div class="w-3 h-3 rounded-full" :style="{ backgroundColor: payment.color }"></div>
-                <span class="font-medium text-white">{{ payment.name }}</span>
-              </div>
-              <div class="flex flex-col items-end">
-                <span class="font-bold text-white">{{ payment.amount.toLocaleString() }}</span>
-                <span class="text-xs text-slate-400">so'm</span>
-              </div>
-            </div>
-            <div class="mt-2 w-full bg-slate-700 rounded-full h-1.5">
-              <div class="h-1.5 rounded-full" :style="{
-                width: totalAmount ? `${(payment.amount / totalAmount * 100)}%` : '0%',
-                backgroundColor: payment.color
-              }"></div>
-            </div>
-          </div>
-
-          <div class="bg-slate-800 rounded-lg p-4 mt-4 border-t border-slate-600">
-            <div class="flex justify-between items-center">
-              <span class="font-medium text-white">Jami:</span>
-              <div class="flex flex-col items-end">
-                <span class="font-bold text-white">{{ totalAmount.toLocaleString() }}</span>
-                <span class="text-xs text-slate-400">so'm</span>
-              </div>
+        <div class="mt-6 bg-slate-800 rounded-lg p-4 border border-slate-700">
+          <div class="flex justify-between items-center">
+            <div class="font-medium text-slate-300">Jami tushumlar:</div>
+            <div class="font-bold text-xl text-white">
+              {{ totalAmount.toLocaleString() }} <span class="text-sm font-normal text-slate-400">so'm</span>
             </div>
           </div>
         </div>

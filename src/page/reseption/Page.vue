@@ -77,9 +77,9 @@
                                 <div class="flex items-center">
                                     <h3 class="text-lg font-medium text-white">{{ visitor.full_name }}</h3>
                                     <span class="ml-3 px-2.5 py-0.5 rounded-full text-xs font-medium" :class="{
-                                        'bg-green-900 text-green-100': visitor.status === 'confirmed',
-                                        'bg-yellow-900 text-yellow-100': visitor.status === 'pending',
-                                        'bg-red-900 text-red-100': visitor.status === 'cancelled',
+                                        'bg-green-900 text-green-100': visitor.status === `O'qiyapti`,
+                                        'bg-yellow-900 text-yellow-100': visitor.status === `O'qimayapti`,
+                                        
                                         'bg-gray-700 text-gray-100': !visitor.status
                                     }">
                                         {{ visitor.status || 'No Status' }}
@@ -138,7 +138,8 @@
                                 <!-- Free Days & Times -->
                                 <div class="mt-4">
                                     <div class="mb-2">
-                                        <span class="text-xs font-medium text-gray-400 uppercase tracking-wider">Bo'sh kun</span>
+                                        <span class="text-xs font-medium text-gray-400 uppercase tracking-wider">Bo'sh
+                                            kun</span>
                                         <div class="mt-1 flex flex-wrap gap-2">
                                             <span v-for="day in visitor.free_days" :key="day"
                                                 class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-900 text-blue-100">
@@ -146,13 +147,14 @@
                                             </span>
                                             <span v-if="!visitor.free_days || visitor.free_days.length === 0"
                                                 class="text-sm text-gray-400">
-                                              
+
                                             </span>
                                         </div>
                                     </div>
 
                                     <div>
-                                        <span class="text-xs font-medium text-gray-400 uppercase tracking-wider">Bo'sh vaqt</span>
+                                        <span class="text-xs font-medium text-gray-400 uppercase tracking-wider">Bo'sh
+                                            vaqt</span>
                                         <div class="mt-1 flex flex-wrap gap-2">
                                             <span v-for="time in visitor.free_times" :key="time"
                                                 class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-teal-900 text-teal-100">
@@ -168,7 +170,8 @@
 
                                 <!-- Additional Info -->
                                 <div v-if="visitor.additional_info" class="mt-4 text-sm">
-                                    <span class="text-xs font-medium text-gray-400 uppercase tracking-wider">Umumiy ma'lumot</span>
+                                    <span class="text-xs font-medium text-gray-400 uppercase tracking-wider">Umumiy
+                                        ma'lumot</span>
                                     <p class="mt-1 text-gray-300">{{ visitor.additional_info }}</p>
                                 </div>
                             </div>
@@ -256,7 +259,7 @@
                                         <label for="full_name" class="block text-sm font-medium text-gray-300">Full
                                             Name</label>
                                         <input type="text" id="full_name" v-model="formData.full_name"
-                                            class="mt-1 block w-full rounded-md border-gray-600 bg-slate-700 text-white shadow-sm focus:border-teal-500 focus:ring-teal-500"
+                                            class="mt-1 p-2 block w-full rounded-md border-gray-600 bg-slate-700 text-white shadow-sm focus:border-teal-500 focus:ring-teal-500"
                                             required />
                                     </div>
 
@@ -264,7 +267,7 @@
                                         <label for="visit_date" class="block text-sm font-medium text-gray-300">Visit
                                             Date</label>
                                         <input type="date" id="visit_date" v-model="formData.visit_date"
-                                            class="mt-1 block w-full rounded-md border-gray-600 bg-slate-700 text-white shadow-sm focus:border-teal-500 focus:ring-teal-500"
+                                            class="mt-1 p-2 block w-full rounded-md border-gray-600 bg-slate-700 text-white shadow-sm focus:border-teal-500 focus:ring-teal-500"
                                             required />
                                     </div>
 
@@ -272,7 +275,7 @@
                                         <label for="phone_number" class="block text-sm font-medium text-gray-300">Phone
                                             Number</label>
                                         <input type="tel" id="phone_number" v-model="formData.phone_number"
-                                            class="mt-1 block w-full rounded-md border-gray-600 bg-slate-700 text-white shadow-sm focus:border-teal-500 focus:ring-teal-500"
+                                            class="mt-1 p-2 block w-full rounded-md border-gray-600 bg-slate-700 text-white shadow-sm focus:border-teal-500 focus:ring-teal-500"
                                             required />
                                     </div>
 
@@ -280,28 +283,28 @@
                                         <label for="secondary_phone"
                                             class="block text-sm font-medium text-gray-300">Secondary Phone</label>
                                         <input type="tel" id="secondary_phone" v-model="formData.secondary_phone"
-                                            class="mt-1 block w-full rounded-md border-gray-600 bg-slate-700 text-white shadow-sm focus:border-teal-500 focus:ring-teal-500" />
+                                            class="mt-1 p-2 block w-full rounded-md border-gray-600 bg-slate-700 text-white shadow-sm focus:border-teal-500 focus:ring-teal-500" />
                                     </div>
 
                                     <div>
                                         <label for="source"
                                             class="block text-sm font-medium text-gray-300">Source</label>
                                         <input type="text" id="source" v-model="formData.source"
-                                            class="mt-1 block w-full rounded-md border-gray-600 bg-slate-700 text-white shadow-sm focus:border-teal-500 focus:ring-teal-500" />
+                                            class="mt-1 p-2 block w-full rounded-md border-gray-600 bg-slate-700 text-white shadow-sm focus:border-teal-500 focus:ring-teal-500" />
                                     </div>
 
                                     <div>
                                         <label for="course"
                                             class="block text-sm font-medium text-gray-300">Course</label>
                                         <input type="text" id="course" v-model="formData.course"
-                                            class="mt-1 block w-full rounded-md border-gray-600 bg-slate-700 text-white shadow-sm focus:border-teal-500 focus:ring-teal-500" />
+                                            class="mt-1 p-2 block w-full rounded-md border-gray-600 bg-slate-700 text-white shadow-sm focus:border-teal-500 focus:ring-teal-500" />
                                     </div>
 
                                     <div class="sm:col-span-2">
                                         <label for="address"
                                             class="block text-sm font-medium text-gray-300">Address</label>
                                         <input type="text" id="address" v-model="formData.address"
-                                            class="mt-1 block w-full rounded-md border-gray-600 bg-slate-700 text-white shadow-sm focus:border-teal-500 focus:ring-teal-500" />
+                                            class="mt-1 p-2 block w-full rounded-md border-gray-600 bg-slate-700 text-white shadow-sm focus:border-teal-500 focus:ring-teal-500" />
                                     </div>
                                 </div>
                             </div>
@@ -316,7 +319,7 @@
                                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
                                         <div v-for="day in availableDays" :key="day" class="flex items-center">
                                             <input type="checkbox" :id="day" :value="day" v-model="formData.free_days"
-                                                class="h-4 w-4 text-teal-600 focus:ring-teal-500 border-gray-600 rounded bg-slate-700" />
+                                                class="h-4 w-4 p-2 text-teal-600 focus:ring-teal-500 border-gray-600 rounded bg-slate-700" />
                                             <label :for="day" class="ml-2 text-sm text-gray-300">{{ day }}</label>
                                         </div>
                                     </div>
@@ -328,7 +331,7 @@
                                         <div v-for="time in availableTimes" :key="time" class="flex items-center">
                                             <input type="checkbox" :id="time" :value="time"
                                                 v-model="formData.free_times"
-                                                class="h-4 w-4 text-teal-600 focus:ring-teal-500 border-gray-600 rounded bg-slate-700" />
+                                                class="h-6 w-4 p-2 text-teal-600 focus:ring-teal-500 border-gray-600 rounded bg-slate-700" />
                                             <label :for="time" class="ml-2 text-sm text-gray-300">{{ time }}</label>
                                         </div>
                                     </div>
@@ -343,11 +346,10 @@
                                 <div class="mt-4">
                                     <label for="status" class="block text-sm font-medium text-gray-300">Status</label>
                                     <select id="status" v-model="formData.status"
-                                        class="mt-1 block w-full rounded-md border-gray-600 bg-slate-700 text-white shadow-sm focus:border-teal-500 focus:ring-teal-500">
-                                        <option value="">Select status</option>
-                                        <option value="pending">Pending</option>
-                                        <option value="confirmed">Confirmed</option>
-                                        <option value="cancelled">Cancelled</option>
+                                        class="mt-1 p-2 block w-full rounded-md border-gray-600 bg-slate-700 text-white shadow-sm focus:border-teal-500 focus:ring-teal-500">
+                                        <option value="">Jarayon</option>
+                                        <option value="O'qimayapti">O'qimayapti</option>
+                                        <option value="O'qiyapti">O'qiyapti</option>
                                     </select>
                                 </div>
 
@@ -355,7 +357,7 @@
                                     <label for="additional_info"
                                         class="block text-sm font-medium text-gray-300">Additional Information</label>
                                     <textarea id="additional_info" v-model="formData.additional_info" rows="3"
-                                        class="mt-1 block w-full rounded-md border-gray-600 bg-slate-700 text-white shadow-sm focus:border-teal-500 focus:ring-teal-500"></textarea>
+                                        class="mt-1 block w-full p-2 rounded-md border-gray-600 bg-slate-700 text-white shadow-sm focus:border-teal-500 focus:ring-teal-500"></textarea>
                                 </div>
                             </div>
                         </div>
@@ -518,7 +520,8 @@ export default defineComponent({
             '8:00-10:00',
             '10:00-12:00',
             '14:00-16:00',
-            '16:00-18:00'
+            '16:00-18:00',
+            '18:00-20:00',
         ]
 
         // List data

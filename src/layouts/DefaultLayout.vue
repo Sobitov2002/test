@@ -8,7 +8,9 @@ const sidebarStore = useSidebarStore();
 <template>
     <div class="antialiased myBg">
         <Saidbar />
-        <Header />
+        <div > 
+            <Header />
+        </div>
         <main class="p-5 max-sm:p-0 max-sm:pt-14 lg:ml-72 min-h-screen h-auto pt-20" @click="sidebarStore.closeSidebar">
             <RouterView />
         </main>

@@ -96,7 +96,7 @@ const updateChart = () => {
         labels: payments.value.map(p => p.name),
         datasets: [{
           data: payments.value.map(p => p.amount),
-          backgroundColor: gradients,
+          backgroundColor: payments.value.map(p => p.color),
           borderColor: 'transparent',
           borderWidth: 0,
           hoverOffset: 15,
@@ -158,7 +158,7 @@ watch(() => [dateStore.startDate, dateStore.endDate], fetchPaymentStatistics, { 
   <div
     class="bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl shadow-xl p-6 transition-all duration-300 hover:shadow-2xl">
     <div class="flex items-center justify-between mb-">
-      <h2 class="text-xl font-bold text-white flex items-center gap-2">
+      <h2 class="text-xl font-bold text-white flex items-center pb-5 gap-2">
         <ArrowUpCircle class="text-emerald-500" size="20" />
         Xarajatlar statistikasi
       </h2>
