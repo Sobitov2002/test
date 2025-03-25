@@ -42,6 +42,8 @@ const fetchPaymentStatistics = async () => {
   }
 };
 
+
+
 const updateChart = () => {
   if (chartInstance) {
     chartInstance.destroy();

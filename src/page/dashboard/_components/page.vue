@@ -2,12 +2,39 @@
 import { defineProps, onMounted, ref, watchEffect } from 'vue';
 import api from '@/service/apiService';
 import { useDateStore } from '@/page/dashboard/store/index';
-
+import router from '@/router';
+import { computed } from 'vue';
+const dateStoreq = useDateStore()
 const store = useDateStore();
 interface Administrator {
     total_students: number;
     count: number;
 }
+const startDate = computed(() => dateStoreq.endDate);
+
+const totalStudents = ref(null); 
+
+const getReception = async () => {
+    try {
+        if (!startDate.value) {
+            console.error("startDate mavjud emas!");
+            return;
+        }
+
+        console.log(startDate.value);
+        const [year, month] = startDate.value.split("-");
+        const response = await api.get(`/reception/get_total_reception_students?year=${year}&month=${month}`, { withCredentials: true });
+
+        totalStudents.value = response.data.total_students; // Olingan ma'lumotni saqlash
+    } catch (error) {
+        console.error("Xatolik yuz berdi:", error);
+    }
+};
+watchEffect(() => {
+    if (startDate.value) {
+        getReception();
+    }
+});
 
 const allCourses = ref<{ count: number } | null>(null);
 const counter = ref<number | null>(null);
@@ -58,12 +85,28 @@ watchEffect(async () => {
         }
     }
 });
+
+
+
+const nextStudent = () =>{
+        router.push('/students')
+}
+const nextGroup = () =>{
+    router.push('/group')
+}
+const nextTeacher = () =>{
+    router.push('/teacher')
+}
+
+const nextReception = () =>{
+    router.push('/reception')
+}
 </script>
 
 <template>
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 p-4">
         <!-- Student Count Card -->
-        <div class="stat-card">
+        <div @click="nextStudent" class="stat-card">
             <div class="stat-content">
                 <h3 class="stat-label">Talabalar soni:</h3>
                 <p class="stat-value">{{ props.studentCount }}</p>
@@ -79,7 +122,7 @@ watchEffect(async () => {
         </div>
 
         <!-- Teachers Count Card -->
-        <div class="stat-card">
+        <div @click="nextTeacher" class="stat-card">
             <div class="stat-content">
                 <h3 class="stat-label">Ustozlar soni:</h3>
                 <p class="stat-value">{{ props.fetchAdminstratr.count }}</p>
@@ -94,7 +137,7 @@ watchEffect(async () => {
         </div>
 
         <!-- Groups Count Card -->
-        <div class="stat-card">
+        <div @click="nextGroup" class="stat-card">
             <div class="stat-content">
                 <h3 class="stat-label">Guruhlar soni:</h3>
                 <p class="stat-value">{{ counter }}</p>
@@ -111,11 +154,11 @@ watchEffect(async () => {
         </div>
 
         <!-- Admissions Count Card -->
-        <div class="stat-card">
+        <div @click="nextReception" class="stat-card">
             <div class="stat-content">
                 <h3 class="stat-label">Qabullar soni:</h3>
-                <p v-if="props.adminstratr && props.adminstratr.total_students" class="stat-value">
-                    {{ props.adminstratr.total_students }}
+                <p v-if="totalStudents !== null" class="stat-value">
+                    {{ totalStudents }}
                 </p>
                 <p v-else class="stat-empty">
                     Ma'lumot yo'q

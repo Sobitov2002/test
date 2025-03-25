@@ -2,6 +2,7 @@
 import { onMounted, ref } from 'vue';
 import Statistic from './_components/page.vue';
 import PeymentDiagram from './_components/PeymentDiagram.vue';
+import PaymentList from './_components/PaymentList.vue';
 import Expence from './_components/Expence.vue'
 import { fetchStudentCount, fetchFullCourse, fetchAdminstrator, Adminstrator, courseGetAll } from './servies';
 import { useDateStore } from '@/page/dashboard/store/index';
@@ -47,6 +48,8 @@ onMounted(async () => {
         <div class="grid md:grid-cols-3 gap-6 grid-cols-1 mt-4">
             <PeymentDiagram />
             <Expence />
+            <PaymentList /> 
+            
+            </div>
         </div>
-    </div>
 </template>
