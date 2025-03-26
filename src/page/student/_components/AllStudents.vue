@@ -2,6 +2,7 @@
 import api from '@/service/apiService';
 import { postStudent } from '../services';
 import { onMounted, ref, computed } from 'vue';
+import Student from '@/page/student/Page.vue';
 
 const students = ref([]);
 
@@ -40,6 +41,13 @@ onMounted(async () => {
     }
 });
 
+interface students{
+    id: number;
+    name: string;
+    full_name: string;
+    phone_number: number;
+    group_name: string;
+}
 const openPaymentModal = (student: any) => {
     selectedStudent.value = student;
     modalOpen.value = true;
@@ -185,7 +193,7 @@ const closeModal = () => {
 
     <!-- Main Content -->
     <div
-        class="p-6 rounded-xl max-w-[1400px] mx-auto bg-gradient-to-br from-slate-900 to-slate-800 shadow-xl border border-slate-700">
+        class="p-6 rounded-xl w-full mx-auto bg-gradient-to-br from-slate-900 to-slate-800 shadow-xl border border-slate-700">
         <!-- Header -->
         <div class="flex justify-between items-center mb-6 pb-4 border-b border-slate-700">
             <div>
@@ -200,9 +208,9 @@ const closeModal = () => {
         </div>
 
         <!-- Students Table -->
-        <div v-else class="overflow-hidden rounded-xl border border-slate-700 shadow-lg">
-            <div class="overflow-x-auto w-full">
-                <table class="w-full min-w-max text-sm text-left">
+        <div v-else class="md:overflow-hidden overflow-x-auto rounded-xl border border-slate-700 shadow-lg">
+            <div class="">
+                <table class="w-full text-sm text-left">
                     <thead class="bg-slate-800 text-slate-300 uppercase text-xs tracking-wider">
                         <tr>
                             <th class="px-6 py-4">O'quvchilar</th>
@@ -259,6 +267,7 @@ const closeModal = () => {
                     </tbody>
                 </table>
             </div>
+
         </div>
     </div>
 </template>

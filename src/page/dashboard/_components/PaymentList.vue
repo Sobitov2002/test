@@ -12,7 +12,6 @@ const date = useDateStore();
 const paymentData = ref<PaymentData[] | null>(null);
 const isLoading = ref(true);
 
-// Format currency
 const formatCurrency = (amount: number): string => {
     return new Intl.NumberFormat('uz-UZ', {
         style: 'decimal',
@@ -30,14 +29,10 @@ watchEffect(async () => {
         const response = await api.get(`/payment/statistics?start_date=${date.startDate}&end_date=${date.endDate}`);
         paymentData.value = response.data;
 
-        // For demonstration, use mock data if API returns empty
-        if (!response.data || response.data.length === 0) {
-            paymentData.value = mockData;
-        }
+       
     } catch (error) {
         console.error("Xatolik:", error);
-        // For demonstration, use mock data on error
-        paymentData.value = mockData;
+      
     } finally {
         isLoading.value = false;
     }
@@ -129,7 +124,7 @@ tbody tr {
 }
 
 ::-webkit-scrollbar-track {
-    background:;
+   
     border-radius: 3px;
 }
 

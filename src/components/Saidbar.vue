@@ -47,34 +47,38 @@ onMounted(() => {
 
 <template>
     <!-- Sidebar Backdrop (Mobile) -->
-    <div v-if="sidebarStore.isOpen" @click="toggleSidebar"
-        class="fixed inset-0 bg-black/50 backdrop-blur-sm z-30 lg:hidden transition-opacity duration-300"></div>
+    <Transition name="fade">
+        <div v-if="sidebarStore.isOpen" @click="toggleSidebar"
+            class="fixed inset-0 bg-black/50 backdrop-blur-sm z-30 lg:hidden"></div>
+    </Transition>
 
     <!-- Sidebar -->
     <aside ref="sidebarRef"
-        class="fixed lg:top-0 left-0 z-40 w-[280px] h-screen transition-all duration-300 ease-in-out top-14 -translate-x-full lg:translate-x-0"
+        class="fixed top-0 left-0 z-40 w-[280px] h-screen transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] -translate-x-full lg:translate-x-0"
         :class="{ 'translate-x-0 shadow-2xl': sidebarStore.isOpen }">
         <div style="background: linear-gradient(100.84deg, rgba(6, 11, 38, 0.94) 59.3%, rgba(26, 31, 55, 0) 100%);"
-            class="h-full rounded-[20px] py-6 px-4 m-2 overflow-hidden flex flex-col relative">
+            class="h-full rounded-2xl py-6 px-4 m-3 overflow-hidden flex flex-col relative backdrop-blur-md">
+
             <!-- Sidebar Header -->
-            <div class="flex flex-col items-center mb-6">
+            <div class="flex flex-col items-center mb-8">
                 <div
-                    class="w-12 h-12 flex items-center justify-center bg-gradient-to-br from-[#0075FF] to-[#00A3FF] rounded-xl shadow-lg mb-3">
+                    class="w-14 h-14 flex items-center justify-center bg-gradient-to-br from-[#0075FF] to-[#00A3FF] rounded-2xl shadow-lg mb-4 transform hover:scale-105 transition-transform duration-300">
                     <span class="text-white text-xl font-bold">IT</span>
                 </div>
                 <h1
                     class="text-xl font-bold tracking-tight bg-gradient-to-r from-white to-[#757A8C] text-transparent bg-clip-text">
                     ITEACH ACADEMY
                 </h1>
-                <div class="mt-4 w-full h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
+                <div class="mt-5 w-full h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
             </div>
 
             <!-- Sidebar Menu -->
-            <div class="flex-1 overflow-y-auto sidebar-scrollbar">
-                <ul class="space-y-1.5 pb-6">
-                    <template v-for="(item, index) in filteredSidebarData" :key="index">
-                        <li class="cursor-pointer group transition-all duration-200" @click="changePage(item.path)">
-                            <div class="flex items-center py-2.5 px-3 text-base font-medium rounded-xl transition-all duration-200"
+            <div class="flex-1 overflow-y-auto sidebar-scrollbar px-1">
+                <ul class="space-y-2 pb-6">
+                    <TransitionGroup name="list">
+                        <li v-for="(item, index) in filteredSidebarData" :key="index"
+                            class="cursor-pointer group transition-all duration-200" @click="changePage(item.path)">
+                            <div class="flex items-center py-3 px-4 text-base font-medium rounded-xl transition-all duration-200"
                                 :class="[
                                     currentPage === index
                                         ? 'bg-gradient-to-r from-[#0075FF]/20 to-[#0075FF]/5 text-white active-menu-item'
@@ -95,19 +99,21 @@ onMounted(() => {
                                 </span>
 
                                 <!-- Active Indicator -->
-                                <div v-if="currentPage === index" class="ml-auto w-1.5 h-8 bg-[#0075FF] rounded-full">
+                                <div v-if="currentPage === index" class="ml-auto flex items-center space-x-1">
+                                    <div class="w-1 h-5 bg-[#0075FF] rounded-full"></div>
                                 </div>
                             </div>
                         </li>
-                    </template>
+                    </TransitionGroup>
                 </ul>
             </div>
 
             <!-- Sidebar Footer -->
             <div class="mt-auto pt-4 border-t border-white/10">
-                <div class="flex items-center px-3 py-2 rounded-xl bg-white/5 backdrop-blur-sm">
+                <div
+                    class="flex items-center p-3 rounded-xl bg-white/5 backdrop-blur-sm hover:bg-white/10 transition-colors duration-300">
                     <div
-                        class="w-10 h-10 rounded-full bg-gradient-to-br from-[#0075FF] to-[#00A3FF] flex items-center justify-center text-white font-bold">
+                        class="w-11 h-11 rounded-xl bg-gradient-to-br from-[#0075FF] to-[#00A3FF] flex items-center justify-center text-white font-bold shadow-md">
                         {{ userStore.currentRole?.charAt(0).toUpperCase() || 'U' }}
                     </div>
                     <div class="ml-3">
@@ -131,7 +137,7 @@ onMounted(() => {
 <style scoped>
 /* Custom scrollbar */
 .sidebar-scrollbar::-webkit-scrollbar {
-    width: 4px;
+    width: 3px;
 }
 
 .sidebar-scrollbar::-webkit-scrollbar-track {
@@ -150,19 +156,43 @@ onMounted(() => {
 /* Active menu item animation */
 .active-menu-item {
     position: relative;
-    animation: fadeIn 0.3s ease-in-out;
+    animation: pulseGlow 2s infinite alternate;
 }
 
-@keyframes fadeIn {
-    from {
-        opacity: 0.5;
-        transform: translateX(-5px);
+@keyframes pulseGlow {
+    0% {
+        box-shadow: 0 0 0 0 rgba(0, 117, 255, 0);
     }
 
-    to {
-        opacity: 1;
-        transform: translateX(0);
+    100% {
+        box-shadow: 0 0 8px 1px rgba(0, 117, 255, 0.2);
     }
+}
+
+/* Transitions */
+.fade-enter-active,
+.fade-leave-active {
+    transition: opacity 0.3s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+    opacity: 0;
+}
+
+.list-enter-active,
+.list-leave-active {
+    transition: all 0.3s ease;
+}
+
+.list-enter-from {
+    opacity: 0;
+    transform: translateX(-20px);
+}
+
+.list-leave-to {
+    opacity: 0;
+    transform: translateX(20px);
 }
 
 /* Hover effects */

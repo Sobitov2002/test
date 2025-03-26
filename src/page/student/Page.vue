@@ -119,7 +119,6 @@ const closeEditModal = () => {
         <div class="flex flex-col md:flex-row md:items-center justify-between border-b border-gray-700 pb-4 mb-6">
             <div class="mb-4 md:mb-0">
                 <h3 class="text-3xl font-bold text-white">O'quvchilar</h3>
-                <p class="text-gray-400 mt-1">Barcha o'quvchilar ro'yxati</p>
             </div>
             <div class="flex flex-col sm:flex-row gap-3">
                 <div class="relative">
@@ -156,8 +155,8 @@ const closeEditModal = () => {
             <p class="mt-2 text-gray-400">Yangi o'quvchi qo'shish uchun "Qo'shish" tugmasini bosing</p>
         </div>
 
-        <div v-else class="overflow-x-auto w-full rounded-xl">
-            <table class="w-full min-w-max text-sm shadow-lg rounded-xl text-left">
+        <div v-else class="overflow-x-auto  w-full  rounded-xl">
+            <table class="w-full  text-sm shadow-lg rounded-xl text-left">
                 <thead class="bg-[#111633] text-gray-300 uppercase text-xs">
                     <tr>
                         <th class="px-6 py-4 rounded-tl-xl">O'quvchi</th>
