@@ -149,19 +149,20 @@ const addExpense = async () => {
                         <thead class="text-xs uppercase bg-slate-700/70 text-slate-300">
                             <tr>
                                 <th scope="col" class="px-6 py-4 font-medium">
-                                    O'qituvchilar ma'lumotlari
+                                    O'qituvchilar
                                 </th>
-                                <th scope="col" class="px-6 py-4 font-medium">Sana</th>
-                                <th scope="col" class="px-6 py-4 font-medium">Summa</th>
-                                <th scope="col" class="px-6 py-4 font-medium max-md:hidden">To'lov turi</th>
-                                <th scope="col" class="px-6 py-4 font-medium text-right">Action</th>
+                                <th scope="col" class="px-6 py-4 font-medium text-center"></th>
+                                <th scope="col" class="px-6 py-4 font-medium text-center">Sana</th>
+                                <th scope="col" class="px-6 py-4 font-medium text-center">Summa</th>
+                                <th scope="col" class="px-6 py-4 font-medium text-center max-md:hidden">To'lov turi</th>
+                                <th scope="col" class="px-6 py-4 font-medium text-center">Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr v-for="(item, index) in filteredExpenses" :key="index"
                                 class="border-b border-slate-700/50 hover:bg-slate-700/30 transition-colors duration-200">
-                                <th class="px-6 py-4 flex  items-center gap-3 whitespace-nowrap font-medium">
-                                    <div class="relative">
+                                <th class="px-6 py-4 flex ml-2  items-center gap-3 whitespace-nowrap font-medium">
+                                    <div class="relative hidden lg:block">
                                         <img class="w-10 h-10 rounded-full object-cover border-2 border-indigo-500/50"
                                             src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRH87TKQrWcl19xly2VNs0CjBzy8eaKNM-ZpA&s"
                                             alt="">
@@ -171,21 +172,23 @@ const addExpense = async () => {
                                     </div>
                                     <span>{{ item.category }}</span>
                                 </th>
-                                <td class="px-6 py-4 whitespace-nowrap">{{ item.date }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap font-medium">
+                                <td class="px-6 py-4 whitespace-nowrap text-center">{{ item.description }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-center">{{ item.date }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-center font-medium">
                                     <span class="bg-indigo-500/20 text-indigo-300 py-1 px-3 rounded-full">
-                                        {{ item.amount }}
+                                        {{ item.amount.toLocaleString() }}
                                     </span>
                                 </td>
-                                <td class="px-6 py-4 max-md:hidden whitespace-nowrap">
+                                <td
+                                    class="px-6 py-4 max-md:hidden flex justify-center items-center  whitespace-nowrap ">
                                     <div class="flex items-center">
-                                        <div class="h-2.5 w-2.5 rounded-full"
+                                        <div class="h-2.5 w-2.5 rounded-full "
                                             :class="item.payment_type === 'click' ? 'bg-purple-500' : 'bg-emerald-500'">
                                         </div>
-                                        <span class="ml-2">{{ item.payment_type }}</span>
+                                        <span class="ml-2 text-center">{{ item.payment_type }}</span>
                                     </div>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-right">
+                                <td class=" py-4 whitespace-nowrap text-center">
                                     <button @click="confirmDeleteExpense(item.id)"
                                         class="text-red-400 hover:text-red-300 hover:bg-red-500/20 p-2 rounded-full transition-colors duration-200">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20"

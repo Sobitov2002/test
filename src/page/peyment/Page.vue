@@ -130,9 +130,9 @@ const confirmDelete = async () => {
                         <tr>
                             <th scope="col" class="px-1 py-4 md:px-6 font-medium min-w-[300px]">O'quvchilar
                             </th>
-                            <th scope="col" class="px-3 py-4 font-medium min-w-[100px]">Guruh</th>
-                            <th scope="col" class="px-3 py-4 font-medium min-w-[100px]">Oy</th>
-                            <th scope="col" class="px-3 py-4 font-medium min-w-[100px]">Summa</th>
+                            <th scope="col" class="px-3 py-4 font-medium text-center min-w-[100px]">Guruh</th>
+                            <th scope="col" class="px-3 py-4 font-medium text-center min-w-[100px]">Oy</th>
+                            <th scope="col" class="px-3 py-4 font-medium text-center min-w-[100px]">Summa</th>
                             <th scope="col" class="px-3 py-4 font-medium text-center min-w-[100px]">Action</th>
                         </tr>
                     </thead>
@@ -141,31 +141,31 @@ const confirmDelete = async () => {
                             class="border-b border-slate-700/50 hover:bg-slate-700/30 transition-colors duration-150">
                             <th class="px-4 py-3 md:px-6 flex items-center gap-3">
                                 <div class="relative hidden lg:block">
-                                    <img class="w-12 h-12 rounded-full object-cover border-2 border-blue-500"
+                                    <img class="w-10 h-10 rounded-full object-cover border-2 border-blue-500"
                                         src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRH87TKQrWcl19xly2VNs0CjBzy8eaKNM-ZpA&s"
                                         alt="" />
                                     <div
                                         class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-slate-800">
                                     </div>
                                 </div>
-                                <div class="w-[150px]">
+                                <div class="text-center">
                                     <p class="font-medium ">{{ item.student_name }}</p>
                                 </div>
                             </th>
-                            <td class="px-3 py-3">
+                            <td class="px-3 py-3 text-center">
                                 <span
                                     class="px-2.5 py-1 rounded-full text-xs font-medium bg-blue-500/20 text-blue-400 border border-blue-500/30">
                                     {{ item.group_name }}
                                 </span>
                             </td>
-                            <td class="px-3 py-3">
+                            <td class="px-3 py-3 text-center">
                                 <span
                                     class="px-2.5 py-1 rounded-full text-xs font-medium bg-purple-500/20 text-purple-400 border border-purple-500/30">
                                     {{ item.month }}
                                 </span>
                             </td>
-                            <td class="px-3 py-3 font-medium">
-                                <span class="text-green-400">{{ item.total_amount }}</span>
+                            <td class="px-3 py-3 font-medium text-center">
+                                <span class="text-green-400">{{ item.total_amount.toLocaleString() }}</span>
                             </td>
                             <td class="px-3 py-3 text-center">
                                 <button @click="openDeleteModal(item)"

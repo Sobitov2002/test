@@ -1,3 +1,248 @@
+<script setup lang="ts">
+import { ref, computed, onMounted } from 'vue';
+import api from '@/service/apiService';
+
+interface VisitorData {
+    id?: number | string;
+    full_name: string;
+    visit_date: string;
+    phone_number: string;
+    secondary_phone: string;
+    source: string;
+    course: string;
+    free_days: string[];
+    free_times: string[];
+    address: string;
+    status: string;
+    additional_info: string;
+}
+
+// Form data
+const initialFormData: VisitorData = {
+    full_name: '',
+    visit_date: new Date().toISOString().split('T')[0],
+    phone_number: '',
+    secondary_phone: '',
+    source: '',
+    course: '',
+    free_days: [],
+    free_times: [],
+    address: '',
+    status: '',
+    additional_info: ''
+};
+
+const formData = ref<VisitorData>({ ...initialFormData });
+const showFormModal = ref(false);
+const submitting = ref(false);
+const editMode = ref(false);
+const selectedMonth = ref(new Date().toISOString().slice(0, 7)); // Default to current month (YYYY-MM format)
+const availableDays = [
+    'Dushanba',
+    'Seshanba',
+    'Chorshanba',
+    'Payshanba',
+    'Juma',
+    'Shanba',
+    'Yakshanba'
+];
+
+const availableTimes = [
+    '8:00-10:00',
+    '10:00-12:00',
+    '14:00-16:00',
+    '16:00-18:00',
+    '18:00-20:00',
+];
+
+// List data
+const visitors = ref<VisitorData[]>([]);
+const loading = ref(true);
+const searchQuery = ref('');
+const page = ref(1);
+const itemsPerPage = 10;
+
+// Delete modal
+const showDeleteModal = ref(false);
+const visitorToDelete = ref<VisitorData | null>(null);
+const deleting = ref(false);
+
+// Toast notification
+const toast = ref({
+    show: false,
+    message: '',
+    type: 'info'
+});
+
+// Filter visitors based on search query
+const filteredVisitors = computed(() => {
+    if (!searchQuery.value) return visitors.value;
+
+    const query = searchQuery.value.toLowerCase();
+    return visitors.value.filter(visitor =>
+        visitor.full_name.toLowerCase().includes(query) ||
+        visitor.phone_number.toLowerCase().includes(query) ||
+        visitor.course?.toLowerCase().includes(query) ||
+        visitor.status?.toLowerCase().includes(query)
+    );
+});
+
+// Format date for display
+const formatDate = (dateString: string) => {
+    if (!dateString) return 'Not specified';
+
+    const options: Intl.DateTimeFormatOptions = {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    };
+
+    return new Date(dateString).toLocaleDateString(undefined, options);
+};
+
+const handleMonthChange = () => {
+    fetchVisitors();
+};
+
+// Fetch visitors from API
+const fetchVisitors = async () => {
+    loading.value = true;
+    try {
+        const [year, month] = selectedMonth.value.split('-');
+        const response = await api.get(`/reception/get?year=${year}&month=${month}`);
+        visitors.value = response.data;
+        console.log(visitors.value);
+
+        loading.value = false;
+    } catch (error) {
+        console.error('Error fetching visitors:', error);
+        showToast('Failed to load visitors', 'error');
+        loading.value = false;
+    }
+};
+
+const openFormModal = () => {
+    resetForm();
+    editMode.value = false;
+    showFormModal.value = true;
+};
+
+// Close form modal
+const closeFormModal = () => {
+    showFormModal.value = false;
+};
+
+// Reset form
+const resetForm = () => {
+    formData.value = { ...initialFormData };
+    formData.value.visit_date = new Date().toISOString().split('T')[0];
+};
+
+const submitForm = async () => {
+    submitting.value = true;
+
+    try {
+        let response;
+
+        if (editMode.value && formData.value.id) {
+            // Update visitor - modified to match server expectations
+            // Include the ID in the request body as "ident"
+            const updateData = {
+                ...formData.value,
+                ident: formData.value.id // Add ident field with the ID value
+            };
+
+            response = await api.put(`/reception/update`, updateData, {
+                headers: { "Content-Type": "application/json" }
+            });
+
+            const index = visitors.value.findIndex(v => v.id === formData.value.id);
+            if (index !== -1) {
+                visitors.value[index] = { ...formData.value };
+            }
+            showToast('Visitor updated successfully', 'success');
+        } else {
+            // Create new visitor
+            response = await api.post(`/reception/create`, formData.value, {
+                headers: { "Content-Type": "application/json" }
+            });
+
+            if (response && response.data) {
+                const newVisitor = {
+                    ...formData.value,
+                    id: response.data.id
+                };
+                visitors.value.push(newVisitor);
+                showToast('Visitor added successfully', 'success');
+            }
+        }
+
+        closeFormModal();
+    } catch (error) {
+        console.log("Error details:", );
+        showToast(editMode.value ? 'Failed to update visitor' : 'Failed to add visitor', 'error');
+    } finally {
+        submitting.value = false;
+    }
+};
+
+// Edit visitor
+const editVisitor = (visitor: VisitorData) => {
+    formData.value = { ...visitor };
+    editMode.value = true;
+    showFormModal.value = true;
+};
+
+// Confirm delete
+const confirmDelete = (visitor: VisitorData) => {
+    visitorToDelete.value = visitor;
+    showDeleteModal.value = true;
+};
+
+// Close delete modal
+const closeDeleteModal = () => {
+    showDeleteModal.value = false;
+    visitorToDelete.value = null;
+};
+
+// Delete visitor
+const deleteVisitor = async () => {
+    if (!visitorToDelete.value) return;
+
+    deleting.value = true;
+
+    try {
+        await api.delete(`/reception/delete?ident=${visitorToDelete.value.id}`);
+        visitors.value = visitors.value.filter(v => v.id !== visitorToDelete.value?.id);
+        showToast('Visitor deleted successfully', 'success');
+        closeDeleteModal();
+    } catch (error) {
+        console.error('Error deleting visitor:', error);
+        showToast('Failed to delete visitor', 'error');
+    } finally {
+        deleting.value = false;
+    }
+};
+
+// Show toast notification
+const showToast = (message: string, type: 'success' | 'error' | 'info' = 'info') => {
+    toast.value = {
+        show: true,
+        message,
+        type
+    };
+
+    setTimeout(() => {
+        toast.value.show = false;
+    }, 3000);
+};
+
+// Fetch visitors on component mount
+onMounted(() => {
+    fetchVisitors();
+});
+</script>
+
 <template>
     <div class="min-h-screen bg-slate-900 py-12 px-4 sm:px-6 lg:px-8 text-white">
         <!-- List View (Default) -->
@@ -80,7 +325,7 @@
                                         'bg-green-900 text-green-100': visitor.status === `O'qiyapti`,
                                         'bg-yellow-900 text-yellow-100': visitor.status === `O'qimayapti`,
                                         'bg-red-900 text-yellow-100': visitor.status === `Kutilmoqda`,
-                                        
+
                                         'bg-gray-700 text-gray-100': !visitor.status
                                     }">
                                         {{ visitor.status || 'No Status' }}
@@ -241,7 +486,7 @@
                         <div class="flex justify-between items-center">
                             <div>
                                 <h1 class="text-2xl font-bold text-white">Reception </h1>
-                               
+
                             </div>
                             <button @click="closeFormModal" class="text-white hover:text-gray-300 transition-colors">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
@@ -463,293 +708,6 @@
         </div>
     </div>
 </template>
-
-<script lang="ts">
-import { defineComponent, ref, computed, onMounted } from 'vue'
-import api from '@/service/apiService'
-
-interface VisitorData {
-    id?: number | string;
-    full_name: string;
-    visit_date: string;
-    phone_number: string;
-    secondary_phone: string;
-    source: string;
-    course: string;
-    free_days: string[];
-    free_times: string[];
-    address: string;
-    status: string;
-    additional_info: string;
-}
-
-export default defineComponent({
-    name: 'VisitorManagement',
-    setup() {
-        // API endpoints
-        const API_CREATE = 'reception/create';
-        const API_GET = 'reception/list';
-        const API_DELETE = 'reception/delete';
-        const API_UPDATE = 'reception/update';
-
-        // Form data
-        const initialFormData: VisitorData = {
-            full_name: '',
-            visit_date: new Date().toISOString().split('T')[0],
-            phone_number: '',
-            secondary_phone: '',
-            source: '',
-            course: '',
-            free_days: [],
-            free_times: [],
-            address: '',
-            status: '',
-            additional_info: ''
-        }
-
-        const formData = ref<VisitorData>({ ...initialFormData })
-        const showFormModal = ref(false)
-        const submitting = ref(false)
-        const editMode = ref(false)
-        const selectedMonth = ref(new Date().toISOString().slice(0, 7)) // Default to current month (YYYY-MM format)
-        const availableDays = [
-            'Dushanba',
-            'Seshanba',
-            'Chorshanba',
-            'Payshanba',
-            'Juma',
-            'Shanba',
-            'Yakshanba'
-        ]
-
-        const availableTimes = [
-            '8:00-10:00',
-            '10:00-12:00',
-            '14:00-16:00',
-            '16:00-18:00',
-            '18:00-20:00',
-        ]
-
-        // List data
-        const visitors = ref<VisitorData[]>([])
-        const loading = ref(true)
-        const searchQuery = ref('')
-        const page = ref(1)
-        const itemsPerPage = 10
-
-        // Delete modal
-        const showDeleteModal = ref(false)
-        const visitorToDelete = ref<VisitorData | null>(null)
-        const deleting = ref(false)
-
-        // Toast notification
-        const toast = ref({
-            show: false,
-            message: '',
-            type: 'info'
-        })
-
-        // Filter visitors based on search query
-        const filteredVisitors = computed(() => {
-            if (!searchQuery.value) return visitors.value
-
-            const query = searchQuery.value.toLowerCase()
-            return visitors.value.filter(visitor =>
-                visitor.full_name.toLowerCase().includes(query) ||
-                visitor.phone_number.toLowerCase().includes(query) ||
-                visitor.course?.toLowerCase().includes(query) ||
-                visitor.status?.toLowerCase().includes(query)
-            )
-        })
-
-        // Format date for display
-        const formatDate = (dateString: string) => {
-            if (!dateString) return 'Not specified'
-
-            const options: Intl.DateTimeFormatOptions = {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-            }
-
-            return new Date(dateString).toLocaleDateString(undefined, options)
-        }
-        const handleMonthChange = () => {
-            fetchVisitors()
-        }
-        // Fetch visitors from API
-        const fetchVisitors = async () => {
-            loading.value = true
-            try {
-                const [year, month] = selectedMonth.value.split('-')
-                const response = await api.get(`/reception/get?year=${year}&month=${month}`)
-                visitors.value = response.data
-                loading.value = false
-            } catch (error) {
-                console.error('Error fetching visitors:', error)
-                showToast('Failed to load visitors', 'error')
-                loading.value = false
-            }
-        }
-
-        // Open form modal
-        const openFormModal = () => {
-            resetForm()
-            editMode.value = false
-            showFormModal.value = true
-        }
-
-        // Close form modal
-        const closeFormModal = () => {
-            showFormModal.value = false
-        }
-
-       
-        // Reset form
-        const resetForm = () => {
-            formData.value = { ...initialFormData }
-            formData.value.visit_date = new Date().toISOString().split('T')[0]
-        }
-
-        const submitForm = async () => {
-            submitting.value = true
-
-            try {
-                let response;
-
-                if (editMode.value && formData.value.id) {
-                    // Tashrifchini yangilash
-                    response = await api.post(`/reception/create`, formData.value, {
-                        headers: { "Content-Type": "application/json" }
-                    });
-                    const index = visitors.value.findIndex(v => v.id === formData.value.id)
-                    if (index !== -1) {
-                        visitors.value[index] = { ...formData.value }
-                    }
-                    showToast('Visitor updated successfully', 'success')
-                } else {
-                    
-                    response = await api.post(`/reception/create`, formData.value, {
-                        headers: { "Content-Type": "application/json" }
-                    });
-                    if (response && response.data) {
-                        const newVisitor = {
-                            ...formData.value,
-                            id: response.data.id
-                        }
-                        visitors.value.push(newVisitor)
-                        showToast('Visitor added successfully', 'success')
-                    }
-                }
-
-                closeFormModal()
-            } catch (error) {
-               console.log(error);
-               
-                showToast(editMode.value ? 'Failed to update visitor' : 'Failed to add visitor', 'error')
-            } finally {
-                submitting.value = false
-            }
-        }
-
-
-        // Edit visitor
-        const editVisitor = (visitor: VisitorData) => {
-            formData.value = { ...visitor }
-            editMode.value = true
-            showFormModal.value = true
-        }
-
-        // Confirm delete
-        const confirmDelete = (visitor: VisitorData) => {
-            visitorToDelete.value = visitor
-            showDeleteModal.value = true
-        }
-
-        // Close delete modal
-        const closeDeleteModal = () => {
-            showDeleteModal.value = false
-            visitorToDelete.value = null
-        }
-
-        // Delete visitor
-        const deleteVisitor = async () => {
-            if (!visitorToDelete.value) return
-
-            deleting.value = true
-
-            try {
-                await api.delete(`/reception/delete?ident=${visitorToDelete.value.id}`)
-                visitors.value = visitors.value.filter(v => v.id !== visitorToDelete.value?.id)
-                showToast('Visitor deleted successfully', 'success')
-                closeDeleteModal()
-            } catch (error) {
-                console.error('Error deleting visitor:', error)
-                showToast('Failed to delete visitor', 'error')
-            } finally {
-                deleting.value = false
-            }
-        }
-
-        // Show toast notification
-        const showToast = (message: string, type: 'success' | 'error' | 'info' = 'info') => {
-            toast.value = {
-                show: true,
-                message,
-                type
-            }
-
-            setTimeout(() => {
-                toast.value.show = false
-            }, 3000)
-        }
-
-        // Fetch visitors on component mount
-        onMounted(() => {
-            fetchVisitors()
-        })
-
-        return {
-            // Form-related
-            formData,
-            availableDays,
-            availableTimes,
-            submitForm,
-            resetForm,
-            showFormModal,
-            openFormModal,
-            closeFormModal,
-            submitting,
-            editMode,
-
-            // List-related
-            visitors,
-            filteredVisitors,
-            searchQuery,
-            page,
-            itemsPerPage,
-            formatDate,
-            fetchVisitors,
-            loading,
-            selectedMonth,
-            handleMonthChange,
-
-            // Delete-related
-            showDeleteModal,
-            confirmDelete,
-            closeDeleteModal,
-            deleteVisitor,
-            deleting,
-
-            // Toast
-            toast,
-
-            // Actions
-            editVisitor
-        }
-    }
-})
-</script>
 
 <style scoped>
 /* Additional custom styles */
