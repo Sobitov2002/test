@@ -95,8 +95,8 @@ const addExpense = async () => {
 </script>
 
 <template>
-    <div class="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 text-white p-4 md:p-6">
-        <div class="max-w-7xl mx-auto">
+    <div class="min-h-screen bg-gradient-to-br  text-white p-4 md:p-6">
+        <div class="">
             <!-- Header Section -->
             <div class="bg-slate-800/50 backdrop-blur-sm rounded-xl shadow-xl p-6 mb-6">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
@@ -144,8 +144,8 @@ const addExpense = async () => {
 
             <!-- Table Section -->
             <div class="bg-slate-800/50 backdrop-blur-sm rounded-xl shadow-xl overflow-hidden">
-                <div class="overflow-x-auto w-full">
-                    <table class="w-full min-w-full text-sm text-left">
+                <div class="overflow-x-auto">
+                    <table class="w-full  text-sm text-left">
                         <thead class="text-xs uppercase bg-slate-700/70 text-slate-300">
                             <tr>
                                 <th scope="col" class="px-6 py-4 font-medium">
@@ -154,13 +154,13 @@ const addExpense = async () => {
                                 <th scope="col" class="px-6 py-4 font-medium">Sana</th>
                                 <th scope="col" class="px-6 py-4 font-medium">Summa</th>
                                 <th scope="col" class="px-6 py-4 font-medium max-md:hidden">To'lov turi</th>
-                                <th scope="col" class="px-6 py-4 font-medium w-[100px] text-right">Action</th>
+                                <th scope="col" class="px-6 py-4 font-medium text-right">Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr v-for="(item, index) in filteredExpenses" :key="index"
                                 class="border-b border-slate-700/50 hover:bg-slate-700/30 transition-colors duration-200">
-                                <th class="px-6 py-4 flex items-center gap-3 whitespace-nowrap font-medium">
+                                <th class="px-6 py-4 flex  items-center gap-3 whitespace-nowrap font-medium">
                                     <div class="relative">
                                         <img class="w-10 h-10 rounded-full object-cover border-2 border-indigo-500/50"
                                             src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRH87TKQrWcl19xly2VNs0CjBzy8eaKNM-ZpA&s"
@@ -216,6 +216,7 @@ const addExpense = async () => {
                     </table>
                 </div>
             </div>
+
         </div>
 
         <!-- Add Expense Modal -->

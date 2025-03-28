@@ -155,8 +155,8 @@ const closeEditModal = () => {
             <p class="mt-2 text-gray-400">Yangi o'quvchi qo'shish uchun "Qo'shish" tugmasini bosing</p>
         </div>
 
-        <div v-else class="overflow-x-auto  w-full  rounded-xl">
-            <table class="w-full  text-sm shadow-lg rounded-xl text-left">
+        <div v-else class="overflow-x-auto scrollbar-container rounded-xl">
+            <table class="w-full min-w-[800px] text-sm shadow-lg rounded-xl text-left">
                 <thead class="bg-[#111633] text-gray-300 uppercase text-xs">
                     <tr>
                         <th class="px-6 py-4 rounded-tl-xl">O'quvchi</th>
@@ -308,7 +308,15 @@ const closeEditModal = () => {
     transform: translateY(-20px);
 }
 
-/* Custom scrollbar for the table container */
+/* Enhanced scrollbar for better mobile experience */
+.scrollbar-container {
+    -webkit-overflow-scrolling: touch;
+    /* Smooth scrolling on iOS */
+    scrollbar-width: thin;
+    /* Firefox */
+}
+
+
 ::-webkit-scrollbar {
     width: 8px;
     height: 8px;
@@ -328,7 +336,7 @@ const closeEditModal = () => {
     background: #4a4f67;
 }
 
-/* Date input styling for better cross-browser compatibility */
+
 input[type="date"] {
     appearance: none;
     -webkit-appearance: none;
@@ -338,5 +346,21 @@ input[type="date"] {
 input[type="date"]::-webkit-calendar-picker-indicator {
     filter: invert(1);
     cursor: pointer;
+}
+
+@media (max-width: 640px) {
+    .scrollbar-container {
+        margin: 0 -1rem;
+       
+        padding: 0 1rem;
+        
+        width: calc(100% + 2rem);
+    }
+
+    
+    table th,
+    table td {
+        white-space: nowrap;
+    }
 }
 </style>

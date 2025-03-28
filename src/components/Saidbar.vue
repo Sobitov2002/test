@@ -54,17 +54,14 @@ onMounted(() => {
 
     <!-- Sidebar -->
     <aside ref="sidebarRef"
-        class="fixed top-0 left-0 z-40 w-[280px] h-screen transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] -translate-x-full lg:translate-x-0"
+        class="fixed top-0 left-0 z-40 w-[280px] h-screen transition-transform  ease-[cubic-bezier(0.16,1,0.3,1)] -translate-x-full lg:translate-x-0"
         :class="{ 'translate-x-0 shadow-2xl': sidebarStore.isOpen }">
         <div style="background: linear-gradient(100.84deg, rgba(6, 11, 38, 0.94) 59.3%, rgba(26, 31, 55, 0) 100%);"
-            class="h-full rounded-2xl py-6 px-4 m-3 overflow-hidden flex flex-col relative backdrop-blur-md">
+            class="h-full  py-6 px-4  overflow-hidden flex flex-col relative backdrop-blur-md">
 
             <!-- Sidebar Header -->
             <div class="flex flex-col items-center mb-8">
-                <div
-                    class="w-14 h-14 flex items-center justify-center bg-gradient-to-br from-[#0075FF] to-[#00A3FF] rounded-2xl shadow-lg mb-4 transform hover:scale-105 transition-transform duration-300">
-                    <span class="text-white text-xl font-bold">IT</span>
-                </div>
+                
                 <h1
                     class="text-xl font-bold tracking-tight bg-gradient-to-r from-white to-[#757A8C] text-transparent bg-clip-text">
                     ITEACH ACADEMY

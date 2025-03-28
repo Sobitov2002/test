@@ -123,23 +123,24 @@ const confirmDelete = async () => {
                 </div>
             </div>
 
-            <!-- Table Section -->
-            <div class="overflow-x-auto w-full">
-                <table class="w-full text-sm text-left">
+            <!-- Table Section - Full horizontal scrolling -->
+            <div class="overflow-x-auto w-full" style="overflow-x: scroll; -webkit-overflow-scrolling: touch;">
+                <table class="w-full min-w-[800px] text-sm text-left whitespace-nowrap">
                     <thead class="text-xs uppercase bg-slate-700/50">
                         <tr>
-                            <th scope="col" class="px-4 py-4 md:px-6 font-medium">O'quvchilar ma'lumotlari</th>
-                            <th scope="col" class="px-3 py-4 font-medium">Guruh</th>
-                            <th scope="col" class="px-3 py-4 font-medium">Oy</th>
-                            <th scope="col" class="px-3 py-4 font-medium">Summa</th>
-                            <th scope="col" class="px-3 py-4 font-medium text-center">Action</th>
+                            <th scope="col" class="px-1 py-4 md:px-6 font-medium min-w-[300px]">O'quvchilar
+                            </th>
+                            <th scope="col" class="px-3 py-4 font-medium min-w-[100px]">Guruh</th>
+                            <th scope="col" class="px-3 py-4 font-medium min-w-[100px]">Oy</th>
+                            <th scope="col" class="px-3 py-4 font-medium min-w-[100px]">Summa</th>
+                            <th scope="col" class="px-3 py-4 font-medium text-center min-w-[100px]">Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr v-for="(item, index) in filteredStudents" :key="index"
                             class="border-b border-slate-700/50 hover:bg-slate-700/30 transition-colors duration-150">
                             <th class="px-4 py-3 md:px-6 flex items-center gap-3">
-                                <div class="relative">
+                                <div class="relative hidden lg:block">
                                     <img class="w-12 h-12 rounded-full object-cover border-2 border-blue-500"
                                         src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRH87TKQrWcl19xly2VNs0CjBzy8eaKNM-ZpA&s"
                                         alt="" />
@@ -147,8 +148,8 @@ const confirmDelete = async () => {
                                         class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-slate-800">
                                     </div>
                                 </div>
-                                <div>
-                                    <p class="font-medium">{{ item.student_name }}</p>
+                                <div class="w-[150px]">
+                                    <p class="font-medium ">{{ item.student_name }}</p>
                                 </div>
                             </th>
                             <td class="px-3 py-3">
@@ -234,3 +235,34 @@ const confirmDelete = async () => {
         </div>
     </div>
 </template>
+
+<style scoped>
+@media (max-width: 768px) {
+    .overflow-x-auto {
+        overflow-x: scroll !important;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: thin;
+        max-width: 100vw;
+    }
+
+    /* Force table to be wider than container to ensure scrolling */
+    table {
+        min-width: 800px !important;
+    }
+
+    /* Custom scrollbar for WebKit browsers */
+    .overflow-x-auto::-webkit-scrollbar {
+        height: 6px;
+    }
+
+    .overflow-x-auto::-webkit-scrollbar-track {
+        background: rgba(30, 41, 59, 0.2);
+        border-radius: 10px;
+    }
+
+    .overflow-x-auto::-webkit-scrollbar-thumb {
+        background: rgba(100, 116, 139, 0.5);
+        border-radius: 10px;
+    }
+}
+</style>

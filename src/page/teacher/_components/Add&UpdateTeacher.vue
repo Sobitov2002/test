@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, reactive } from "vue";
 import api from '@/service/apiService';
+import router from "@/router";
 
 interface TeacherData {
     full_name: string;
@@ -95,6 +96,7 @@ const resetForm = () => {
     };
     formState.success = false;
     formState.error = null;
+    router.push('/teacher')
 };
 
 const submitTeacher = async () => {
@@ -251,7 +253,7 @@ const submitTeacher = async () => {
                     <div class="flex justify-end space-x-3 pt-4">
                         <button type="button" @click="resetForm"
                             class="px-5 py-2.5 rounded-lg border border-gray-600 text-gray-300 hover:bg-gray-700/30 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500">
-                            Tozalash
+                            Bekor qilish
                         </button>
                         <button type="submit"
                             class="px-5 py-2.5 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 flex items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"

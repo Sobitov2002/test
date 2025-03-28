@@ -18,12 +18,20 @@ const isUploading = ref(false);
 const showDeleteModal = ref(false);
 const selectedCourseId = ref<number | null>(null);
 const previewImage = ref<string | null>(null);
+const isSkeletonLoading = ref(true); // Added skeleton loading state
 
 onMounted(async () => {
     try {
+        // Load data
         groupData.value = await getAllGroup();
+
+        // Show skeleton for 1 second regardless of how fast the data loads
+        setTimeout(() => {
+            isSkeletonLoading.value = false;
+        }, 1000);
     } catch (error) {
         console.error('Guruhlarni yuklashda xatolik:', error);
+        isSkeletonLoading.value = false; // Make sure to hide skeleton on error too
     }
 });
 
@@ -138,8 +146,7 @@ const closeModal = () => {
         <div class="flex justify-between items-center border-b border-gray-700/50 pb-4 mb-6">
             <div>
                 <h3 class="text-4xl max-md:text-2xl font-extrabold text-white">
-                    <span
-                        class="bg-clip-text text-white  ">Guruhlar</span>
+                    <span class="bg-clip-text text-white">Guruhlar</span>
                 </h3>
             </div>
             <button @click="isModalOpen = true"
@@ -153,7 +160,19 @@ const closeModal = () => {
             </button>
         </div>
 
-        <div v-if="groupData.length === 0" class="flex flex-col items-center justify-center py-16 text-gray-400">
+        <!-- Skeleton Loading -->
+        <div v-if="isSkeletonLoading" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
+            <div v-for="i in 4" :key="'skeleton-' + i"
+                class="group relative overflow-hidden rounded-xl bg-gray-800/60 border border-gray-700/30 animate-pulse">
+                <div class="relative h-[200px] overflow-hidden bg-gray-700/50"></div>
+                <div class="p-4">
+                    <div class="h-6 bg-gray-700/70 rounded w-3/4"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Empty state -->
+        <div v-else-if="groupData.length === 0" class="flex flex-col items-center justify-center py-16 text-gray-400">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mb-4 opacity-50" fill="none" viewBox="0 0 24 24"
                 stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
@@ -164,6 +183,7 @@ const closeModal = () => {
                 yaratish</button>
         </div>
 
+        <!-- Actual content -->
         <div v-else class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
             <div v-for="(item, index) in groupData" :key="index"
                 class="group relative overflow-hidden rounded-xl bg-gray-800/60 hover:bg-gray-700/80 transition-all duration-300 shadow-lg hover:shadow-xl border border-gray-700/30 hover:border-blue-500/30">
@@ -300,7 +320,7 @@ const closeModal = () => {
 </template>
 
 <style scoped>
-/* Optional: Add custom animations */
+
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -336,31 +356,22 @@ const closeModal = () => {
     animation-delay: 0.1s;
 }
 
-.grid>div:nth-child(2) {
-    animation-delay: 0.2s;
+
+
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 0.6;
+    }
+
+    50% {
+        opacity: 0.3;
+    }
 }
 
-.grid>div:nth-child(3) {
-    animation-delay: 0.3s;
-}
-
-.grid>div:nth-child(4) {
-    animation-delay: 0.4s;
-}
-
-.grid>div:nth-child(5) {
-    animation-delay: 0.5s;
-}
-
-.grid>div:nth-child(6) {
-    animation-delay: 0.6s;
-}
-
-.grid>div:nth-child(7) {
-    animation-delay: 0.7s;
-}
-
-.grid>div:nth-child(8) {
-    animation-delay: 0.8s;
+.animate-pulse {
+    animation: pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 </style>

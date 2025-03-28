@@ -2,7 +2,6 @@
 import api from '@/service/apiService';
 import { postStudent } from '../services';
 import { onMounted, ref, computed } from 'vue';
-import Student from '@/page/student/Page.vue';
 
 const students = ref([]);
 
@@ -41,13 +40,14 @@ onMounted(async () => {
     }
 });
 
-interface students{
+interface students {
     id: number;
     name: string;
     full_name: string;
     phone_number: number;
     group_name: string;
 }
+
 const openPaymentModal = (student: any) => {
     selectedStudent.value = student;
     modalOpen.value = true;
@@ -214,7 +214,7 @@ const closeModal = () => {
                     <thead class="bg-slate-800 text-slate-300 uppercase text-xs tracking-wider">
                         <tr>
                             <th class="px-6 py-4">O'quvchilar</th>
-                            <th class="px-6 py-4">Telefon raqami</th>
+                        
                             <th class="px-6 py-4">Boshlangan sana</th>
                             <th class="px-6 py-4 text-right">Amallar</th>
                         </tr>
@@ -225,7 +225,7 @@ const closeModal = () => {
                             <td class="px-6 py-4">
                                 <div class="flex items-center space-x-3">
                                     <div
-                                        class="flex-shrink-0 w-10 h-10 rounded-full overflow-hidden border border-slate-600">
+                                        class="flex-shrink-0 w-10 h-10 rounded-full overflow-hidden hidden  border border-slate-600">
                                         <img class="w-full h-full object-cover"
                                             src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRH87TKQrWcl19xly2VNs0CjBzy8eaKNM-ZpA&s"
                                             alt="" />
@@ -235,7 +235,7 @@ const closeModal = () => {
                                     </div>
                                 </div>
                             </td>
-                            <td class="px-6 py-4 text-slate-300">+998 {{ item.phone_number }}</td>
+                            
                             <td class="px-6 py-4 text-slate-300">{{ item.started_date }}</td>
                             <td class="px-6 py-4 text-right">
                                 <button @click="openPaymentModal(item)"
@@ -267,7 +267,6 @@ const closeModal = () => {
                     </tbody>
                 </table>
             </div>
-
         </div>
     </div>
 </template>

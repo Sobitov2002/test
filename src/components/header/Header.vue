@@ -27,7 +27,7 @@ const getRouteName = computed(() => {
 
 <template>
     <header style="background: linear-gradient(100.84deg, rgba(6, 11, 38, 0.94) 59.3%, rgba(26, 31, 55, 0) 100%);"
-        class=" fixed  rounded-2xl right-0    text-white py-4 px-6 flex items-center justify-between z-50">
+        class=" fixed bg-slate-950 w-full right-0 text-white py-4 px-6 flex items-center justify-between z-20">
 
         <!-- Sidebar Toggle -->
         <div class="lg:hidden cursor-pointer" @click="sidebarStore.isOpen = !sidebarStore.isOpen">
@@ -38,7 +38,7 @@ const getRouteName = computed(() => {
         </div>
 
         <!-- Router Name -->
-       
+
 
         <!-- Sign In / Sign Out -->
         <div class="grid grid-cols-1 border-1 rounded-2xl bg-slate-900 items-center px-2 max-w-md ml-auto">

@@ -276,14 +276,15 @@ const formatPhoneNumber = (phone: number) => {
 
         <!-- Teachers Table -->
         <div v-else class="overflow-hidden rounded-xl shadow-md">
-            <div class="overflow-x-auto">
-                <table class="w-full text-left">
+            <!-- Added a wrapper div with touch-scroll class for mobile horizontal scrolling -->
+            <div class="touch-scroll overflow-x-auto">
+                <table class="min-w-full whitespace-nowrap text-left">
                     <thead class="bg-slate-800 text-gray-300 text-sm uppercase">
                         <tr>
                             <th class="px-6 py-4 font-medium">O'qituvchilar</th>
                             <th class="px-6 py-4 font-medium">Telefon raqami</th>
                             <th class="px-6 py-4 font-medium">Email</th>
-                            <th class="px-6 py-4 font-medium max-md:hidden">Status</th>
+                            <th class="px-6 py-4 font-medium">Status</th>
                             <th class="px-6 py-4 font-medium text-right">Amallar</th>
                         </tr>
                     </thead>
@@ -292,7 +293,7 @@ const formatPhoneNumber = (phone: number) => {
                             class="bg-slate-800 hover:bg-slate-700 transition-colors duration-150 text-white">
                             <td class="px-6 py-4">
                                 <div class="flex items-center gap-3">
-                                    <div class="relative">
+                                    <div class="relative hidden md:block">
                                         <img class="w-12 h-12 rounded-full object-cover border-2 border-blue-500"
                                             src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRH87TKQrWcl19xly2VNs0CjBzy8eaKNM-ZpA&s"
                                             alt="">
@@ -307,7 +308,7 @@ const formatPhoneNumber = (phone: number) => {
                             </td>
                             <td class="px-6 py-4 text-gray-300">{{ formatPhoneNumber(item.phone_number) }}</td>
                             <td class="px-6 py-4 text-gray-300">{{ item.email }}</td>
-                            <td class="px-6 py-4 max-md:hidden">
+                            <td class="px-6 py-4">
                                 <span
                                     class="px-2 py-1 text-xs font-medium rounded-full bg-green-500 bg-opacity-20 text-green-500">
                                     Faol
@@ -338,9 +339,6 @@ const formatPhoneNumber = (phone: number) => {
                 </table>
             </div>
         </div>
-
-        <!-- Pagination (Optional) -->
-        
     </div>
 
     <!-- Toast Notification -->
@@ -426,5 +424,60 @@ button:focus {
 
 ::-webkit-scrollbar-thumb:hover {
     background: rgba(59, 130, 246, 0.7);
+}
+
+/* Enhanced mobile scrolling */
+.touch-scroll {
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scroll-behavior: smooth;
+    overflow-x: auto;
+    max-width: 100%;
+}
+
+/* Make sure table doesn't shrink below content width */
+table {
+    table-layout: fixed;
+    width: 100%;
+    min-width: 800px;
+    /* Ensures table has minimum width for all content */
+}
+
+/* Ensure columns have appropriate widths */
+th:first-child,
+td:first-child {
+    width: 25%;
+}
+
+th:nth-child(2),
+td:nth-child(2),
+th:nth-child(3),
+td:nth-child(3) {
+    width: 20%;
+}
+
+th:nth-child(4),
+td:nth-child(4) {
+    width: 15%;
+}
+
+th:last-child,
+td:last-child {
+    width: 20%;
+}
+
+/* Add visual indicator for scrollable content on mobile */
+@media (max-width: 768px) {
+    .touch-scroll::after {
+        content: '';
+        position: absolute;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        width: 20px;
+        background: linear-gradient(to right, transparent, rgba(6, 11, 38, 0.5));
+        pointer-events: none;
+        opacity: 0.8;
+    }
 }
 </style>
