@@ -144,24 +144,25 @@ const addExpense = async () => {
 
             <!-- Table Section -->
             <div class="bg-slate-800/50 backdrop-blur-sm rounded-xl shadow-xl overflow-hidden">
-                <div class="overflow-x-auto">
-                    <table class="w-full  text-sm text-left">
+                <div class="overflow-x-auto w-full" style="-webkit-overflow-scrolling: touch;">
+                    <table class="w-full min-w-[800px] text-sm text-left">
                         <thead class="text-xs uppercase bg-slate-700/70 text-slate-300">
                             <tr>
-                                <th scope="col" class="px-6 py-4 font-medium">
+                                <th scope="col" class="px-6 py-4 font-medium min-w-[180px]">
                                     O'qituvchilar
                                 </th>
-                                <th scope="col" class="px-6 py-4 font-medium text-center"></th>
-                                <th scope="col" class="px-6 py-4 font-medium text-center">Sana</th>
-                                <th scope="col" class="px-6 py-4 font-medium text-center">Summa</th>
-                                <th scope="col" class="px-6 py-4 font-medium text-center max-md:hidden">To'lov turi</th>
-                                <th scope="col" class="px-6 py-4 font-medium text-center">Action</th>
+                                <th scope="col" class="px-6 py-4 font-medium text-center min-w-[120px]"></th>
+                                <th scope="col" class="px-6 py-4 font-medium text-center min-w-[100px]">Sana</th>
+                                <th scope="col" class="px-6 py-4 font-medium text-center min-w-[120px]">Summa</th>
+                                <th scope="col" class="px-6 py-4 font-medium text-center min-w-[120px] max-md:hidden">
+                                    To'lov turi</th>
+                                <th scope="col" class="px-6 py-4 font-medium text-center min-w-[80px]">Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr v-for="(item, index) in filteredExpenses" :key="index"
                                 class="border-b border-slate-700/50 hover:bg-slate-700/30 transition-colors duration-200">
-                                <th class="px-6 py-4 flex ml-2  items-center gap-3 whitespace-nowrap font-medium">
+                                <th class="px-6 py-4 flex ml-2 items-center gap-3 whitespace-nowrap font-medium">
                                     <div class="relative hidden lg:block">
                                         <img class="w-10 h-10 rounded-full object-cover border-2 border-indigo-500/50"
                                             src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRH87TKQrWcl19xly2VNs0CjBzy8eaKNM-ZpA&s"
@@ -179,16 +180,15 @@ const addExpense = async () => {
                                         {{ item.amount.toLocaleString() }}
                                     </span>
                                 </td>
-                                <td
-                                    class="px-6 py-4 max-md:hidden flex justify-center items-center  whitespace-nowrap ">
-                                    <div class="flex items-center">
-                                        <div class="h-2.5 w-2.5 rounded-full "
+                                <td class="text-center whitespace-nowrap px-4 py-2">
+                                    <div class="flex items-center justify-center">
+                                        <div class="h-2.5 w-2.5 rounded-full"
                                             :class="item.payment_type === 'click' ? 'bg-purple-500' : 'bg-emerald-500'">
                                         </div>
-                                        <span class="ml-2 text-center">{{ item.payment_type }}</span>
+                                        <span class="ml-2">{{ item.payment_type }}</span>
                                     </div>
                                 </td>
-                                <td class=" py-4 whitespace-nowrap text-center">
+                                <td class="py-4 whitespace-nowrap text-center">
                                     <button @click="confirmDeleteExpense(item.id)"
                                         class="text-red-400 hover:text-red-300 hover:bg-red-500/20 p-2 rounded-full transition-colors duration-200">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20"
@@ -203,7 +203,7 @@ const addExpense = async () => {
 
                             <!-- Empty state -->
                             <tr v-if="filteredExpenses.length === 0">
-                                <td colspan="5" class="px-6 py-12 text-center text-slate-400">
+                                <td colspan="6" class="px-6 py-12 text-center text-slate-400">
                                     <div class="flex flex-col items-center">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mb-4 text-slate-500"
                                             fill="none" viewBox="0 0 24 24" stroke="currentColor">

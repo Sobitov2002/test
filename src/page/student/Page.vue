@@ -23,9 +23,10 @@ const filteredStudents = computed(() => {
     if (!searchQuery.value) return fetchFulstudent.value;
 
     return fetchFulstudent.value.filter(student =>
-        student.full_name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-        student.phone_number.includes(searchQuery.value)
+        student.full_name.toLowerCase().includes(searchQuery.value.toLowerCase())
+        
     );
+    
 });
 
 onMounted(async () => {

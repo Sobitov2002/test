@@ -284,8 +284,8 @@ const formatPhoneNumber = (phone: number) => {
                             <th class="px-6 py-4 font-medium">O'qituvchilar</th>
                             <th class="px-6 py-4 font-medium">Telefon raqami</th>
                             <th class="px-6 py-4 font-medium">Email</th>
-                            <th class="px-6 py-4 font-medium">Status</th>
-                            <th class="px-6 py-4 font-medium text-right">Amallar</th>
+                            <th class="px-6 py-4 font-medium text-center">Status</th>
+                            <th class="px-6 py-4 font-medium text-center">Amallar</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-700">
@@ -301,21 +301,21 @@ const formatPhoneNumber = (phone: number) => {
                                             class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-slate-800"></span>
                                     </div>
                                     <div>
-                                        <p class="font-medium">{{ item.full_name }}</p>
+                                        <p class="font-medium text-center">{{ item.full_name }}</p>
                                         <p class="text-xs text-gray-400">O'qituvchi</p>
                                     </div>
                                 </div>
                             </td>
                             <td class="px-6 py-4 text-gray-300">{{ formatPhoneNumber(item.phone_number) }}</td>
                             <td class="px-6 py-4 text-gray-300">{{ item.email }}</td>
-                            <td class="px-6 py-4">
+                            <td class="px-6 py-4 text-center">
                                 <span
                                     class="px-2 py-1 text-xs font-medium rounded-full bg-green-500 bg-opacity-20 text-green-500">
                                     Faol
                                 </span>
                             </td>
-                            <td class="px-6 py-4 text-right">
-                                <div class="flex justify-end gap-3">
+                            <td class="px-6 py-4 text-center">
+                                <div class="flex justify-center gap-3 ">
                                     <button @click="openEditModal(item)"
                                         class="p-2 text-blue-400 hover:text-blue-300 hover:bg-blue-900 hover:bg-opacity-30 rounded-lg transition-colors">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"

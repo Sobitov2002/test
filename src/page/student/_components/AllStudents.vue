@@ -13,6 +13,8 @@ const paymentType = ref<string>('cash');
 const paymentDate = ref<string>(new Date().toISOString().split('T')[0]);
 const paymentSuccess = ref(false);
 const isLoading = ref(false);
+const searchQuery = ref("");
+const fetchFulstudent = ref<any[]>([]);
 
 const months = [
     'January', 'February', 'March', 'April', 'May', 'June',
@@ -33,12 +35,14 @@ onMounted(async () => {
         isLoading.value = true;
         const response = await api.get('/student/get_all_students', { withCredentials: true });
         students.value = response.data;
+        fetchFulstudent.value = response.data; // Shu yerda to'ldiramiz
     } catch (error) {
         console.log(error);
     } finally {
         isLoading.value = false;
     }
 });
+
 
 interface students {
     id: number;
@@ -47,6 +51,13 @@ interface students {
     phone_number: number;
     group_name: string;
 }
+interface Student {
+    full_name: string;
+    started_date: string;
+    phone_number: string;
+}
+
+const Student = ref<Student[]>([]);
 
 const openPaymentModal = (student: any) => {
     selectedStudent.value = student;
@@ -95,6 +106,16 @@ const closeModal = () => {
         modalOpen.value = false;
     }
 };
+
+
+const filteredStudents = computed(() => {
+    if (!searchQuery.value) return students.value;
+
+    return students.value.filter(student =>
+        student.full_name.toLowerCase().includes(searchQuery.value.toLowerCase())
+    );
+});
+
 </script>
 
 <template>
@@ -195,10 +216,19 @@ const closeModal = () => {
     <div
         class="p-6 rounded-xl w-full mx-auto bg-gradient-to-br from-slate-900 to-slate-800 shadow-xl border border-slate-700">
         <!-- Header -->
-        <div class="flex justify-between items-center mb-6 pb-4 border-b border-slate-700">
+        <div
+            class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 pb-4 border-b border-slate-700">
             <div>
-                <h3 class="text-3xl font-bold text-white">O'quvchilar</h3>
-                <p class="text-slate-400 mt-1">Barcha o'quvchilar ro'yxati</p>
+                <h3 class="text-2xl md:text-3xl font-bold text-white">O'quvchilar</h3>
+            </div>
+            <div class="relative w-full sm:w-auto">
+                <input v-model="searchQuery" type="text" placeholder="Qidirish..."
+                    class="bg-[#111633] text-white px-4 py-2 rounded-lg w-full sm:w-64 focus:outline-none focus:ring-2 focus:ring-blue-500 pl-10" />
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 absolute left-3 top-2.5 text-gray-400"
+                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
             </div>
         </div>
 
@@ -214,18 +244,19 @@ const closeModal = () => {
                     <thead class="bg-slate-800 text-slate-300 uppercase text-xs tracking-wider">
                         <tr>
                             <th class="px-6 py-4">O'quvchilar</th>
-                        
-                            <th class="px-6 py-4">Boshlangan sana</th>
-                            <th class="px-6 py-4 text-right">Amallar</th>
+
+                            <th class="px-6 py-4 text-center">Boshlangan sana</th>
+                            <th class="px-6 py-4 text-center">Telefon raqam</th>
+                            <th class="px-6 py-4 text-center">Amallar</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-700">
-                        <tr v-for="(item, index) in students" :key="index"
+                        <tr v-for="(item, index) in filteredStudents" :key="index"
                             class="bg-slate-800/30 hover:bg-slate-700/50 transition-colors text-white">
                             <td class="px-6 py-4">
                                 <div class="flex items-center space-x-3">
                                     <div
-                                        class="flex-shrink-0 w-10 h-10 rounded-full overflow-hidden hidden  border border-slate-600">
+                                        class="flex-shrink-0 w-10 h-10 rounded-full overflow-hidden hidden lg:block  border border-slate-600">
                                         <img class="w-full h-full object-cover"
                                             src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRH87TKQrWcl19xly2VNs0CjBzy8eaKNM-ZpA&s"
                                             alt="" />
@@ -235,9 +266,10 @@ const closeModal = () => {
                                     </div>
                                 </div>
                             </td>
-                            
-                            <td class="px-6 py-4 text-slate-300">{{ item.started_date }}</td>
-                            <td class="px-6 py-4 text-right">
+
+                            <td class="px-6 py-4 text-slate-300 text-center">{{ item.started_date }}</td>
+                            <td class="px-6 py-4 text-slate-300 text-center">{{ item.phone_number }}</td>
+                            <td class="px-6 py-4 text-center">
                                 <button @click="openPaymentModal(item)"
                                     class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors inline-flex items-center space-x-1">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
@@ -245,7 +277,7 @@ const closeModal = () => {
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
                                     </svg>
-                                    <span>To'lov qilish</span>
+                                    <span>To'lov </span>
                                 </button>
                             </td>
                         </tr>
