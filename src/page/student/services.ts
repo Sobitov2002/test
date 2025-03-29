@@ -4,10 +4,10 @@ import api from '@/service/apiService';
 const fetchFullstudent = async ()=> {
   try {
     const selectedGroupId = localStorage.getItem("groupId");
-    console.log("ID localStorage: " + selectedGroupId);
+    // console.log("ID localStorage: " + selectedGroupId);
     
     const response = await api.get(`/student/get_all_students?group_id=${selectedGroupId}`, { withCredentials: true });
-    console.log("Taabalar",response.data);
+    // console.log("Taabalar",response.data);
     return response.data;
   } catch (error) {
     console.error('Get course:', error);
@@ -34,18 +34,18 @@ const addUser = async (userData: { full_name: string; phone_number: string }) =>
     const requestData = {
       full_name: userData.full_name,
       group_id: parseInt(groupId, 10), 
-      phone_number: Number(userData.phone_number), 
+      phone_number: String(userData.phone_number), 
       started_date: startedDate,
     };
 
-    console.log("Yuborilayotgan JSON ma'lumot:", requestData);
+    // console.log("Yuborilayotgan JSON ma'lumot:", requestData);
 
     const response = await api.post("/student/create", requestData, {
       headers: { "Content-Type": "application/json" },
       withCredentials: true,
     });
 
-    console.log("Talaba qo'shildi:", response.data);
+    // console.log("Talaba qo'shildi:", response.data);
     return response.data;
   } catch (error: any) {
     console.error("Talabani qo'shishda xatolik:", error.response?.data || error);

@@ -45,7 +45,7 @@ const addStudent = async () => {
         try {
             const response = await addUser(newStudent.value);
             fetchFulstudent.value = await fetchFullstudent();
-            console.log(response);
+            
         } catch (error) {
             console.error(error);
         }
@@ -73,7 +73,7 @@ const removeStudent = async (id: number) => {
 const editStudent = (student: any) => {
     selectedStudent.value = { ...student };
     isEditModalOpen.value = true;
-    console.log("Student tanlagan ID" + selectedStudent.value.id);
+    // console.log("Student tanlagan ID" + selectedStudent.value.id);
 };
 
 const updateStudentData = async () => {
@@ -82,7 +82,7 @@ const updateStudentData = async () => {
     const updatedData = {
         full_name: selectedStudent.value.full_name || "",
         group_id: selectedStudent.value.group_id || 0,
-        phone_number: String(selectedStudent.value.phone_number || ""),
+        phone_number: (selectedStudent.value.phone_number || ""),
         started_date: selectedStudent.value.started_date || "",
     };
 
@@ -97,7 +97,7 @@ const updateStudentData = async () => {
         );
         fetchFulstudent.value = await fetchFullstudent();
         isEditModalOpen.value = false;
-        console.log("Serverdan javob:", response.data);
+        // console.log("Serverdan javob:", response.data);
     } catch (error) {
         console.error(error);
     }
@@ -176,7 +176,7 @@ const closeEditModal = () => {
                             </div>
                             <div>
                                 <p class="font-medium text-white">{{ student.full_name }}</p>
-                                <p class="text-xs text-gray-400">ID: {{ student.id }}</p>
+                               
                             </div>
                         </td>
                         <td class="px-6 py-4 text-gray-300">{{ student.phone_number }}</td>

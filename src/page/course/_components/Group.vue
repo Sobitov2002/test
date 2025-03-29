@@ -217,9 +217,9 @@ const updateGroup = async () => {
                 <input v-model="newGroupName" type="text" placeholder="Guruh nomini kiriting"
                     class="text-white w-full border border-gray-300 rounded-md p-2 mb-4" />
 
-                <select v-model="selectedTeacherId" class="w-full border border-gray-300 rounded-md p-2 mb-4">
-                    <option class="text-white" value="" disabled>O'qituvchini tanlang</option>
-                    <option class="text-white bg-black/80" v-for="teacher in teachers" :key="teacher.id"
+                <select v-model="selectedTeacherId" class="w-full text-slate-400 border border-gray-300 rounded-md p-2 mb-4">
+                    <option class="text-white bg-slate-900" value="" disabled>O'qituvchini tanlang</option>
+                    <option class="text-white bg-slate-900 " v-for="teacher in teachers" :key="teacher.id"
                         :value="teacher.id">
                         {{ teacher.full_name }}
                     </option>
