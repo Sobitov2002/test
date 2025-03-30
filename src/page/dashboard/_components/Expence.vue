@@ -3,7 +3,7 @@ import { onMounted, ref, watch, computed } from 'vue';
 import { Chart, registerables } from 'chart.js';
 import api from '@/service/apiService';
 import { useDateStore } from '@/page/dashboard/store/index';
-import { ArrowUpCircle, Wallet, CreditCard, DollarSign, Loader2 } from 'lucide-vue-next';
+import { ArrowUpCircle, Wallet, CreditCard, DollarSign, Loader2, FileQuestion, AlertCircle } from 'lucide-vue-next';
 
 Chart.register(...registerables);
 
@@ -15,6 +15,13 @@ const isLoading = ref(false);
 const hasError = ref(false);
 const errorMessage = ref('');
 let chartInstance = null;
+
+// Improved empty state check to consider total amount as well
+const isEmpty = computed(() =>
+  !isLoading.value &&
+  !hasError.value &&
+  (payments.value.length === 0 || totalAmount.value === 0)
+);
 
 const percentages = computed(() => {
   if (totalAmount.value === 0) return payments.value.map(() => 0);
@@ -28,6 +35,7 @@ const fetchPaymentStatistics = async () => {
 
   isLoading.value = true;
   hasError.value = false;
+  errorMessage.value = '';
 
   try {
     const response = await api.get(`/expense/get?start_date=${dateStore.startDate}&end_date=${dateStore.endDate}`);
@@ -64,11 +72,14 @@ const fetchPaymentStatistics = async () => {
       }
     ];
 
-    updateChart();
+    // Only update chart if we have data
+    if (totalAmount.value > 0) {
+      updateChart();
+    }
   } catch (error) {
     console.error("Error fetching payment statistics:", error);
     hasError.value = true;
-    errorMessage.value = "Ma'lumotlarni yuklashda xatolik yuz berdi";
+    errorMessage.value = error.response?.data?.message || "Ma'lumotlarni yuklashda xatolik yuz berdi";
   } finally {
     isLoading.value = false;
   }
@@ -157,36 +168,59 @@ watch(() => [dateStore.startDate, dateStore.endDate], fetchPaymentStatistics, { 
 <template>
   <div
     class="bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl shadow-xl p-6 transition-all duration-300 hover:shadow-2xl">
-    <div class="flex items-center justify-between mb-">
+    <div class="flex items-center justify-between mb-4">
       <h2 class="text-xl font-bold text-white flex items-center pb-5 gap-2">
         <ArrowUpCircle class="text-emerald-500" size="20" />
         Xarajatlar statistikasi
       </h2>
+    </div>
 
-      <!-- Date range indicator could go here -->
-      <div v-if="isLoading" class="flex items-center  h-[240px] text-blue-400 text-sm">
-        <Loader2 class="animate-spin mr-2  h-[240px] " size="12" />
-        Yuklanmoqda...
+    <!-- Loading state -->
+    <div v-if="isLoading" class="flex flex-col items-center justify-center h-[240px]">
+      <Loader2 class="animate-spin text-blue-400 mb-3" size="40" />
+      <p class="text-slate-400">Yuklanmoqda...</p>
+    </div>
+
+    <!-- Error state with animation -->
+    <div v-else-if="hasError" class="flex flex-col items-center justify-center h-[240px]">
+      <div class="bg-red-900/30 text-red-300 p-6 rounded-lg flex flex-col items-center animate-pulse">
+        <AlertCircle class="text-red-400 mb-3" size="40" />
+        <p class="font-medium mb-1">Xatolik yuz berdi</p>
+        <p class="text-sm">{{ errorMessage }}</p>
+        <button @click="fetchPaymentStatistics"
+          class="mt-4 px-4 py-2 bg-red-500/20 hover:bg-red-500/30 text-red-300 rounded-lg transition-colors">
+          Qayta urinish
+        </button>
       </div>
     </div>
 
-    <!-- Error message -->
-    <div v-if="hasError" class="bg-red-900/30 text-red-300 p-4 rounded-lg mb-4 flex items-center">
-      <span class="mr-2"></span>
-      {{ errorMessage }}
+    <!-- Empty state with animation -->
+    <div v-else-if="isEmpty" class="flex flex-col items-center justify-center h-[240px]">
+      <div class="relative">
+        <FileQuestion class="text-slate-600 mb-4" size="60" />
+        <div
+          class="absolute -top-2 -right-2 w-8 h-8 bg-slate-700 rounded-full flex items-center justify-center animate-bounce">
+          <span class="text-slate-300 text-xs">?</span>
+        </div>
+      </div>
+      <p class="text-slate-300 font-medium mb-2">Ma'lumot topilmadi</p>
+      <p class="text-slate-400 text-sm max-w-md text-center">
+        Tanlangan sana oralig'ida hech qanday xarajat ma'lumotlari mavjud emas
+      </p>
+      <div class="mt-6 flex space-x-3">
+        <div class="w-2 h-2 bg-slate-600 rounded-full animate-pulse" style="animation-delay: 0ms"></div>
+        <div class="w-2 h-2 bg-slate-600 rounded-full animate-pulse" style="animation-delay: 300ms"></div>
+        <div class="w-2 h-2 bg-slate-600 rounded-full animate-pulse" style="animation-delay: 600ms"></div>
+      </div>
     </div>
 
     <!-- Chart and summary -->
-    <div class="flex flex-col kg:flex-row gap-6">
+    <div  class="flex flex-col  gap-6">
       <!-- Chart section -->
       <div class="relative flex-1 h-[200px]">
-        <div v-if="isLoading && !chartInstance" class="absolute inset-0 flex items-center justify-center">
-          <Loader2 class="animate-spin text-blue-400" size="40" />
-        </div>
-        <canvas ref="chartCanvas" :class="{ 'opacity-50': isLoading && chartInstance }"></canvas>
-
+        <canvas  ref="chartCanvas"></canvas>
         <!-- Center total -->
-        <div v-if="!isLoading && totalAmount > 0"
+        <div v-if="totalAmount > 0"
           class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center">
           <div class="text-sm text-slate-400">Jami</div>
           <div class="text-xl font-bold text-white">{{ totalAmount.toLocaleString() }}</div>
@@ -195,12 +229,8 @@ watch(() => [dateStore.startDate, dateStore.endDate], fetchPaymentStatistics, { 
       </div>
 
       <!-- Payment details -->
-      <div class="flex-1 flex flex-col justify-center">
-        <div v-if="payments.length === 0 && !isLoading" class="text-slate-400 text-center py-8">
-          Ma'lumot topilmadi
-        </div>
-
-        <div v-else class="space-y-4">
+      <div v-if="totalAmount > 0" class="flex-1 flex flex-col justify-center">
+        <div class="space-y-4">
           <div v-for="(payment, index) in payments" :key="index"
             class="bg-slate-800/50 backdrop-blur rounded-lg p-4 transition-all duration-300 hover:bg-slate-700/50 group">
             <div class="flex items-center justify-between">
@@ -219,7 +249,7 @@ watch(() => [dateStore.startDate, dateStore.endDate], fetchPaymentStatistics, { 
               </div>
             </div>
 
-            <!-- Progress bar -->
+            <!-- Progress bar with animation -->
             <div class="mt-3 h-1.5 bg-slate-700 rounded-full overflow-hidden">
               <div class="h-full rounded-full transition-all duration-500 ease-out group-hover:brightness-110"
                 :style="{ width: `${percentages[index]}%`, backgroundColor: payment.color }"></div>
