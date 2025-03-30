@@ -110,10 +110,7 @@ watch(() => [dateStore.startDate, dateStore.endDate], fetchPaymentStatistics, { 
 
     </div>
 
-    <div v-if="hasError" class="bg-red-900/30 text-red-300 p-4 rounded-lg mb-4 flex items-center">
-      <span class="mr-2">⚠️</span>
-      {{ errorMessage }}
-    </div>
+    
 
     <div class="flex flex-col  gap-6">
       <div class="relative flex-1 h-[200px] ">

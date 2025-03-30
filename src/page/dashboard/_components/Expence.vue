@@ -172,7 +172,7 @@ watch(() => [dateStore.startDate, dateStore.endDate], fetchPaymentStatistics, { 
 
     <!-- Error message -->
     <div v-if="hasError" class="bg-red-900/30 text-red-300 p-4 rounded-lg mb-4 flex items-center">
-      <span class="mr-2">⚠️</span>
+      <span class="mr-2"></span>
       {{ errorMessage }}
     </div>
 
