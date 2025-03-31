@@ -176,7 +176,7 @@ const closeEditModal = () => {
                             </div>
                             <div>
                                 <p class="font-medium text-white">{{ student.full_name }}</p>
-                               
+
                             </div>
                         </td>
                         <td class="px-6 py-4 text-gray-300">{{ student.phone_number }}</td>
@@ -233,9 +233,10 @@ const closeEditModal = () => {
                         class="w-full px-4 py-3 bg-[#1a1f37] border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500" />
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-300 mb-1">Boshlagan sana</label>
+                    <label class="text-gray-400">Boshlagan sana</label>
                     <input v-model="newStudent.started_date" type="date"
-                        class="w-full px-4 py-3 bg-[#1a1f37] border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                        class="bg-[#1a1f37] text-white px-4 py-2 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500" />
+
                 </div>
             </div>
             <div class="flex justify-end space-x-3 mt-6">
