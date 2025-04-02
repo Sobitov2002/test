@@ -112,7 +112,7 @@ watch(() => [dateStore.startDate, dateStore.endDate], fetchPaymentStatistics, { 
 
 
 
-    <div class="flex flex-col  gap-6">
+    <div class="flex flex-col p-6 gap-6">
       <div class="relative flex-1 h-[200px] ">
         <canvas  ref="chartCanvas"></canvas>
         <div v-if="!isLoading && totalAmount > 0"

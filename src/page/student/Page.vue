@@ -43,15 +43,21 @@ onMounted(async () => {
 const addStudent = async () => {
     if (newStudent.value.full_name && newStudent.value.phone_number) {
         try {
+            // Start date ni formatlash
+            if (newStudent.value.started_date) {
+                newStudent.value.started_date = new Date(newStudent.value.started_date).toISOString().split('T')[0];
+            }
+
             const response = await addUser(newStudent.value);
             fetchFulstudent.value = await fetchFullstudent();
-            
         } catch (error) {
             console.error(error);
         }
+
         isModalOpen.value = false;
         newStudent.value.full_name = "";
         newStudent.value.phone_number = "";
+        newStudent.value.started_date = "";
     }
 };
 
