@@ -36,6 +36,7 @@ const formData = ref<VisitorData>({ ...initialFormData });
 const showFormModal = ref(false);
 const submitting = ref(false);
 const editMode = ref(false);
+
 const selectedMonth = ref(new Date().toISOString().slice(0, 7)); // Default to current month (YYYY-MM format)
 const availableDays = [
     'Dushanba',
@@ -44,7 +45,8 @@ const availableDays = [
     'Payshanba',
     'Juma',
     'Shanba',
-    'Yakshanba'
+    'Yakshanba',
+    'Har kuni'
 ];
 
 const availableTimes = [
