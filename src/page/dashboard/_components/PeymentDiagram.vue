@@ -3,7 +3,7 @@ import { onMounted, ref, watch, computed } from 'vue';
 import { Chart, registerables } from 'chart.js';
 import api from '@/service/apiService';
 import { useDateStore } from '@/page/dashboard/store/index';
-import { ArrowUpCircle, Wallet, CreditCard, DollarSign, Loader2, FileQuestion, AlertCircle } from 'lucide-vue-next';
+import { ArrowDownCircle, Wallet, CreditCard, DollarSign, Loader2, FileQuestion, AlertCircle } from 'lucide-vue-next';
 
 Chart.register(...registerables);
 
@@ -163,9 +163,9 @@ watch(() => [dateStore.startDate, dateStore.endDate], fetchPaymentStatistics, { 
   <div
     class="bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl shadow-xl p-6 transition-all duration-300 hover:shadow-2xl">
     <div class="flex items-center justify-between mb-4">
-      <h2 class="text-xl font-bold text-white flex items-center pb-5 gap-2">
-        <ArrowUpCircle class="text-emerald-500" size="20" />
-        Xarajatlar statistikasi
+      <h2 class="text-xl font-bold text-white flex items-center gap-2 pb-5">
+        <ArrowDownCircle class="text-emerald-500" :size="20" />
+        Tushumlar statistikasi
       </h2>
     </div>
 
