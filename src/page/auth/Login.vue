@@ -28,7 +28,7 @@ const login = async () => {
         formData.append("client_id", "string");
         formData.append("client_secret", "string");
 
-        const response = await api.post("/token", formData);
+        const response = await api.post("/login/token", formData);
 
         await localStorage.setItem("token", response.data.access_token);
         router.push("/dashboard");

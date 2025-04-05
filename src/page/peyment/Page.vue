@@ -139,19 +139,15 @@ const confirmDelete = async () => {
                     <tbody>
                         <tr v-for="(item, index) in filteredStudents" :key="index"
                             class="border-b border-slate-700/50 hover:bg-slate-700/30 transition-colors duration-150">
-                            <th class="px-4 py-3 md:px-6 flex items-center gap-3">
-                                <div class="relative hidden lg:block">
-                                    <img class="w-10 h-10 rounded-full object-cover border-2 border-blue-500"
+                            <td class="px-2 py-3 md:px-6 flex items-center gap-3">
+                                <div class="relative flex   items-center gap-2  ">
+                                    <img class="w-10 h-10 hidden lg:flex rounded-full object-cover border-2 border-blue-500"
                                         src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRH87TKQrWcl19xly2VNs0CjBzy8eaKNM-ZpA&s"
                                         alt="" />
-                                    <div
-                                        class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-slate-800">
-                                    </div>
+                                    <p class="font-medium items-center  "> {{ item.student_name.length > 30 ?
+                                        item.student_name.slice(0, 20) + "..." : item.student_name }}</p>
                                 </div>
-                                <div class="text-center">
-                                    <p class="font-medium ">{{ item.student_name }}</p>
-                                </div>
-                            </th>
+                            </td>
                             <td class="px-3 py-3 text-center">
                                 <span
                                     class="px-2.5 py-1 rounded-full text-xs font-medium bg-blue-500/20 text-blue-400 border border-blue-500/30">

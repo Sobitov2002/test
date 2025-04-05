@@ -29,7 +29,6 @@ const percentages = computed(() => {
     ((payment.amount / totalAmount.value) * 100).toFixed(1)
   );
 });
-
 const fetchPaymentStatistics = async () => {
   if (!dateStore.startDate || !dateStore.endDate) return;
 
@@ -38,25 +37,18 @@ const fetchPaymentStatistics = async () => {
   errorMessage.value = '';
 
   try {
-    const response = await api.get(`/expense/get?start_date=${dateStore.startDate}&end_date=${dateStore.endDate}`);
+    const response = await api.get(`/expense/get_sum_expense?year=${dateStore.startDate}&month=${dateStore.endDate}`);
     const data = response.data;
+    console.log("Response Data:", data);
 
-    // Group payments by type
-    let cashAmount = 0;
-    let clickAmount = 0;
-
-    data.forEach((item) => {
-      if (item.payment_type === 'cash') {
-        cashAmount += item.amount;
-      } else if (item.payment_type === 'click') {
-        clickAmount += item.amount;
-      }
-    });
+    // Assign the values from the API response
+    let cashAmount = data.cash_expense || 0;
+    let clickAmount = data.click_expense || 0;
 
     // Calculate total
-    totalAmount.value = cashAmount + clickAmount;
+    totalAmount.value = data.total_expense || 0;
 
-    // Prepare chart data
+    // Prepare the payments array
     payments.value = [
       {
         name: 'Naxt',
@@ -72,14 +64,14 @@ const fetchPaymentStatistics = async () => {
       }
     ];
 
-    // Only update chart if we have data
+    // Update the chart if there is data
     if (totalAmount.value > 0) {
       updateChart();
     }
   } catch (error) {
     console.error("Error fetching payment statistics:", error);
     hasError.value = true;
-    errorMessage.value = error.response?.data?.message || "Ma'lumotlarni yuklashda xatolik yuz berdi";
+    errorMessage.value = 'Xarajatlarni olishda xatolik yuz berdi';
   } finally {
     isLoading.value = false;
   }
@@ -215,10 +207,10 @@ watch(() => [dateStore.startDate, dateStore.endDate], fetchPaymentStatistics, { 
     </div>
 
     <!-- Chart and summary -->
-    <div  class="flex flex-col  gap-6">
+    <div v-if="!isEmpty" class="flex flex-col  gap-6">
       <!-- Chart section -->
       <div class="relative flex-1 h-[200px]">
-        <canvas  ref="chartCanvas"></canvas>
+        <canvas ref="chartCanvas"></canvas>
         <!-- Center total -->
         <div v-if="totalAmount > 0"
           class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center">

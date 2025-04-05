@@ -151,7 +151,7 @@ const addExpense = async () => {
                                 <th scope="col" class="px-6 py-4 font-medium min-w-[180px]">
                                     O'qituvchilar
                                 </th>
-                                <th scope="col" class="px-6 py-4 font-medium text-center min-w-[120px]"></th>
+                                <th scope="col" class="px-6 py-4 font-medium text-center min-w-[120px]">Tavsif</th>
                                 <th scope="col" class="px-6 py-4 font-medium text-center min-w-[100px]">Sana</th>
                                 <th scope="col" class="px-6 py-4 font-medium text-center min-w-[120px]">Summa</th>
                                 <th scope="col" class="px-6 py-4 font-medium text-center min-w-[120px] max-md:hidden">

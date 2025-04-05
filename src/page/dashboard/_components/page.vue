@@ -1,47 +1,45 @@
 <script setup lang="ts">
-import { defineProps, onMounted, ref, watchEffect } from 'vue';
+import { defineProps, onMounted, ref, computed, watchEffect } from 'vue';
 import api from '@/service/apiService';
 import { useDateStore } from '@/page/dashboard/store/index';
 import router from '@/router';
-import { computed } from 'vue';
-const dateStoreq = useDateStore();
-const store = useDateStore();
-interface Administrator {
 
+interface Administrator {
     total_students: number;
     count: number;
 }
-const startDate = computed(() => dateStoreq.endDate);
 
-const totalStudents = ref(null);
-const isLoading = ref(true); // Add loading state
+// Store
+const dateStore = useDateStore();
 
+// Computed qilib olamiz
+const startDate = computed(() => dateStore.startDate);
+const endDate = computed(() => dateStore.endDate);
+
+// Ma'lumotlar
+const totalStudents = ref<number | null>(null);
+const isLoading = ref(true);
+
+// API chaqiradigan funksiya
 const getReception = async () => {
     try {
-        if (!startDate.value) {
-            console.error("startDate mavjud emas!");
-            return;
-        }
-
-        console.log(startDate.value);
-        const [year, month] = startDate.value.split("-");
-        const response = await api.get(`/reception/get_total_reception_students?year=${year}&month=${month}`, { withCredentials: true });
-
-        totalStudents.value = response.data.total_students; // Olingan ma'lumotni saqlash
+        const response = await api.get(`/reception/get_total_reception_students?year=${startDate.value}&month=${endDate.value}`, {
+            withCredentials: true,
+        });
+        totalStudents.value = response.data.total_students;
     } catch (error) {
-        console.error("Xatolik yuz berdi:", error);
+        console.error('Xatolik yuz berdi:', error);
     }
 };
+
+// Storedagi sana o'zgarganda avtomatik chaqirish
 watchEffect(() => {
-    if (startDate.value) {
+    if (startDate.value && endDate.value) {
         getReception();
     }
 });
 
-const allCourses = ref<{ count: number } | null>(null);
-const counter = ref<number | null>(null);
-const allPayment = ref();
-
+// Propslar
 const props = defineProps({
     studentCount: {
         type: Number,
@@ -57,10 +55,14 @@ const props = defineProps({
     },
 });
 
-onMounted(async () => {
-    isLoading.value = true; // Set loading to true on mount
+// Boshqa kodlaring
+const allCourses = ref<{ count: number } | null>(null);
+const counter = ref<number | null>(null);
+const allPayment = ref();
+const expense = ref();
 
-    // Simulate loading for 1 second
+onMounted(async () => {
+    isLoading.value = true;
     setTimeout(() => {
         isLoading.value = false;
     }, 1000);
@@ -74,42 +76,11 @@ onMounted(async () => {
     }
 });
 
-const dateStore = useDateStore();
-const expense = ref();
-
-watchEffect(async () => {
-    if (dateStore.startDate && dateStore.endDate) {
-        try {
-            const response = await api.get(`/payment/monthly_sum?start_date=${dateStore.startDate}&end_date=${dateStore.endDate}`);
-            allPayment.value = response.data;
-        } catch (error) {
-            console.error("To'lov ma'lumotlarini olishda xato:", error);
-        }
-
-        try {
-            const response = await api.get(`/expense/get_sum_expense?start_date=${dateStore.startDate}&end_date=${dateStore.endDate}`);
-            expense.value = response.data;
-        } catch (error) {
-            console.error("Xarajatlarni olishda xato:", error);
-        }
-    }
-});
-
-
-
-const nextStudent = () => {
-    router.push('/students')
-}
-const nextGroup = () => {
-    router.push('/group')
-}
-const nextTeacher = () => {
-    router.push('/teacher')
-}
-
-const nextReception = () => {
-    router.push('/reception')
-}
+// Router funksiyalar
+const nextStudent = () => router.push('/students');
+const nextGroup = () => router.push('/group');
+const nextTeacher = () => router.push('/teacher');
+const nextReception = () => router.push('/reception');
 </script>
 
 <template>

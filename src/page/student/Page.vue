@@ -181,7 +181,10 @@ const closeEditModal = () => {
                                 {{ student.full_name.charAt(0).toUpperCase() }}
                             </div>
                             <div>
-                                <p class="font-medium text-white">{{ student.full_name }}</p>
+                                <p class="font-medium text-white">
+                                    {{ student.full_name.length > 20 ? student.full_name.slice(0, 20) + "..." :
+                                    student.full_name }}
+                                </p>
 
                             </div>
                         </td>
