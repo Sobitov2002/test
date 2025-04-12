@@ -17,6 +17,10 @@ const months = [
     'January', 'February', 'March', 'April', 'May', 'June',
     'July', 'August', 'September', 'October', 'November', 'December'
 ];
+
+const currentMonth = months[new Date().getMonth()];
+
+
 const deleteCount = ref();
 const paymentTypes = ['cash', 'click'];
 
@@ -35,7 +39,7 @@ const openPaymentModal = (student: any) => {
 };
 
 const selectedFilter = ref<string>(''); // Payment type filter
-const selectedMonthFilter = ref<string>(''); // Month filter
+const selectedMonthFilter = ref<string>(currentMonth);
 
 const filteredStudents = computed(() => {
     return students.value.filter(student => {
@@ -98,8 +102,11 @@ const confirmDelete = async () => {
                     <div class="relative">
                         <select v-model="selectedMonthFilter"
                             class="w-full bg-slate-700 text-white px-4 py-2.5 rounded-lg border border-slate-600 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none pr-10">
-                            <option value="">Barcha oylar</option>
-                            <option v-for="month in months" :key="month" :value="month">{{ month }}</option>
+                         
+                                <option :value="currentMonth">{{ currentMonth }}</option>
+                                <option v-for="month in months" :key="month" :value="month">{{ month }}</option>
+                        
+
                         </select>
                         <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
                             <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"
@@ -160,8 +167,9 @@ const confirmDelete = async () => {
                                     {{ item.month }}
                                 </span>
                             </td>
+                            
                             <td class="px-3 py-3 font-medium text-center">
-                                <span class="text-green-400">{{ item.total_amount.toLocaleString() }}</span>
+                                <span class="text-green-400">{{ item.amount.toLocaleString() }}</span>
                             </td>
                             <td class="px-3 py-3 text-center">
                                 <button @click="openDeleteModal(item)"

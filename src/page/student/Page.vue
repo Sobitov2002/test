@@ -6,9 +6,20 @@ import api from '@/service/apiService';
 const fetchFulstudent = ref<any[]>([]);
 const isModalOpen = ref(false);
 const isEditModalOpen = ref(false);
+const isStatusEditModalOpen = ref(false); // New ref for status edit modal
 const selectedStudent = ref<any | null>(null);
 const isLoading = ref(true);
 const searchQuery = ref("");
+
+interface Student {
+    discount: 'active' | 'graduate' | 'inactive';
+}
+
+// Status update data
+const statusUpdateData = ref({
+    student_id: 0,
+    status: "inactive" as "active" | "graduate" | "inactive"
+});
 
 const groupId = ref<number | null>(parseInt(localStorage.getItem("group_id") || "0", 10) || null);
 
@@ -16,6 +27,7 @@ const newStudent = ref({
     full_name: "",
     phone_number: "",
     group_id: groupId.value,
+    discount: "",
     started_date: new Date().toISOString().split("T")[0],
 });
 
@@ -24,9 +36,7 @@ const filteredStudents = computed(() => {
 
     return fetchFulstudent.value.filter(student =>
         student.full_name.toLowerCase().includes(searchQuery.value.toLowerCase())
-        
     );
-    
 });
 
 onMounted(async () => {
@@ -43,12 +53,12 @@ onMounted(async () => {
 const addStudent = async () => {
     if (newStudent.value.full_name && newStudent.value.phone_number) {
         try {
-            // Start date ni formatlash
             if (newStudent.value.started_date) {
                 newStudent.value.started_date = new Date(newStudent.value.started_date).toISOString().split('T')[0];
             }
 
             const response = await addUser(newStudent.value);
+            // return response
             fetchFulstudent.value = await fetchFullstudent();
         } catch (error) {
             console.error(error);
@@ -56,8 +66,51 @@ const addStudent = async () => {
 
         isModalOpen.value = false;
         newStudent.value.full_name = "";
+        newStudent.value.discount = "";
         newStudent.value.phone_number = "";
         newStudent.value.started_date = "";
+    }
+};
+
+// Improved statusEdit function
+const statusEdit = async (studentData: { student_id: number, status: string }) => {
+    try {
+        const response = await api.put('/student/update_status', studentData, {
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+
+       
+        
+        if (response) {
+            fetchFulstudent.value = await fetchFullstudent();
+            return response;
+        }
+    } catch (error) {
+        console.error("Error updating student status:", error);
+        throw error;
+    }
+};
+
+
+const openStatusEditModal = (student: any) => {
+    statusUpdateData.value.student_id = student.id;
+    statusUpdateData.value.status = student.status || "inactive";
+    selectedStudent.value = student;
+    isStatusEditModalOpen.value = true;
+};
+
+
+const submitStatusUpdate = async () => {
+    try {
+        await statusEdit(statusUpdateData.value);
+        isStatusEditModalOpen.value = false;
+       
+        alert("Status muvaffaqiyatli yangilandi!");
+    } catch (error) {
+        console.error("Failed to update status:", error);
+        alert("Status yangilashda xatolik yuz berdi!");
     }
 };
 
@@ -79,7 +132,6 @@ const removeStudent = async (id: number) => {
 const editStudent = (student: any) => {
     selectedStudent.value = { ...student };
     isEditModalOpen.value = true;
-    // console.log("Student tanlagan ID" + selectedStudent.value.id);
 };
 
 const updateStudentData = async () => {
@@ -88,6 +140,7 @@ const updateStudentData = async () => {
     const updatedData = {
         full_name: selectedStudent.value.full_name || "",
         group_id: selectedStudent.value.group_id || 0,
+        discount: selectedStudent.value.discount || "",
         phone_number: (selectedStudent.value.phone_number || ""),
         started_date: selectedStudent.value.started_date || "",
     };
@@ -103,7 +156,7 @@ const updateStudentData = async () => {
         );
         fetchFulstudent.value = await fetchFullstudent();
         isEditModalOpen.value = false;
-        // console.log("Serverdan javob:", response.data);
+
     } catch (error) {
         console.error(error);
     }
@@ -113,11 +166,16 @@ const closeModal = () => {
     isModalOpen.value = false;
     newStudent.value.full_name = "";
     newStudent.value.phone_number = "";
+    newStudent.value.discount = "";
 };
 
 const closeEditModal = () => {
     isEditModalOpen.value = false;
     selectedStudent.value = null;
+};
+
+const closeStatusEditModal = () => {
+    isStatusEditModalOpen.value = false;
 };
 </script>
 
@@ -169,6 +227,8 @@ const closeEditModal = () => {
                         <th class="px-6 py-4 rounded-tl-xl">O'quvchi</th>
                         <th class="px-6 py-4">Telefon raqami</th>
                         <th class="px-6 py-4">Boshlagan sana</th>
+                        <th class="px-6 py-4">Summa</th>
+                        <th class="px-6 py-4">Holat </th>
                         <th class="px-6 py-4 rounded-tr-xl">Harakatlar</th>
                     </tr>
                 </thead>
@@ -185,11 +245,16 @@ const closeEditModal = () => {
                                     {{ student.full_name.length > 20 ? student.full_name.slice(0, 20) + "..." :
                                     student.full_name }}
                                 </p>
-
                             </div>
                         </td>
                         <td class="px-6 py-4 text-gray-300">{{ student.phone_number }}</td>
                         <td class="px-6 py-4 text-gray-300">{{ student.started_date }}</td>
+                        <td class="px-6 py-4 text-gray-300">{{ student.payment_amount.toLocaleString() }}</td>
+                        <td class="px-6 py-4"
+                            :style="{ color: student.status === 'active' ? '#06b853' : (student.status === 'graduated' ? 'yellow' : 'red') }">
+                            {{ student.status }}
+                        </td>
+
                         <td class="px-6 py-4">
                             <div class="flex gap-3">
                                 <button @click="editStudent(student)"
@@ -206,6 +271,15 @@ const closeEditModal = () => {
                                         viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                             d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    </svg>
+                                </button>
+                                <button @click="openStatusEditModal(student)"
+                                    class="p-2 rounded-lg bg-[#1a1f37] hover:bg-amber-600 transition-colors duration-200">
+                                    <svg class="w-5 h-5 text-gray-300" aria-hidden="true"
+                                        xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none"
+                                        viewBox="0 0 24 24">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-width="2"
+                                            d="M20 6H10m0 0a2 2 0 1 0-4 0m4 0a2 2 0 1 1-4 0m0 0H4m16 6h-2m0 0a2 2 0 1 0-4 0m4 0a2 2 0 1 1-4 0m0 0H4m16 6H10m0 0a2 2 0 1 0-4 0m4 0a2 2 0 1 1-4 0m0 0H4" />
                                     </svg>
                                 </button>
                             </div>
@@ -242,10 +316,14 @@ const closeEditModal = () => {
                         class="w-full px-4 py-3 bg-[#1a1f37] border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500" />
                 </div>
                 <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-1">Chegirma</label>
+                    <input v-model="newStudent.discount" type="text" placeholder="Chegirma (%)"
+                        class="w-full px-4 py-3 bg-[#1a1f37] border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                </div>
+                <div>
                     <label class="text-gray-400">Boshlagan sana</label>
                     <input v-model="newStudent.started_date" type="date"
                         class="bg-[#1a1f37] text-white px-4 py-2 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-blue-500" />
-
                 </div>
             </div>
             <div class="flex justify-end space-x-3 mt-6">
@@ -287,6 +365,11 @@ const closeEditModal = () => {
                         class="w-full px-4 py-3 bg-[#1a1f37] border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500" />
                 </div>
                 <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-1">Chegirma</label>
+                    <input v-model="selectedStudent.discount" type="text" placeholder="Chegirma (%)"
+                        class="w-full px-4 py-3 bg-[#1a1f37] border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                </div>
+                <div>
                     <label class="block text-sm font-medium text-gray-300 mb-1">Boshlagan sana</label>
                     <input v-model="selectedStudent.started_date" type="date"
                         class="w-full px-4 py-3 bg-[#1a1f37] border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500" />
@@ -298,6 +381,56 @@ const closeEditModal = () => {
                     Bekor qilish
                 </button>
                 <button @click="updateStudentData"
+                    class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200">
+                    Saqlash
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Status Edit Modal -->
+    <div v-if="isStatusEditModalOpen" class="fixed inset-0 flex items-center justify-center z-50">
+        <div class="absolute inset-0 bg-black bg-opacity-70 backdrop-blur-sm" @click="closeStatusEditModal"></div>
+        <div class="bg-[#111633] p-6 rounded-xl shadow-2xl w-full max-w-md relative z-10 transform transition-all">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl font-bold text-white">Status o'zgartirish</h2>
+                <button @click="closeStatusEditModal" class="text-gray-400 hover:text-white">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <div class="space-y-4" v-if="selectedStudent">
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-1">O'quvchi</label>
+                    <div
+                        class="flex items-center gap-3 px-4 py-3 bg-[#1a1f37] border border-gray-700 rounded-lg text-white">
+                        <div
+                            class="w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm">
+                            {{ selectedStudent.full_name?.charAt(0).toUpperCase() }}
+                        </div>
+                        <span>{{ selectedStudent.full_name }}</span>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-300 mb-1">Status</label>
+                    <select v-model="statusUpdateData.status"
+                        class="w-full px-4 py-3 bg-[#1a1f37] border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="active">Active</option>
+                        <option value="graduated">Graduate</option>
+                        <option value="inactive">Inactive</option>
+                    </select>
+                </div>
+            </div>
+            <div class="flex justify-end space-x-3 mt-6">
+                <button @click="closeStatusEditModal"
+                    class="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors duration-200">
+                    Bekor qilish
+                </button>
+                <button @click="submitStatusUpdate"
                     class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200">
                     Saqlash
                 </button>
@@ -362,13 +495,10 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 @media (max-width: 640px) {
     .scrollbar-container {
         margin: 0 -1rem;
-       
         padding: 0 1rem;
-        
         width: calc(100% + 2rem);
     }
 
-    
     table th,
     table td {
         white-space: nowrap;

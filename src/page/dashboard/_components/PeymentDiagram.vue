@@ -16,7 +16,7 @@ const hasError = ref(false);
 const errorMessage = ref('');
 let chartInstance = null;
 
-// Improved empty state check to consider total amount as well
+
 const isEmpty = computed(() =>
   !isLoading.value &&
   !hasError.value &&

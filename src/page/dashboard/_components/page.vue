@@ -4,23 +4,24 @@ import api from '@/service/apiService';
 import { useDateStore } from '@/page/dashboard/store/index';
 import router from '@/router';
 
+
 interface Administrator {
     total_students: number;
     count: number;
 }
+interface Student{
+    active_count:number
+}
 
-// Store
 const dateStore = useDateStore();
 
-// Computed qilib olamiz
+
 const startDate = computed(() => dateStore.startDate);
 const endDate = computed(() => dateStore.endDate);
-
-// Ma'lumotlar
+const studentsCount = ref<number>()
 const totalStudents = ref<number | null>(null);
 const isLoading = ref(true);
 
-// API chaqiradigan funksiya
 const getReception = async () => {
     try {
         const response = await api.get(`/reception/get_total_reception_students?year=${startDate.value}&month=${endDate.value}`, {
@@ -32,19 +33,26 @@ const getReception = async () => {
     }
 };
 
-// Storedagi sana o'zgarganda avtomatik chaqirish
+const studetnCount = async () =>{
+    try {
+        const response =  await api.get('/student/get_count'  )
+        studentsCount.value = response.data 
+        console.log(studentsCount.value);
+        
+    } catch (error) {
+        
+    }
+}
+
+
+
 watchEffect(() => {
     if (startDate.value && endDate.value) {
         getReception();
     }
 });
 
-// Propslar
 const props = defineProps({
-    studentCount: {
-        type: Number,
-        default: null,
-    },
     fetchAdminstratr: {
         type: Object as () => { count: number },
         default: () => ({ count: 0 }),
@@ -55,7 +63,9 @@ const props = defineProps({
     },
 });
 
-// Boshqa kodlaring
+
+
+
 const allCourses = ref<{ count: number } | null>(null);
 const counter = ref<number | null>(null);
 const allPayment = ref();
@@ -66,7 +76,7 @@ onMounted(async () => {
     setTimeout(() => {
         isLoading.value = false;
     }, 1000);
-
+    studetnCount()
     try {
         const response = await api.get('/course/get_count', { withCredentials: true });
         allCourses.value = response.data;
@@ -74,6 +84,7 @@ onMounted(async () => {
     } catch (error) {
         console.error('Get course error:', error);
     }
+
 });
 
 // Router funksiyalar
@@ -90,7 +101,7 @@ const nextReception = () => router.push('/reception');
             <div class="stat-content">
                 <h3 class="stat-label">Talabalar soni:</h3>
                 <p v-if="isLoading" class="stat-value skeleton"></p>
-                <p v-else class="stat-value">{{ props.studentCount }}</p>
+                <p v-else class="stat-value">{{ studentsCount.active_count }}</p>
             </div>
             <div class="stat-icon-container" :class="{ 'skeleton-icon': isLoading }">
                 <svg class="stat-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"

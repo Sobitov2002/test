@@ -8,6 +8,7 @@ const students = ref([]);
 const modalOpen = ref(false);
 const selectedStudent = ref<any>(null);
 const selectedMonth = ref<string>('');
+const paymentDiscount = ref<number>()
 const paymentAmount = ref<number | null>(null);
 const paymentType = ref<string>('cash');
 const paymentDate = ref<string>(new Date().toISOString().split('T')[0]);
@@ -35,7 +36,9 @@ onMounted(async () => {
         isLoading.value = true;
         const response = await api.get('/student/get_all_students', { withCredentials: true });
         students.value = response.data;
-        fetchFulstudent.value = response.data; // Shu yerda to'ldiramiz
+
+
+        fetchFulstudent.value = response.data;
     } catch (error) {
         console.log(error);
     } finally {
@@ -50,6 +53,7 @@ interface students {
     full_name: string;
     phone_number: number;
     group_name: string;
+    discount:number;
 }
 interface Student {
     full_name: string;
@@ -64,6 +68,7 @@ const openPaymentModal = (student: any) => {
     modalOpen.value = true;
     paymentSuccess.value = false;
     paymentDate.value = new Date().toISOString().split('T')[0];
+    
 };
 
 const confirmPayment = async () => {
@@ -79,6 +84,7 @@ const confirmPayment = async () => {
         month: selectedMonth.value || 'January',
         payment_type: paymentType.value || 'cash',
         payment_date: paymentDate.value || new Date().toISOString().split('T')[0],
+        discount:paymentDiscount.value || 0
     };
 
     try {
@@ -172,7 +178,14 @@ const filteredStudents = computed(() => {
                                 <option v-for="month in months" :key="month" :value="month">{{ month }}</option>
                             </select>
                         </div>
-
+                        <div class="space-y-1.5">
+                            <label for="payment-amount" class="block text-sm font-medium text-slate-300">Chegirma (%)</label>
+                            <div class="relative">
+                                <input v-model="paymentDiscount" type="number" id="payment-amount"
+                                    placeholder="Miqdorni kiriting"
+                                    class="w-full px-4 py-2.5 bg-slate-800/50 border border-slate-700 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" />
+                            </div>
+                        </div>
                         <!-- Payment Type -->
                         <div class="space-y-1.5">
                             <label class="block text-sm font-medium text-slate-300">To'lov turi</label>
@@ -237,26 +250,27 @@ const filteredStudents = computed(() => {
             <div class="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
         </div>
 
-        <!-- Students Table -->
-        <div v-else class="md:overflow-hidden overflow-x-auto rounded-xl border border-slate-700 shadow-lg">
-            <div class="">
+        <!-- Students Table - 100% width with horizontal scroll -->
+        <div v-else class="w-full rounded-xl border border-slate-700 shadow-lg overflow-hidden">
+            <div class="table-scroll-container">
                 <table class="w-full text-sm text-left">
                     <thead class="bg-slate-800 text-slate-300 uppercase text-xs tracking-wider">
                         <tr>
-                            <th class="px-6 py-4">O'quvchilar</th>
-
-                            <th class="px-6 py-4 text-center">Boshlangan sana</th>
-                            <th class="px-6 py-4 text-center">Telefon raqam</th>
-                            <th class="px-6 py-4 text-center">Amallar</th>
+                            <th class="px-6 py-4 whitespace-nowrap">O'quvchilar</th>
+                            <th class="px-6 py-4 text-center whitespace-nowrap">Telefon raqam</th>
+                            <th class="px-6 py-4 text-center whitespace-nowrap hidden sm:block">Boshlangan sana</th>
+                            <th class="px-6 py-4 text-center whitespace-nowrap">To'lov summa</th>
+                            <th class="px-6 py-4 text-center whitespace-nowrap">Chegirma</th>
+                            <th class="px-6 py-4 text-center whitespace-nowrap">Amallar</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-700">
                         <tr v-for="(item, index) in filteredStudents" :key="index"
                             class="bg-slate-800/30 hover:bg-slate-700/50 transition-colors text-white">
-                            <td class="px-6 py-4">
+                            <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="flex items-center space-x-3">
                                     <div
-                                        class="flex-shrink-0 w-10 h-10 rounded-full overflow-hidden hidden lg:block  border border-slate-600">
+                                        class="flex-shrink-0 w-10 h-10 rounded-full overflow-hidden hidden lg:block border border-slate-600">
                                         <img class="w-full h-full object-cover"
                                             src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRH87TKQrWcl19xly2VNs0CjBzy8eaKNM-ZpA&s"
                                             alt="" />
@@ -266,10 +280,17 @@ const filteredStudents = computed(() => {
                                     </div>
                                 </div>
                             </td>
-
-                            <td class="px-6 py-4 text-slate-300 text-center">{{ item.started_date }}</td>
-                            <td class="px-6 py-4 text-slate-300 text-center">{{ item.phone_number }}</td>
-                            <td class="px-6 py-4 text-center">
+                            <td class="px-6 py-4 text-slate-300 text-center whitespace-nowrap  ">{{ item.phone_number }}
+                            </td>
+                            <td class="px-6 py-4 text-slate-300 text-center whitespace-nowrap hidden sm:block">{{
+                                item.started_date }}
+                            </td>
+                            <td class="px-6 py-4 text-slate-300 text-center whitespace-nowrap">
+                                {{item.payment_amount.toLocaleString() }}
+                            </td>
+                            <td class="px-6 py-4 text-slate-300 text-center whitespace-nowrap">{{ item.discount }} %
+                            </td>
+                            <td class="px-6 py-4 text-center whitespace-nowrap">
                                 <button @click="openPaymentModal(item)"
                                     class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors inline-flex items-center space-x-1">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none"
@@ -284,7 +305,7 @@ const filteredStudents = computed(() => {
 
                         <!-- Empty State -->
                         <tr v-if="!students.length && !isLoading">
-                            <td colspan="4" class="px-6 py-12 text-center text-slate-400">
+                            <td colspan="6" class="px-6 py-12 text-center text-slate-400">
                                 <div class="flex flex-col items-center">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mb-4 text-slate-600"
                                         fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -312,5 +333,59 @@ const filteredStudents = computed(() => {
 .fade-enter-from,
 .fade-leave-to {
     opacity: 0;
+}
+
+.table-scroll-container {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    
+    position: relative;
+    display: block;
+}
+
+
+.table-scroll-container::-webkit-scrollbar {
+    height: 6px;
+}
+
+.table-scroll-container::-webkit-scrollbar-track {
+    background: rgba(30, 41, 59, 0.2);
+    border-radius: 10px;
+}
+
+.table-scroll-container::-webkit-scrollbar-thumb {
+    background: rgba(100, 116, 139, 0.5);
+    border-radius: 10px;
+}
+
+.table-scroll-container::-webkit-scrollbar-thumb:hover {
+    background: rgba(100, 116, 139, 0.7);
+}
+
+
+table {
+    width: 100%;
+    min-width: 100%;
+    table-layout: fixed;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+
+.whitespace-nowrap {
+    white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+    .table-scroll-container {
+        width: 100%;
+        max-width: 100vw;
+    }
+
+    table {
+        min-width: 800px;
+      
+    }
 }
 </style>

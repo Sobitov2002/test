@@ -22,7 +22,7 @@ interface UserData {
   started_date?: string;
 }
 
-const addUser = async (userData: { full_name: string; phone_number: string }) => {
+const addUser = async (userData: { full_name: string; phone_number: string; discount:"number" }) => {
   try {
     const groupId = localStorage.getItem("groupId"); 
     const startedDate = new Date().toISOString().split("T")[0];
@@ -34,18 +34,19 @@ const addUser = async (userData: { full_name: string; phone_number: string }) =>
     const requestData = {
       full_name: userData.full_name,
       group_id: parseInt(groupId, 10), 
+      discount: userData.discount,
       phone_number: String(userData.phone_number), 
       started_date: startedDate,
     };
 
-    // console.log("Yuborilayotgan JSON ma'lumot:", requestData);
+    
 
     const response = await api.post("/student/create", requestData, {
       headers: { "Content-Type": "application/json" },
       withCredentials: true,
     });
 
-    // console.log("Talaba qo'shildi:", response.data);
+   
     return response.data;
   } catch (error: any) {
     console.error("Talabani qo'shishda xatolik:", error.response?.data || error);
