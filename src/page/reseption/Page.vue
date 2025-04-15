@@ -248,7 +248,7 @@ onMounted(() => {
 <template>
     <div class="min-h-screen bg-slate-900 py-12 px-4 sm:px-6 lg:px-8 text-white">
         <!-- List View (Default) -->
-        <div class=" mx-auto">
+        <div class="  mx-auto">
             <!-- Header -->
 
             <!-- Filters/Actions -->
@@ -315,9 +315,9 @@ onMounted(() => {
                 </div>
 
                 <!-- Visitor Cards -->
-                <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 divide-gray-700">
+                <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 ">
                     <div v-for="(visitor, index) in filteredVisitors" :key="visitor.id || index"
-                        class="p-6 hover:bg-slate-700 transition-colors">
+                        class="p-6 bg-slate-900 m-1  transition-colors">
                         <div class="flex flex-col md:flex-row md:justify-between md:items-start gap-4">
                             <!-- Main Info -->
                             <div class="flex-grow">

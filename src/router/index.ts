@@ -13,6 +13,12 @@ import Peyment from '@/page/peyment/Page.vue'
 import Expence from '@/page/expense/Page.vue'
 import StudentsAll from '@/page/student/_components/AllStudents.vue'
 import Reception from '@/page/reseption/Page.vue'
+import Status from '@/page/status/Page.vue'
+import StatusActive from '@/page/status/_components/ActiveStudent.vue'
+import studentInActive from "@/page/status/_components/InActiveStudent.vue"
+import DebitStudent from "@/page/status/_components/DebitStudent.vue"
+import GraaduatedStudent from "@/page/status/_components/GraduatedStudent.vue"
+import { layouts } from 'chart.js'
 const router = createRouter({
    history: createWebHashHistory(import.meta.env.BASE_URL),
   routes: [
@@ -88,7 +94,37 @@ const router = createRouter({
     name: 'profil',
     component: Profil,
     meta: { layout: DefaultLayout }
-    }
+    },
+    {
+      path: '/status',
+      name:'status',
+      component: Status,
+      meta: {layout:DefaultLayout}
+    },
+    {
+      path: '/status/active',
+      name:'StatusActive',
+      component: StatusActive,
+      meta: {layout:DefaultLayout}
+    },
+    {
+      path: '/status/inactive',
+      name:'studentInActive',
+      component: studentInActive,
+      meta: {layout:DefaultLayout}
+    },
+    {
+      path: '/status/debit',
+      name:'DebitStudent',
+      component: DebitStudent,
+      meta: {layout:DefaultLayout}
+    },
+     {
+      path: '/status/gradeated',
+      name:'GraaduatedStudent',
+      component: GraaduatedStudent,
+      meta: {layout:DefaultLayout}
+    },
   ],
 
 })
