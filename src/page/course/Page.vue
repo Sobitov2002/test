@@ -28,7 +28,7 @@ onMounted(async () => {
         // Show skeleton for 1 second regardless of how fast the data loads
         setTimeout(() => {
             isSkeletonLoading.value = false;
-        }, 1000);
+        }, 300);
     } catch (error) {
         console.error('Guruhlarni yuklashda xatolik:', error);
         isSkeletonLoading.value = false; // Make sure to hide skeleton on error too
