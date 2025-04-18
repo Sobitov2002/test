@@ -39,7 +39,7 @@ const filteredStudents = computed(() => {
         <div
             class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 pb-4 border-b border-slate-700">
             <div>
-                <h3 class="text-2xl md:text-3xl font-bold text-white">Aktiv O'quvchilar</h3>
+                <h3 class="text-2xl md:text-3xl font-bold text-white">Qarzdor O'quvchilar</h3>
             </div>
             <div class="relative w-full sm:w-auto">
                 <input v-model="searchQuery" type="text" placeholder="Qidirish..."
@@ -65,10 +65,10 @@ const filteredStudents = computed(() => {
                     <thead class="bg-slate-800 text-slate-300 uppercase text-xs tracking-wider">
                         <tr>
                             <th class="px-6 py-4 whitespace-nowrap">O'quvchilar</th>
-                            <th class="px-6 py-4 text-center whitespace-nowrap">Summa</th>
+                            <th class="px-6 py-4 text-center whitespace-nowrap">To'lov qilingan summa</th>
                             <th class="px-6 py-4 text-center whitespace-nowrap hidden sm:block">Qarzdorlik</th>
 
-                            <th class="px-6 py-4 text-center whitespace-nowrap">Chegirma</th>
+                            
                             
                         </tr>
                     </thead>
@@ -88,13 +88,11 @@ const filteredStudents = computed(() => {
                                     </div>
                                 </div>
                             </td>
-                            <td class="px-6 py-4 text-slate-300 text-center whitespace-nowrap  ">{{ item.total_paid }}
+                            <td class="px-6 py-4 text-slate-300 text-center whitespace-nowrap  ">{{ item.total_paid.toLocaleString()   }}  so'm
                             </td>
-                            <td class="px-6 py-4 text-slate-300 text-center whitespace-nowrap hidden sm:block">{{ item.remaining_amount }}
+                            <td class="px-6 py-4 text-slate-300 text-center whitespace-nowrap hidden sm:block">{{ item.remaining_amount.toLocaleString() }}  so'm
                             </td>
-                            <td class="px-6 py-4 text-slate-300 text-center whitespace-nowrap">
-                                {{ item.remaining_percent }} 
-                            </td>
+                           
                             
                         </tr>
 

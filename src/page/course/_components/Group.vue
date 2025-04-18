@@ -178,6 +178,7 @@ const updateGroup = async () => {
         </div>
 
         <div class="absolute right-3 top-3 flex gap-2">
+        
           <button 
             @click.stop="openUpdateModal(prepareItem(item))"
             class="p-2 bg-slate-800 hover:bg-slate-700 rounded-lg transition-colors duration-200"

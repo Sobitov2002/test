@@ -246,7 +246,6 @@ const getRouteName = computed(() => {
                         @click="openFormModal">
                         Qo'shish
                     </button>
-
                 </div>
                 <div v-if="token" @click="loginHandler" class="flex gap-2 items-center cursor-pointer">
                     <svg class="w-6 h-6 text-white dark:text-[#fff]" xmlns="http://www.w3.org/2000/svg" width="24"

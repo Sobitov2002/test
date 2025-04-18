@@ -169,7 +169,7 @@ const confirmDelete = async () => {
                             </td>
                             
                             <td class="px-3 py-3 font-medium text-center">
-                                <span class="text-green-400">{{ item.amount.toLocaleString() }}</span>
+                                <span class="text-green-400">{{ item.amount. toLocaleString()}}</span>
                             </td>
                             <td class="px-3 py-3 text-center">
                                 <button @click="openDeleteModal(item)"

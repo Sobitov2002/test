@@ -2,6 +2,8 @@
 import { ref, onMounted, computed } from "vue";
 import { fetchFullstudent, addUser, deleteStudent } from "./services";
 import api from '@/service/apiService';
+import Status from '@/page/status/Page.vue';
+import router from "@/router";
 
 const fetchFulstudent = ref<any[]>([]);
 const isModalOpen = ref(false);
@@ -10,6 +12,7 @@ const isStatusEditModalOpen = ref(false); // New ref for status edit modal
 const selectedStudent = ref<any | null>(null);
 const isLoading = ref(true);
 const searchQuery = ref("");
+const groupStatus = ref(false);
 
 interface Student {
     discount: 'active' | 'graduate' | 'inactive';
@@ -162,6 +165,19 @@ const updateStudentData = async () => {
     }
 };
 
+
+const group = localStorage.getItem("groupId");
+
+const updateStatus = async () =>{
+    try {
+        const response = await api.put(`/group/update_status?ident=${group}`)
+        groupStatus.value = false
+        router.push('/group/course');
+        return response.data
+    } catch (error) {
+        console.log(error);
+    }
+}
 const closeModal = () => {
     isModalOpen.value = false;
     newStudent.value.full_name = "";
@@ -177,6 +193,14 @@ const closeEditModal = () => {
 const closeStatusEditModal = () => {
     isStatusEditModalOpen.value = false;
 };
+
+const groupStatusUpgrade = () =>{
+    groupStatus.value = true
+}
+const groupStatusclose = () => {
+    groupStatus.value = false
+}
+
 </script>
 
 <template>
@@ -195,6 +219,15 @@ const closeStatusEditModal = () => {
                             d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
                 </div>
+                <button @click="groupStatusUpgrade()"
+                    class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-all duration-200 flex items-center justify-center gap-2">
+                    <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true"
+                        xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-width="2"
+                            d="M20 6H10m0 0a2 2 0 1 0-4 0m4 0a2 2 0 1 1-4 0m0 0H4m16 6h-2m0 0a2 2 0 1 0-4 0m4 0a2 2 0 1 1-4 0m0 0H4m16 6H10m0 0a2 2 0 1 0-4 0m4 0a2 2 0 1 1-4 0m0 0H4" />
+                    </svg>
+                    Status
+                </button>
                 <button @click="isModalOpen = true"
                     class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-all duration-200 flex items-center justify-center gap-2">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
@@ -381,6 +414,27 @@ const closeStatusEditModal = () => {
                     Bekor qilish
                 </button>
                 <button @click="updateStudentData"
+                    class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200">
+                    Saqlash
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <div v-if="groupStatus" class="fixed inset-0 flex items-center justify-center z-50">
+        <div class="absolute inset-0 bg-black bg-opacity-70 backdrop-blur-sm" @click="groupStatusclose()"></div>
+        <div class="bg-[#111633] p-6 rounded-xl shadow-2xl w-full max-w-md relative z-10 transform transition-all">
+            <div>
+                <h1 class="text-white text-xl font-bold">Haqiqatda ham ushbu guruhni statusini o'zgartrmoqchimisiz ?</h1>
+                <p class="text-white italic">Eslatma: O'zgartrilgandan keyin guruhni tiklab bo'lmaydi</p>
+            </div>
+            <div class="flex justify-end space-x-3 mt-6">
+                <button @click="groupStatusclose()"
+                    class="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors duration-200">
+                    Bekor qilish
+                </button>
+                <button @click="updateStatus()"
                     class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200">
                     Saqlash
                 </button>

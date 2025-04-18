@@ -14,7 +14,7 @@ const isLoading = ref(true)
 const activeCount = ref()
 const inactiveCount = ref()
 const debtStudent = ref()
-const gradu = ref()
+const gradut = ref()
 onMounted(async () => {
     try {
         const active = await studentActive();
@@ -23,11 +23,14 @@ onMounted(async () => {
         const gratuated = await studentGraduated()
 
         activeCount.value = active.length;
-        debtStudent.value = debt.count
+        debtStudent.value = debt.length
         inactiveCount.value = inactive.length; 
-        gradu.value = gratuated.lenght;
+        gradut.value = gratuated.length;
 
-        console.log(gradu.value);
+        console.log("sa", debtStudent);
+        
+
+     
         
 
 
@@ -73,7 +76,7 @@ const GraaduatedStudent = () => router.push('/status/gradeated');
         <div @click="GraaduatedStudent()"
             class="flex flex-col items-center justify-center rounded-lg bg-slate-800 p-6 text-white shadow-md">
             <div class="mb-4 rounded-full bg-slate-950 p-3">
-                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                <svg class="w-6 h-6 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
                     width="24" height="24" fill="none" viewBox="0 0 24 24">
                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M20 12H8m12 0-4 4m4-4-4-4M9 4H7a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h2" />
@@ -82,7 +85,7 @@ const GraaduatedStudent = () => router.push('/status/gradeated');
             <h3 class="text-lg font-medium">Chetlashtrilgan o'quvchilar</h3>
             <p class="mt-2 text-lg font-bold">
                 <span v-if="isLoading">Loading...</span>
-                <span v-else>{{ graduated }}</span>
+                <span class="mt-2 text-3xl font-bold" v-else> {{ gradut }}</span>
             </p>
         </div>
 
@@ -94,7 +97,7 @@ const GraaduatedStudent = () => router.push('/status/gradeated');
             <h3 class="text-lg font-medium">Qarzdor o'quvchilar</h3>
             <p class="mt-2 text-lg font-bold">
                 <span v-if="isLoading">Loading...</span>
-                <span v-else>{{ debtStudent }}</span>
+                <span class="mt-2 text-3xl font-bold" v-else>{{ debtStudent }}</span>
             </p>
         </div>
     </div>
