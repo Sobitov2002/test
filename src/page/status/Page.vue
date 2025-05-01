@@ -64,30 +64,6 @@ const GraaduatedStudent = () => router.push('/status/gradeated');
             <p class="mt-2 text-3xl font-bold">{{ activeCount }}</p>
         </div>
 
-        <div @click="nextInActive()"
-            class="flex flex-col items-center justify-center rounded-lg bg-slate-800 p-6 text-white shadow-md">
-            <div class="mb-4 rounded-full bg-slate-950 p-3">
-                <UserX class="h-6 w-6" />
-            </div>
-            <h3 class="text-lg  font-bold">No Faol o'quvchilar</h3>
-            <span v-if="isLoading">Loading...</span>
-            <p class="mt-2 text-3xl font-bold">{{ inactiveCount }}</p>
-        </div>
-        <div @click="GraaduatedStudent()"
-            class="flex flex-col items-center justify-center rounded-lg bg-slate-800 p-6 text-white shadow-md">
-            <div class="mb-4 rounded-full bg-slate-950 p-3">
-                <svg class="w-6 h-6 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                    width="24" height="24" fill="none" viewBox="0 0 24 24">
-                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M20 12H8m12 0-4 4m4-4-4-4M9 4H7a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h2" />
-                </svg>
-            </div>
-            <h3 class="text-lg font-medium">Chetlashtrilgan o'quvchilar</h3>
-            <p class="mt-2 text-lg font-bold">
-                <span v-if="isLoading">Loading...</span>
-                <span class="mt-2 text-3xl font-bold" v-else> {{ gradut }}</span>
-            </p>
-        </div>
 
         <div @click="nextBedit()"
             class="flex flex-col items-center justify-center rounded-lg bg-slate-800 p-6 text-white shadow-md">
@@ -100,5 +76,32 @@ const GraaduatedStudent = () => router.push('/status/gradeated');
                 <span class="mt-2 text-3xl font-bold" v-else>{{ debtStudent }}</span>
             </p>
         </div>
+        
+        <div @click="nextInActive()"
+            class="flex flex-col items-center justify-center rounded-lg bg-slate-800 p-6 text-white shadow-md">
+            <div class="mb-4 rounded-full bg-slate-950 p-3">
+                <UserX class="h-6 w-6" />
+            </div>
+            <h3 class="text-lg  font-bold">No Faol o'quvchilar</h3>
+            <span v-if="isLoading">Loading...</span>
+            <p class="mt-2 text-3xl font-bold">{{ inactiveCount }}</p>
+        </div>
+        <div @click="GraaduatedStudent()"
+            class="flex flex-col items-center justify-center rounded-lg bg-slate-800 p-6 text-white shadow-md">
+            <div class="mb-4 rounded-full bg-slate-950 p-3">
+                <svg class="w-6 h-6 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24"
+                    height="24" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M20 12H8m12 0-4 4m4-4-4-4M9 4H7a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h2" />
+                </svg>
+            </div>
+            <h3 class="text-lg font-medium">Chetlashtrilgan o'quvchilar</h3>
+            <p class="mt-2 text-lg font-bold">
+                <span v-if="isLoading">Loading...</span>
+                <span class="mt-2 text-3xl font-bold" v-else> {{ gradut }}</span>
+            </p>
+        </div>
+
+
     </div>
 </template>
