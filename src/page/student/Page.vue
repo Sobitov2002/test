@@ -70,24 +70,29 @@ onMounted(async () => {
 const addStudent = async () => {
     if (newStudent.value.full_name && newStudent.value.phone_number) {
         try {
+            // discount bo‘sh bo‘lsa 0 ga tenglashtiramiz
+            newStudent.value.discount = newStudent.value.discount === "" ? 0 : newStudent.value.discount;
+
             if (newStudent.value.started_date) {
                 newStudent.value.started_date = new Date(newStudent.value.started_date).toISOString().split('T')[0];
             }
 
             const response = await addUser(newStudent.value);
-            // return response
             fetchFulstudent.value = await fetchFullstudent();
         } catch (error) {
             console.error(error);
         }
 
         isModalOpen.value = false;
+
+        // Formani tozalash
         newStudent.value.full_name = "";
-        newStudent.value.discount = "";
+        newStudent.value.discount = 0;
         newStudent.value.phone_number = "";
         newStudent.value.started_date = "";
     }
 };
+
 
 // Improved statusEdit function
 const statusEdit = async (studentData: { student_id: number, status: string }) => {

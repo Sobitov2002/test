@@ -258,7 +258,6 @@ const filteredStudents = computed(() => {
                         <tr>
                             <th class="px-6 py-4 whitespace-nowrap">O'quvchilar</th>
                             <th class="px-6 py-4 text-center whitespace-nowrap">Telefon raqam</th>
-                            <th class="px-6 py-4 text-center whitespace-nowrap hidden sm:block">Boshlangan sana</th>
                             <th class="px-6 py-4 text-center whitespace-nowrap">To'lov summa</th>
                             <th class="px-6 py-4 text-center whitespace-nowrap">Chegirma</th>
                             <th class="px-6 py-4 text-center whitespace-nowrap">Amallar</th>
@@ -282,9 +281,7 @@ const filteredStudents = computed(() => {
                             </td>
                             <td class="px-6 py-4 text-slate-300 text-center whitespace-nowrap  ">{{ item.phone_number }}
                             </td>
-                            <td class="px-6 py-4 text-slate-300 text-center whitespace-nowrap hidden sm:block">{{
-                                item.started_date }}
-                            </td>
+                            
                             <td class="px-6 py-4 text-slate-300 text-center whitespace-nowrap">
                                 {{item.payment_amount.toLocaleString() }}
                             </td>
