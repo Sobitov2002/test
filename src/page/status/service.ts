@@ -1,12 +1,10 @@
 import api from '@/service/apiService'
 
 
-const studentDebt =  async () =>{
+const studentDebt =  async (month:string , year:number) =>{
     try {
         
-        const response = await api.get(`/student/get_debt_student?year=2025&month=april`)
-
-        
+        const response = await api.get(`/student/get_debt_student?year=${year}&month=${month}`) 
         return response.data
     } catch (error) {
         console.error("Error fetching debt students:", error)
