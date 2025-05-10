@@ -16,6 +16,8 @@ const paymentSuccess = ref(false);
 const isLoading = ref(false);
 const searchQuery = ref("");
 const fetchFulstudent = ref<any[]>([]);
+// Add status filter
+const statusFilter = ref<string>("active");
 
 const months = [
     'January', 'February', 'March', 'April', 'May', 'June',
@@ -24,6 +26,13 @@ const months = [
 
 const paymentTypes = ['cash', 'click'];
 
+// Add status options
+const statusOptions = [
+    { value: 'active', label: 'Active' },
+    { value: 'inactive', label: 'Inactive' },
+    { value: 'graduated', label: 'Graduated' }
+];
+
 const isFormValid = computed(() => {
     return selectedStudent.value &&
         paymentAmount.value &&
@@ -31,21 +40,29 @@ const isFormValid = computed(() => {
         paymentDate.value;
 });
 
-onMounted(async () => {
+// Update the fetch function to use the status filter
+const fetchStudents = async (status = statusFilter.value) => {
     try {
         isLoading.value = true;
-        const response = await api.get('/student/get_all_students', { withCredentials: true });
+        const response = await api.get(`student/get_all_students?status=${status}`, { withCredentials: true });
         students.value = response.data;
-
-
         fetchFulstudent.value = response.data;
     } catch (error) {
         console.log(error);
     } finally {
         isLoading.value = false;
     }
+};
+
+onMounted(() => {
+    fetchStudents();
 });
 
+// Add function to handle status change
+const handleStatusChange = (status: string) => {
+    statusFilter.value = status;
+    fetchStudents(status);
+};
 
 interface students {
     id: number;
@@ -53,7 +70,7 @@ interface students {
     full_name: string;
     phone_number: number;
     group_name: string;
-    discount:number;
+    discount: number;
 }
 interface Student {
     full_name: string;
@@ -68,7 +85,7 @@ const openPaymentModal = (student: any) => {
     modalOpen.value = true;
     paymentSuccess.value = false;
     paymentDate.value = new Date().toISOString().split('T')[0];
-    
+
 };
 
 const confirmPayment = async () => {
@@ -84,7 +101,7 @@ const confirmPayment = async () => {
         month: selectedMonth.value || 'January',
         payment_type: paymentType.value || 'cash',
         payment_date: paymentDate.value || new Date().toISOString().split('T')[0],
-        discount:paymentDiscount.value || 0
+        discount: paymentDiscount.value || 0
     };
 
     try {
@@ -179,7 +196,8 @@ const filteredStudents = computed(() => {
                             </select>
                         </div>
                         <div class="space-y-1.5">
-                            <label for="payment-amount" class="block text-sm font-medium text-slate-300">Chegirma (%)</label>
+                            <label for="payment-amount" class="block text-sm font-medium text-slate-300">Chegirma
+                                (%)</label>
                             <div class="relative">
                                 <input v-model="paymentDiscount" type="number" id="payment-amount"
                                     placeholder="Miqdorni kiriting"
@@ -234,14 +252,30 @@ const filteredStudents = computed(() => {
             <div>
                 <h3 class="text-2xl md:text-3xl font-bold text-white">O'quvchilar</h3>
             </div>
-            <div class="relative w-full sm:w-auto">
-                <input v-model="searchQuery" type="text" placeholder="Qidirish..."
-                    class="bg-[#111633] text-white px-4 py-2 rounded-lg w-full sm:w-64 focus:outline-none focus:ring-2 focus:ring-blue-500 pl-10" />
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 absolute left-3 top-2.5 text-gray-400"
-                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
+            <div class="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+                <!-- Status Filter Tabs -->
+                <div class="flex bg-slate-800/50 rounded-lg p-1 w-full sm:w-auto">
+                    <button v-for="status in statusOptions" :key="status.value"
+                        @click="handleStatusChange(status.value)" :class="[
+                            'px-4 py-2 text-sm font-medium rounded-md transition-all flex-1 sm:flex-none',
+                            statusFilter === status.value
+                                ? 'bg-blue-600 text-white shadow-md'
+                                : 'text-slate-300 hover:bg-slate-700/50'
+                        ]">
+                        {{ status.label }}
+                    </button>
+                </div>
+
+                <!-- Search Input -->
+                <div class="relative w-full sm:w-auto">
+                    <input v-model="searchQuery" type="text" placeholder="Qidirish..."
+                        class="bg-[#111633] text-white px-4 py-2 rounded-lg w-full sm:w-64 focus:outline-none focus:ring-2 focus:ring-blue-500 pl-10" />
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 absolute left-3 top-2.5 text-gray-400"
+                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                </div>
             </div>
         </div>
 
@@ -281,9 +315,9 @@ const filteredStudents = computed(() => {
                             </td>
                             <td class="px-6 py-4 text-slate-300 text-center whitespace-nowrap  ">{{ item.phone_number }}
                             </td>
-                            
+
                             <td class="px-6 py-4 text-slate-300 text-center whitespace-nowrap">
-                                {{item.payment_amount.toLocaleString() }}
+                                {{ item.payment_amount.toLocaleString() }}
                             </td>
                             <td class="px-6 py-4 text-slate-300 text-center whitespace-nowrap">{{ item.discount }} %
                             </td>
@@ -310,7 +344,7 @@ const filteredStudents = computed(() => {
                                             d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
                                     </svg>
                                     <p class="text-lg font-medium">O'quvchilar topilmadi</p>
-                                    <p class="mt-1">Hozircha o'quvchilar ro'yxati bo'sh</p>
+                                    <p class="mt-1">{{ statusFilter }} holatidagi o'quvchilar ro'yxati bo'sh</p>
                                 </div>
                             </td>
                         </tr>
@@ -336,7 +370,7 @@ const filteredStudents = computed(() => {
     width: 100%;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
-    
+
     position: relative;
     display: block;
 }
@@ -382,7 +416,7 @@ table {
 
     table {
         min-width: 800px;
-      
+
     }
 }
 </style>

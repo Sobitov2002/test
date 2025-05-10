@@ -48,10 +48,17 @@ const studentInfoForm = ref({
     address: ""
 });
 
+// Modified to only show active students
 const filteredStudents = computed(() => {
-    if (!searchQuery.value) return fetchFulstudent.value;
+    // First filter by active status
+    const activeStudents = fetchFulstudent.value.filter(student =>
+        student.status === 'active'
+    );
 
-    return fetchFulstudent.value.filter(student =>
+    // Then apply search filter if there's a search query
+    if (!searchQuery.value) return activeStudents;
+
+    return activeStudents.filter(student =>
         student.full_name.toLowerCase().includes(searchQuery.value.toLowerCase())
     );
 });
@@ -70,7 +77,7 @@ onMounted(async () => {
 const addStudent = async () => {
     if (newStudent.value.full_name && newStudent.value.phone_number) {
         try {
-            // discount bo‘sh bo‘lsa 0 ga tenglashtiramiz
+            // discount bo'sh bo'lsa 0 ga tenglashtiramiz
             newStudent.value.discount = newStudent.value.discount === "" ? 0 : newStudent.value.discount;
 
             if (newStudent.value.started_date) {
@@ -195,7 +202,7 @@ const fetchStudentInfo = async (studentId: number) => {
         studentInfo.value = response.data;
 
         console.log(studentInfo.value);
-        
+
         if (studentInfo.value) {
             studentInfoForm.value = {
                 student_id: studentId,
@@ -254,10 +261,10 @@ const updateStudentInfo = async () => {
                 "Content-Type": "application/json",
             }
         });
-        
+
 
         alert("Ma'lumotlar muvaffaqiyatli yangilandi!");
-        
+
         await fetchStudentInfo(studentInfoForm.value.student_id);
         isEditingInfo.value = false;
     } catch (error) {
@@ -364,7 +371,7 @@ const toggleEditInfo = () => {
     <div class="p-6 rounded-xl max-w-[1400px] mx-auto bg-gradient-to-br from-[#060b26] to-[#1a1f37] shadow-2xl">
         <div class="flex flex-col md:flex-row md:items-center justify-between border-b border-gray-700 pb-4 mb-6">
             <div class="mb-4 md:mb-0">
-                <h3 class="text-3xl font-bold text-white">O'quvchilar</h3>
+                <h3 class="text-3xl font-bold text-white">Faol O'quvchilar</h3>
             </div>
             <div class="flex flex-col sm:flex-row gap-3">
                 <div class="relative">
@@ -406,7 +413,7 @@ const toggleEditInfo = () => {
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
             </svg>
-            <h3 class="mt-4 text-xl font-medium text-white">O'quvchilar topilmadi</h3>
+            <h3 class="mt-4 text-xl font-medium text-white">Faol o'quvchilar topilmadi</h3>
             <p class="mt-2 text-gray-400">Yangi o'quvchi qo'shish uchun "Qo'shish" tugmasini bosing</p>
         </div>
 

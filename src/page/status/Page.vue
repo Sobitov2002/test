@@ -14,34 +14,30 @@ const isLoading = ref(true)
 const activeCount = ref()
 const inactiveCount = ref()
 const debtStudent = ref()
+const graduatedCount=ref()
 const gradut = ref()
+const month = '05'
+const year = 2025
 onMounted(async () => {
     try {
-        const active = await studentActive();
-        const debt = await studentDebt();
-        const inactive = await studentInActive();
-        const gratuated = await studentGraduated()
+        const [active, debt, inactive, graduated] = await Promise.all([
+            studentActive(),
+            studentDebt(month, year),
+            studentInActive(),
+            studentGraduated()
+        ])
 
-        activeCount.value = active.length;
-        debtStudent.value = debt.length
-        inactiveCount.value = inactive.length; 
-        gradut.value = gratuated.length;
-
-        console.log("sa", debtStudent);
-        
-
-     
-        
-
-
-
+        activeCount.value = active?.length ?? 0
+        debtStudent.value = debt?.length ?? 0
+        inactiveCount.value = inactive?.length ?? 0
+        graduatedCount.value = graduated?.length ?? 0
+        console.log("Qarzdorlar soni:", debtStudent.value)
     } catch (error) {
-        console.error('Xatolik:', error);
+        console.error('Xatolik:', error)
     } finally {
-        isLoading.value = false;
+        isLoading.value = false
     }
-});
-
+})
 const nextActive = () => router.push('/status/active');
 const nextInActive = () => router.push('/status/inactive');
 const nextBedit = () => router.push('/status/debit');
@@ -98,7 +94,7 @@ const GraaduatedStudent = () => router.push('/status/gradeated');
             <h3 class="text-lg font-medium">Bitirgan o'quvchilar</h3>
             <p class="mt-2 text-lg font-bold">
                 <span v-if="isLoading">Loading...</span>
-                <span class="mt-2 text-3xl font-bold" v-else> {{ gradut }}</span>
+                <span class="mt-2 text-3xl font-bold" v-else> {{ graduatedCount }}</span>
             </p>
         </div>
 
