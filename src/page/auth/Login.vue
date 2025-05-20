@@ -30,7 +30,17 @@ const login = async () => {
 
         const response = await api.post("/login/token", formData);
 
-        await localStorage.setItem("token", response.data.access_token);
+        const { access_token, refresh_token, expires_in } = response.data;
+
+        // Tokenlarni saqlash
+        localStorage.setItem("access_token", access_token);
+        localStorage.setItem("refresh_token", refresh_token);
+
+        // Tokenning amal qilish vaqtini ham saqlash (optional)
+        const expirationTime = Date.now() + expires_in * 1000;
+        localStorage.setItem("token_expiry", expirationTime.toString());
+
+        // Dashboardga yo'naltirish
         router.push("/dashboard");
     } catch (error) {
         console.error("Login error:", error);
@@ -44,6 +54,7 @@ const togglePasswordVisibility = () => {
     showPassword.value = !showPassword.value;
 };
 </script>
+
 
 <template>
     <div class="grid md:grid-cols-2 w-full min-h-screen">
