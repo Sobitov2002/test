@@ -146,7 +146,7 @@ const closeModal = () => {
         <div class="flex justify-between items-center border-b border-gray-700/50 pb-4 mb-6">
             <div>
                 <h3 class="text-4xl max-md:text-2xl font-extrabold text-white">
-                    <span class="bg-clip-text text-white">Guruhlar</span>
+                    <span class="bg-clip-text text-white">Kurslar</span>
                 </h3>
             </div>
             <button @click="isModalOpen = true"
