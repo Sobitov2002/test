@@ -43,7 +43,7 @@
 import { onMounted, ref, computed } from 'vue';
 import Statistic from './_components/page.vue';
 import PeymentDiagram from './_components/PeymentDiagram.vue';
-import Profit from './_components/Profit.vue';
+import Profit from './_components/PaymentList.vue';
 import Expence from './_components/Expence.vue';
 import {
     fetchStudentCount,
