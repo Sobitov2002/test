@@ -34,7 +34,7 @@
         <div class="grid md:grid-cols-3 gap-6 grid-cols-1 mt-6">
             <PeymentDiagram />
             <Expence />
-            <PaymentList />
+            <Profit />
         </div>
     </div>
 </template>
@@ -43,7 +43,7 @@
 import { onMounted, ref, computed } from 'vue';
 import Statistic from './_components/page.vue';
 import PeymentDiagram from './_components/PeymentDiagram.vue';
-import PaymentList from './_components/PaymentList.vue';
+import Profit from './_components/Profit.vue';
 import Expence from './_components/Expence.vue';
 import {
     fetchStudentCount,
