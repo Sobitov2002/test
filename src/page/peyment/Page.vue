@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue';
-import { getAllStudents, postStudent } from './services.ts';
+import { ref, onMounted, computed, watch } from 'vue';
+import { getAllStudents } from './services.ts';
 import api from '@/service/apiService';
 
 const students = ref<any[]>([]);
@@ -14,75 +14,100 @@ const searchQuery = ref<string>('');
 const showDeleteModal = ref(false);
 
 const months = [
-    'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December'
+  'January', 'February', 'March', 'April', 'May', 'June',
+  'July', 'August', 'September', 'October', 'November', 'December'
 ];
 
+interface Course {
+  id: number
+  name: string
+}
+const courses = ref<Course[]>([])
+const selectedCourseId = ref<number | ''>('')
+
 const currentMonth = months[new Date().getMonth()];
-
-
 const deleteCount = ref();
 const paymentTypes = ['cash', 'click'];
 
 onMounted(async () => {
+  try {
+    // Kurslar ro'yxatini olish
+    const response = await api.get<Course[]>('/course/get')
+    courses.value = response.data
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+// Kurs tanlanganda avtomatik to'lovlarni yuklash
+watch(selectedCourseId, async (newId) => {
+  if (newId !== '') {
     try {
-        students.value = await getAllStudents();
-        console.log(students.value);
+      const response = await api.get(`/payment/all?course_id=${newId}`);
+      students.value = response.data;
     } catch (error) {
-        console.log(error);
+      console.error('Xatolik: to\'lovlarni olishda', error);
     }
+  }
 });
 
 const openPaymentModal = (student: any) => {
-    selectedStudent.value = student;
-    modalOpen.value = true;
+  selectedStudent.value = student;
+  modalOpen.value = true;
 };
 
-const selectedFilter = ref<string>(''); // Payment type filter
+const selectedFilter = ref<string>('');
 const selectedMonthFilter = ref<string>(currentMonth);
 
 const filteredStudents = computed(() => {
-    return students.value.filter(student => {
-        const matchesName = searchQuery.value
-            ? student.student_name.toLowerCase().includes(searchQuery.value.toLowerCase())
-            : true;
+  return students.value.filter(student => {
+    const matchesName = searchQuery.value
+      ? student.student_name.toLowerCase().includes(searchQuery.value.toLowerCase())
+      : true;
 
-        const matchesPaymentType = selectedFilter.value
-            ? student.payment_type === selectedFilter.value
-            : true;
+    const matchesPaymentType = selectedFilter.value
+      ? student.payment_type === selectedFilter.value
+      : true;
 
-        const matchesMonth = selectedMonthFilter.value
-            ? student.month === selectedMonthFilter.value
-            : true;
+    const matchesMonth = selectedMonthFilter.value
+      ? student.month === selectedMonthFilter.value
+      : true;
 
-        return matchesName && matchesPaymentType && matchesMonth;
-    });
+    return matchesName && matchesPaymentType && matchesMonth;
+  });
 });
 
 const deletePayment = async (id: number) => {
-    try {
-        const response = await api.delete(`/payment/delete?ident=${id}`);
-        return response.data;
-    } catch (error) {
-        console.log(error);
-    }
+  try {
+    const response = await api.delete(`/payment/delete?ident=${id}`);
+    return response.data;
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 const selectedPaymentId = ref<number | null>(null);
 
 const openDeleteModal = (student: any) => {
-    selectedStudent.value = student;
-    selectedPaymentId.value = student.id;
-    showDeleteModal.value = true;
+  selectedStudent.value = student;
+  selectedPaymentId.value = student.id;
+  showDeleteModal.value = true;
 };
 
 const confirmDelete = async () => {
-    if (!selectedPaymentId.value) return;
-    await deletePayment(selectedPaymentId.value);
-    students.value = await getAllStudents(); // Refresh the list
-    showDeleteModal.value = false;
+  if (!selectedPaymentId.value) return;
+  await deletePayment(selectedPaymentId.value);
+
+  // Qayta yuklash — selectedCourseId asosida
+  if (selectedCourseId.value !== '') {
+    const response = await api.get(`/payment/all?course_id=${selectedCourseId.value}`);
+    students.value = response.data;
+  }
+
+  showDeleteModal.value = false;
 };
 </script>
+
 
 <template>
     <div class="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 text-white p-4 md:p-6">
@@ -97,7 +122,7 @@ const confirmDelete = async () => {
                     </h3>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full md:w-auto md:max-w-md">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 w-full md:w-auto md:max-w-md">
                     <!-- Month Filter -->
                     <div class="relative">
                         <select v-model="selectedMonthFilter"
@@ -115,7 +140,26 @@ const confirmDelete = async () => {
                                     d="M19 9l-7 7-7-7"></path>
                             </svg>
                         </div>
+                        
                     </div>
+
+                  <div class="relative w-full max-w-md">
+  <select
+    v-model="selectedCourseId"
+    id="course"
+    class="block w-full px-4 py-2 border  rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-700 bg-slate-700 transition duration-150 ease-in-out"
+  >
+    <option class="text-white" placeholder="sas" disabled value="sdsd">-- Kursni tanlang --</option>
+    <option
+      v-for="course in courses"
+      :key="course.id"
+      :value="course.id"
+      class="text-white"
+    >
+      {{ course.name }}
+    </option>
+  </select>
+</div>
 
                     <!-- Search Input -->
                     <div class="relative">
